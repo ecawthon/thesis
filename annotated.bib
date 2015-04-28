@@ -1,0 +1,392 @@
+
+@inproceedings{wolinsky_dissent_2012,
+	address = {Hollywood, {CA}},
+	title = {Dissent in Numbers: Making Strong Anonymity Scale},
+	isbn = {978-1-931971-96-6},
+	url = {https://www.usenix.org/conference/osdi12/technical-sessions/presentation/wolinsky},
+	booktitle = {Presented as part of the 10th {USENIX} Symposium on Operating Systems Design and Implementation ({OSDI} 12)},
+	publisher = {{USENIX}},
+	author = {Wolinsky, David Isaac and Corrigan-Gibbs, Henry and Ford, Bryan and Johnson, Aaron},
+	year = {2012},
+	keywords = {cryptography, dissent, distributed},
+	pages = {179--182},
+	annotate = "This is the most complete version of Dissent, and the version from which I will be building. N clients connect to M servers, each client/server pair has a shared secret, and the cooperation of all servers is necessary to decipher each round's cyphertext. This formalizes the \emph{anytrust} model - that is, as long as at least one server is honest, the security properties hold, and clients need not know which server is honest for this to be the case.",
+	file = {osdi12-final-115.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/9ACKKADW/osdi12-final-115.pdf:application/pdf}
+}
+
+@article{syta_security_2014,
+	title = {Security Analysis of Accountable Anonymity in Dissent},
+	volume = {17},
+	issn = {10949224},
+	url = {http://dl.acm.org/citation.cfm?doid=2660572.2629621},
+	doi = {10.1145/2629621},
+	language = {en},
+	number = {1},
+	urldate = {2014-10-26},
+	journal = {{ACM} Transactions on Information and System Security},
+	author = {Syta, Ewa and Corrigan-Gibbs, Henry and Weng, Shu-Chun and Wolinsky, David and Ford, Bryan and Johnson, Aaron},
+	month = aug,
+	year = {2014},
+	keywords = {cryptography, dissent, security analysis},
+	pages = {1--35},
+	annotate = "Formal security analysis of the security properties in the original Dissent protocol (pre-Dissent in Numbers and Verdict). This is long but highly informative of what a formal security analysis entails, how the more informally stated security properties in the Dissent paper translate into mathematical formulations, and how one goes about proving them.",
+	file = {TISSEC1701-04 - a4-syta.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/HXRV3WJG/a4-syta.pdf:application/pdf}
+}
+
+@incollection{romero-tris_multi-party_2015,
+	series = {Studies in Computational Intelligence},
+	title = {Multi-party Methods for Privacy-Preserving Web Search: Survey and Contributions},
+	copyright = {©2015 Springer International Publishing Switzerland},
+	isbn = {978-3-319-09884-5, 978-3-319-09885-2},
+	shorttitle = {Multi-party Methods for Privacy-Preserving Web Search},
+	url = {http://link.springer.com/chapter/10.1007/978-3-319-09885-2_20},
+	abstract = {Web search engines ({WSEs}) locate keywords on websites and retrieve contents from the World Wide Web. To be successful among its users, the {WSE} must return the results that best match their interests. For this purpose, {WSEs} collect and analyze users’ search history and build profiles. Although this brings immediate benefits to the user, it is also a threat for her privacy in the long term. Profiles are built from past queries and other related data that may contain private and personal information. Consequently, researchers on this field have developed different approaches whose objective is to avoid this privacy threat and protect users of {WSEs}. One way to classify the existing alternatives is between single-party and multi-party. The former approach allows users to protect their privacy in front of the {WSE} without requiring the cooperation of others. The latter requires that a group of users or entities collaborate in order to protect the privacy of each member of the group. This work focuses on multi-party schemes. First, current solutions in this field are surveyed, their differences are analyzed and their advantages (and shortcomings) are stressed. Finally, our own contributions to this area are presented and evaluated.},
+	language = {en},
+	number = {567},
+	urldate = {2014-10-27},
+	booktitle = {Advanced Research in Data Privacy},
+	publisher = {Springer International Publishing},
+	author = {Romero-Tris, Cristina and Viejo, Alexandre and Castellà-Roca, Jordi},
+	editor = {Navarro-Arribas, Guillermo and Torra, Vicenç},
+	month = jan,
+	year = {2015},
+	keywords = {multi-party computation, search},
+	pages = {367--387},
+	annotate = "This book chapter looks like an interesting introduction to privacy-preservint multi-party computation. Unfortunately, I don't have full text access yet.",
+	file = {Snapshot:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/IFBWMAWK/978-3-319-09885-2_20.html:text/html}
+}
+
+@inproceedings{neff_verifiable_2001,
+	address = {New York, {NY}, {USA}},
+	series = {{CCS} '01},
+	title = {A Verifiable Secret Shuffle and Its Application to e-Voting},
+	isbn = {1-58113-385-5},
+	url = {http://doi.acm.org/10.1145/501983.502000},
+	doi = {10.1145/501983.502000},
+	urldate = {2014-10-27},
+	booktitle = {Proceedings of the 8th {ACM} Conference on Computer and Communications Security},
+	publisher = {{ACM}},
+	author = {Neff, C. Andrew},
+	year = {2001},
+	keywords = {electronic voting, honest-verifier, mix-net, permutation, universal verifiability, verifiable mix, verifiable shuffle, zeroknowledge},
+	pages = {116--125},
+	annotate = "This paper introduces the verifiable shuffle used in Dissent to assign pseudonyms to clients. It describes a publicly verifiable cryptographic shuffle algorithm that takes as inputs an encrypted 'ballot' from each participant and results in the decrypted content of the ballots in a shuffled order such that no one knows which ballot corresponds to which input.",
+	file = {ACM Full Text PDF:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/Z9VUUGZQ/Neff - 2001 - A Verifiable Secret Shuffle and Its Application to.pdf:application/pdf}
+}
+
+@incollection{katz_bridging_2008,
+	title = {Bridging game theory and cryptography: Recent results and future directions},
+	shorttitle = {Bridging game theory and cryptography},
+	url = {http://link.springer.com/chapter/10.1007/978-3-540-78524-8_15},
+	urldate = {2014-10-26},
+	booktitle = {Theory of Cryptography},
+	publisher = {Springer},
+	author = {Katz, Jonathan},
+	year = {2008},
+	keywords = {cryptography, game theory},
+	pages = {251--272},
+	annotate = "This is a survey of the current state of research in the intersection of game theory and cryptography. It provides an overview of important concepts in game theory, and outlines how the idea of a distributed crypto protocol could act as a trusted mediator in game theory, and how cryptosystems might utilize the notion of 'rational' (rather than honest vs. dishonest) actors.",
+	file = {49480245.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/SE6I4ZRJ/49480245.pdf:application/pdf}
+}
+
+@incollection{hoefer_altruism_2009,
+	title = {Altruism in atomic congestion games},
+	url = {http://link.springer.com/chapter/10.1007/978-3-642-04128-0_16},
+	urldate = {2014-10-26},
+	booktitle = {Algorithms-{ESA} 2009},
+	publisher = {Springer},
+	author = {Hoefer, Martin and Skopalik, Alexander},
+	year = {2009},
+	keywords = {game theory},
+	pages = {179--189},
+	annotate = "This paper explores the implications of introducing a notion of altruism (acting for social benefit to the detriment of individual benefit) to algorithmic game theoretic models. By quantifying altruism, they are able to adapt existing models of Nash Equilibria and other game theory primatives to incorporate this.",
+	file = {0807.2011.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/EUXVKWMB/0807.2011.pdf:application/pdf}
+}
+
+@inproceedings{feigenbaum_distributed_2002,
+	title = {Distributed algorithmic mechanism design: recent results and future directions.},
+	shorttitle = {Distributed algorithmic mechanism design},
+	url = {http://www.researchgate.net/publication/2531109_Distributed_Algorithmic_Mechanism_Design_Recent_Results_and_Future_Directions/file/3deec523088c723601.pdf},
+	urldate = {2014-10-26},
+	booktitle = {{DIAL}-M},
+	author = {Feigenbaum, Joan and Shenker, Scott},
+	year = {2002},
+	keywords = {distributed, survey},
+	pages = {1--13},
+	annotate = "Another paper on the intersection of game theory, distributed systems, and cryptography. This paper goes into more technical depth on the models, specifications, and current approaches to distributed algorithmic mechanism design, considering incentive structures and economic issues as well as characterizing strategy analysis problems amenable to crypto-style proofs.",
+	file = {pInv1-feigenbaum.dvi - 0131back.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/FEU3IPBJ/0131back.pdf:application/pdf}
+}
+
+@inproceedings{dingledine_tor:_2004,
+	title = {Tor: The Second-Generation Onion Router},
+	url = {https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf},
+	urldate = {2014-11-22},
+	booktitle = {Proceedings of the 13th {USENIX} Security Symposium},
+	author = {Dingledine, Roger and Mathewson, Nick and Syverson, Paul},
+	month = aug,
+	year = {2004},
+	keywords = {Anonymity, Tor},
+	annotate = "Paper describing Tor's security assumptions and design. Tor aims to provide an anonymity service that, to the end user, behaves like a one-hop proxy: If Alice wants to send an HTTP request to Bob using Tor, Alice sends a request through Tor, Tor forwards the request to Bob, Bob replies to Tor, and Tor forwards the response to Alice. In fact, when Alice's traffic enters the Tor network, it is encrypted and transmitted among several 'onion routers' before reaching an 'exit relay', which decrypts the request and passes it onto the server the client was attempting to reach. Each intermediate onion router only knows the next hop in the path from Alice to Bob, so no one in the network knows the complete path. \par
+Tor provides anonymity from an adversary who 'can observe some fraction of the
+network traffic; who can generate, modify, delete, or delay traffic; who can
+operate onion routers of [their] own; and who can compromise some fraction of
+the onion routers'. If an adversary can observe much more than a small fraction
+of traffic, other attacks become possible, and the anonymity guarantees no
+longer hold. We now know that the U.S. National Security Agency actively uses
+such attacks, and so a new protocol is necessary in order to remain anonymous
+from the N.S.A.",
+	file = {tor-design.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/TH76ZCRG/tor-design.pdf:application/pdf}
+}
+
+@inproceedings{corrigan-gibbs_proactively_2013,
+	address = {Washington, D.C.},
+	title = {Proactively Accountable Anonymous Messaging in Verdict},
+	isbn = {978-1-931971-03-4},
+	url = {https://www.usenix.org/conference/usenixsecurity13/technical-sessions/presentation/corrigan-gibbs},
+	booktitle = {Presented as part of the 22nd {USENIX} Security Symposium ({USENIX} Security 13)},
+	publisher = {{USENIX}},
+	author = {Corrigan-Gibbs, Henry and Wolinsky, David Isaac and Ford, Bryan},
+	year = {2013},
+	keywords = {cryptography, dissent, distributed},
+	pages = {147--162},
+	annotate = "This significantly improves the accountability mechanism of Dissent, and introduces the approach that is pretty much still being used in the low-latency prototypes.
+\par
+Verdict attempts to solve the jamming problems in Dissent in Numbers. It eschews the xor-net approach and instead encrypts each round's ciphertext with ElGamal-like scheme incorporating each shared secret. In addition to this encoded ciphertext, each client each round also transmits a zero-knowledge proof of correctness that EITHER they have correctly generated the cryptographic background noise for the current slot, OR they are the owner of the slot (and are therefore allowed to transmit a non-null message in that slot).",
+	file = {12301-sec13-paper_corrigan-gibbs.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/DGG33QBQ/12301-sec13-paper_corrigan-gibbs.pdf:application/pdf}
+}
+
+@inproceedings{corrigan-gibbs_dissent:_2010,
+	address = {New York, {NY}, {USA}},
+	series = {{CCS} '10},
+	title = {Dissent: Accountable Anonymous Group Messaging},
+	isbn = {978-1-4503-0245-6},
+	shorttitle = {Dissent},
+	url = {http://doi.acm.org/10.1145/1866307.1866346},
+	doi = {10.1145/1866307.1866346},
+	urldate = {2014-10-26},
+	booktitle = {Proceedings of the 17th {ACM} Conference on Computer and Communications Security},
+	publisher = {{ACM}},
+	author = {Corrigan-Gibbs, Henry and Ford, Bryan},
+	year = {2010},
+	keywords = {accountability, anonymity, denial of service, dissent, group communication, p2p, verifiable anonymous shuffle},
+	pages = {340--350},
+	annotate = "This is the original Dissent paper. It introduced the secure shuffle + {DC}-net approach to strong anonymity, providing guarantees of \emph{integrity} (either the protocol completes successfully or all clients know it did not), \emph{anonymity} (clients are anonymous among the honest clients), and \emph{accountability} (disruptors can be exposed). This version did not use servers and had each client maintain a shared secret with every other client - resulting in very slow performance.",
+	file = {ACM Full Text PDF:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/UXUW5DZT/Corrigan-Gibbs and Ford - 2010 - Dissent Accountable Anonymous Group Messaging.pdf:application/pdf}
+}
+
+@incollection{beimel_secret-sharing_2011,
+	series = {Lecture Notes in Computer Science},
+	title = {Secret-Sharing Schemes: A Survey},
+	copyright = {©2011 Springer Berlin Heidelberg},
+	isbn = {978-3-642-20900-0, 978-3-642-20901-7},
+	shorttitle = {Secret-Sharing Schemes},
+	url = {http://link.springer.com/chapter/10.1007/978-3-642-20901-7_2},
+	abstract = {A secret-sharing scheme is a method by which a dealer distributes shares to parties such that only authorized subsets of parties can reconstruct the secret. Secret-sharing schemes are an important tool in cryptography and they are used as a building box in many secure protocols, e.g., general protocol for multiparty computation, Byzantine agreement, threshold cryptography, access control, attribute-based encryption, and generalized oblivious transfer. In this survey, we describe the most important constructions of secret-sharing schemes; in particular, we explain the connections between secret-sharing schemes and monotone formulae and monotone span programs. We then discuss the main problem with known secret-sharing schemes – the large share size, which is exponential in the number of parties. We conjecture that this is unavoidable. We present the known lower bounds on the share size. These lower bounds are fairly weak and there is a big gap between the lower and upper bounds. For linear secret-sharing schemes, which is a class of schemes based on linear algebra that contains most known schemes, super-polynomial lower bounds on the share size are known. We describe the proofs of these lower bounds. We also present two results connecting secret-sharing schemes for a Hamiltonian access structure to the NP vs. coNP problem and to a major open problem in cryptography – constructing oblivious-transfer protocols from one-way functions.},
+	language = {en},
+	number = {6639},
+	urldate = {2014-10-27},
+	booktitle = {Coding and Cryptology},
+	publisher = {Springer Berlin Heidelberg},
+	author = {Beimel, Amos},
+	editor = {Chee, Yeow Meng and Guo, Zhenbo and Ling, San and Shao, Fengjing and Tang, Yuansheng and Wang, Huaxiong and Xing, Chaoping},
+	month = jan,
+	year = {2011},
+	keywords = {Data Encryption, survey},
+	pages = {11--46},
+	annotate = "An overview of various cryptographic secret-sharing approaches. It includes descriptions, explanations, and complexity/performance characterizations of different constructions of the basic secret-sharing problem, which this paper proves are equivalent.",
+	file = {Full Text PDF:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/2KD5ZZ47/Beimel - 2011 - Secret-Sharing Schemes A Survey.pdf:application/pdf;Snapshot:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/AXWKA55R/978-3-642-20901-7_2.html:text/html}
+}
+
+@article{feigenbaum_seeking_2013,
+	title = {Seeking Anonymity in an Internet Panopticon},
+	url = {http://arxiv.org/abs/1312.5307},
+	urldate = {2014-11-23},
+	journal = {{arXiv} preprint {arXiv}:1312.5307},
+	author = {Feigenbaum, Joan and Ford, Bryan},
+	year = {2013},
+	annotate = "This pre-print summarizes several important threat models, namely
+    global traffic analysis, active attacks (including denial of service and
+        manipulating Tor relay loads to force particular routes to change),
+    intersection attacks, and software/implementation attacks (i.e., bugs and
+        backdoors). It provides a useful foundation for what properties
+      anonymity tools must satisfy in the world of the NSA.",
+	file = {() - 1312.5307.pdf:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/V92PIEPX/1312.5307.pdf:application/pdf}
+}
+
+@article{chaum_dining_1988,
+	title = {The dining cryptographers problem: Unconditional sender and recipient untraceability},
+	volume = {1},
+	issn = {0933-2790, 1432-1378},
+	shorttitle = {The dining cryptographers problem},
+	url = {http://link.springer.com/article/10.1007/BF00206326},
+	doi = {10.1007/BF00206326},
+	abstract = {Keeping confidential who sends which messages, in a world where any physical transmission can be traced to its origin, seems impossible. The solution presented here is unconditionally or cryptographically secure, depending on whether it is based on one-time-use keys or on public keys, respectively. It can be adapted to address efficiently a wide variety of practical considerations.},
+	language = {en},
+	number = {1},
+	urldate = {2014-12-07},
+	journal = {Journal of Cryptology},
+	author = {Chaum, David},
+	month = jan,
+	year = {1988},
+	keywords = {Combinatorics, Communications Engineering, Networks, Computational Mathematics and Numerical Analysis, Probability Theory and Stochastic Processes, pseudonymity, Unconditional Security, Untraceability},
+	pages = {65--75},
+  annotate = "This introduces the Dining Cryptographer problem and solution, on
+    which Dissent is built. A group of cryptographers want to find out if any of
+    them paid for dinner, without revealing which one did. This is accomplished
+    using shared secrets and per-client noise which, when combined, reveals the
+    anonymous message.",
+	file = {Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/BPZVAUGA/Chaum - 1988 - The dining cryptographers problem Unconditional s.pdf:application/pdf;Snapshot:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/JCQUVBZN/10.html:text/html}
+}
+
+
+@inproceedings{houmansadr_parrot_2013,
+	title = {The Parrot Is Dead: Observing Unobservable Network Communications},
+	shorttitle = {The Parrot Is Dead},
+	doi = {10.1109/SP.2013.14},
+	abstract = {In response to the growing popularity of Tor and other censorship circumvention systems, censors in non-democratic countries have increased their technical capabilities and can now recognize and block network traffic generated by these systems on a nationwide scale. New censorship-resistant communication systems such as Skype Morph, Stego Torus, and Censor Spoofer aim to evade censors' observations by imitating common protocols like Skype and {HTTP}. We demonstrate that these systems completely fail to achieve unobservability. Even a very weak, local censor can easily distinguish their traffic from the imitated protocols. We show dozens of passive and active methods that recognize even a single imitated session, without any need to correlate multiple network flows or perform sophisticated traffic analysis. We enumerate the requirements that a censorship-resistant system must satisfy to successfully mimic another protocol and conclude that "unobservability by imitation" is a fundamentally flawed approach. We then present our recommendations for the design of unobservable communication systems.},
+	booktitle = {2013 {IEEE} Symposium on Security and Privacy ({SP})},
+	author = {Houmansadr, A. and Brubaker, C. and Shmatikov, V.},
+	month = may,
+	year = {2013},
+	keywords = {Censorship circumvention, Tor},
+	pages = {65--79},
+	annotate = "Argues against the approach to censorship resistance of concealing
+    Tor traffic by making it look like some other kind of traffic. The paper
+    goes through several such 'stegonography' methods, explaining their flaws,
+  and argues vulnerability to these flaws is intrinsic to the approach. It
+    recommends that censorship resistance mechanisms instead actually use other
+    low level protocols, rather than simply attempting to imitate them.",
+	file = {IEEE Xplore Abstract Record:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/9JA7QN7P/abs_all.html:text/html;IEEE Xplore Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/XKTZ3QGS/Houmansadr et al. - 2013 - The Parrot Is Dead Observing Unobservable Network.pdf:application/pdf}
+}
+
+
+@article{lamport_part-time_1998,
+	title = {The Part-time Parliament},
+	volume = {16},
+	issn = {0734-2071},
+	url = {http://doi.acm.org/10.1145/279227.279229},
+	doi = {10.1145/279227.279229},
+	number = {2},
+	urldate = {2014-12-08},
+	journal = {{ACM} Trans. Comput. Syst.},
+	author = {Lamport, Leslie},
+	month = may,
+	year = {1998},
+	keywords = {state machines, three-phase commit, voting},
+	pages = {133--169},
+	annotate = "The Paxos paper. Introduces the classic resolution to the fault-tolerant distributed consensus problem",
+	file = {ACM Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/BPT3J5VG/Lamport - 1998 - The Part-time Parliament.pdf:application/pdf}
+}
+
+@misc{ford_hiding_2014,
+	title = {Hiding in a Panopticon: Grand Challenges in Internet Anonymity},
+	url = {http://dedis.cs.yale.edu/dissent/pres/140223-sent-keynote.pdf},
+	urldate = {2014-12-09},
+	author = {Ford, Bryan},
+	month = feb,
+	year = {2014},
+	annotate = "Slides containing a somewhat updated version of Seeking Anonymity in an Internet Panopticon. A good overview of current work on Dissent.",
+	file = {140223-sent-keynote.pdf:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/A3GMHM9G/140223-sent-keynote.pdf:application/pdf}
+}
+
+@incollection{king_load_2011,
+	series = {Lecture Notes in Computer Science},
+	title = {Load Balanced Scalable Byzantine Agreement through Quorum Building, with Full Information},
+	copyright = {©2011 Springer Berlin Heidelberg},
+	isbn = {978-3-642-17678-4, 978-3-642-17679-1},
+	url = {http://link.springer.com/chapter/10.1007/978-3-642-17679-1_18},
+	abstract = {We address the problem of designing distributed algorithms for large scale networks that are robust to Byzantine faults. We consider a message passing, full information model: the adversary is malicious, controls a constant fraction of processors, and can view all messages in a round before sending out its own messages for that round. Furthermore, each bad processor may send an unlimited number of messages. The only constraint on the adversary is that it must choose its corrupt processors at the start, without knowledge of the processors’ private random bits. A good quorum is a set of O(logn) processors, which contains a majority of good processors. In this paper, we give a synchronous algorithm which uses polylogarithmic time and {\textbackslash}({\textbackslash}tilde\{O\}({\textbackslash}sqrt\{n\}){\textbackslash}) bits of communication per processor to bring all processors to agreement on a collection of n good quorums, solving Byzantine agreement as well. The collection is balanced in that no processor is in more than O(logn) quorums. This yields the first solution to Byzantine agreement which is both scalable and load-balanced in the full information model. The technique which involves going from situation where slightly more than 1/2 fraction of processors are good and and agree on a short string with a constant fraction of random bits to a situation where all good processors agree on n good quorums can be done in a fully asynchronous model as well, providing an approach for extending the Byzantine agreement result to this model.},
+	language = {en},
+	number = {6522},
+	urldate = {2014-12-07},
+	booktitle = {Distributed Computing and Networking},
+	publisher = {Springer Berlin Heidelberg},
+	author = {King, Valerie and Lonargan, Steven and Saia, Jared and Trehan, Amitabh},
+	editor = {Aguilera, Marcos K. and Yu, Haifeng and Vaidya, Nitin H. and Srinivasan, Vikram and Choudhury, Romit Roy},
+	month = jan,
+	year = {2011},
+	keywords = {Algorithm Analysis and Problem Complexity, Computer Communication Networks, Information Systems Applications (incl.Internet), Programming Techniques, Software Engineering, Systems and Data Security},
+	pages = {203--214},
+  annotate = "Achieves Byzantine agreement in a scalable way by dividing
+    participants into small quorums instead of having all nodes communicate with
+    all other nodes, as in naive Byzantine Paxos.",
+	file = {Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/S97WHJSB/King et al. - 2011 - Load Balanced Scalable Byzantine Agreement through.pdf:application/pdf;Snapshot:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/JWBSADSF/10.html:text/html}
+}
+
+@inproceedings{castro_practical_1999,
+	address = {New Orleans, {USA}},
+	title = {Practical Byzantine Fault Tolerance},
+  booktitle = {Proceedings of the Third Symposium on Operating Systems Design
+    and Implementation},
+	url = {http://www.pmg.csail.mit.edu/papers/osdi99.pdf},
+	urldate = {2014-12-11},
+	author = {Castro, Miguel and Liskov, Barbara},
+	month = feb,
+	year = {1999},
+  annotate = "Earliest paper modifying Paxos to make it tolerate Byzantine
+    faults (in which processers can send arbitrary messages --- but cannot,
+        e.g., monitor communication between other processes).",
+	file = {osdi99.pdf:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/ESJZDFQD/osdi99.pdf:application/pdf}
+}
+
+@article{lamport_fast_2006,
+	title = {Fast Paxos},
+	volume = {19},
+	issn = {0178-2770, 1432-0452},
+	url = {http://link.springer.com/article/10.1007/s00446-006-0005-x},
+	doi = {10.1007/s00446-006-0005-x},
+	abstract = {As used in practice, traditional consensus algorithms require three message delays before any process can learn the chosen value. Fast Paxos is an extension of the classic Paxos algorithm that allows the value to be learned in two message delays. How and why the algorithm works are explained informally, and a {TLA}+ specification of the algorithm appears as an appendix.},
+	language = {en},
+	number = {2},
+	urldate = {2014-12-11},
+	journal = {Distributed Computing},
+	author = {Lamport, Leslie},
+	month = oct,
+	year = {2006},
+	keywords = {Computer Communication Networks, Computer Hardware, Computer Systems Organization and Communication Networks, Consensus, Distributed algorithms, Fault tolerance, Paxos, Software Engineering/Programming and Operating Systems, Theory of Computation},
+  annotate = "Performance improvements on the original Paxos. Reduces the
+    number of messages to 2N rather than 3N, and proves this is a lower bound.
+    Also discusses extensions to Byzantine Paxos.",
+	pages = {79--103},
+	file = {Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/F7I32CEF/Lamport - 2006 - Fast Paxos.pdf:application/pdf;Snapshot:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/VHS6G3N3/s00446-006-0005-x.html:text/html}
+}
+
+@incollection{kremer_election_2010,
+	series = {Lecture Notes in Computer Science},
+	title = {Election Verifiability in Electronic Voting Protocols},
+	copyright = {©2010 Springer-Verlag Berlin Heidelberg},
+	isbn = {978-3-642-15496-6, 978-3-642-15497-3},
+	url = {http://link.springer.com/chapter/10.1007/978-3-642-15497-3_24},
+	abstract = {We present a formal, symbolic definition of election verifiability for electronic voting protocols in the context of the applied pi calculus. Our definition is given in terms of boolean tests which can be performed on the data produced by an election. The definition distinguishes three aspects of verifiability: individual, universal and eligibility verifiability. It also allows us to determine precisely which aspects of the system’s hardware and software must be trusted for the purpose of election verifiability. In contrast with earlier work our definition is compatible with a large class of electronic voting schemes, including those based on blind signatures, homomorphic encryption and mixnets. We demonstrate the applicability of our formalism by analysing three protocols: {FOO}, Helios 2.0, and Civitas (the latter two have been deployed).},
+	language = {en},
+	number = {6345},
+	urldate = {2014-12-11},
+	booktitle = {Computer Security – {ESORICS} 2010},
+	publisher = {Springer Berlin Heidelberg},
+	author = {Kremer, Steve and Ryan, Mark and Smyth, Ben},
+	editor = {Gritzalis, Dimitris and Preneel, Bart and Theoharidou, Marianthi},
+	month = jan,
+	year = {2010},
+	keywords = {Algorithm Analysis and Problem Complexity, Computer Communication Networks, Computers and Society, Data Encryption, Information Systems Applications (incl.Internet), Management of Computing and Information Systems},
+	pages = {389--404},
+	annotate = "Formalizes notions of individual, universal, and eligibility verifiability in reference to electronic voting protocols.",
+	file = {Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/FME3FWXX/Kremer et al. - 2010 - Election Verifiability in Electronic Voting Protoc.pdf:application/pdf;Snapshot:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/7D2A6FHW/978-3-642-15497-3_24.html:text/html}
+}
+
+@inproceedings{juels_coercion-resistant_2005,
+	address = {New York, {NY}, {USA}},
+	series = {{WPES} '05},
+	title = {Coercion-resistant Electronic Elections},
+	isbn = {1-59593-228-3},
+	url = {http://doi.acm.org/10.1145/1102199.1102213},
+	doi = {10.1145/1102199.1102213},
+	urldate = {2014-12-11},
+	booktitle = {Proceedings of the 2005 {ACM} Workshop on Privacy in the Electronic Society},
+	publisher = {{ACM}},
+	author = {Juels, Ari and Catalano, Dario and Jakobsson, Markus},
+	year = {2005},
+	keywords = {coercion-resistance, electronic voting, mix networks, receipt-freeness},
+	pages = {61--70},
+	annotate = "Describes an approach to electronic voting that maintains forward secrecy in order to prevent a coercive adversary who learns a voter's secret key from confirming that the voter voted as instructed. Illustrates an important design trade-off in individual verifiability properties.",
+	file = {ACM Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/H7K3PNXF/Juels et al. - 2005 - Coercion-resistant Electronic Elections.pdf:application/pdf}
+}
