@@ -1,0 +1,23 @@
+In transforming Dissent in Numbers\cite{wolinsky_dissent_2012} to a fully
+decentralized context, some differential terminology is necessary. We define
+several components of our protocol before moving on to discuss desired security
+properties.
+
+\section{Terminology}
+The protocol consists of two logical layers: A Dissent in Numbers layer, where
+most communication takes place, and an underlying peer-to-peer layer where
+management of the Dissent configuration occurs. We refer to the entire protocol
+as Dissent, and refer to the Dissent in Numbers layer as \textit{DIN}.
+
+We refer to any single running instance of our protocol on a single machine as a
+\texttt{Peer}. When a \texttt{Peer} is part of a Dissent cluster, it is a
+\texttt{Member} of that cluster.
+
+Based on membership operations, \texttt{Member}s may take on additional roles.
+In Dissent in Numbers a subset of \texttt{Member}s would also be
+\texttt{Server}s. In Low-Latency Dissent one \texttt{Member}s would
+also be (a) \texttt{Relay}(s). These roles are subject to change with future
+membership proposals.\todo{TODO: Probably not relevant to mention Low Latency
+Dissent, but may be worth reworking this paragraph to refer to the possibility
+of generalizing}
+

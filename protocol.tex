@@ -1,0 +1,82 @@
+\section{Peer-to-Peer Layer}
+Every \texttt{Member} maintains a TCP connection to every other \texttt{Member}.
+\todo[inline]{TODO: set up the notion of a state}
+At any logial time slice, there is a canonical \emph{Manifest} describing the
+state of the DIN layer. The \emph{Manifest} consists of
+\begin{itemize}
+  \item A
+  \item A ratio \emph{t}
+\end{itemize}
+
+% Group Policy
+% ---------------------
+%  `Member Set`: A `Member Set` _M = (t, C, S)_ defines the parameters of a
+%  Dissent cluster's membership and policy. It consists of a ratio _t_ specifying
+%  what proportion of members must agree to a change in the composition of _M_ for
+%  the change to be implemented; and two possibly overlapping sets of `Peer`s: The
+%  client set _C_ and the server set _S_.
+%
+%  `Roster`: A `Roster` _R = (M, L, S)_ consists of a `Member Set` _M_, a
+%  `linkScope` _L_, and a collection of signatures _S_.
+%
+% Peer operations
+% ================================================================================
+% Joining
+% --------------------------------------------------------------------------------
+% A `Peer` may start its own cluster consisting of itself at any time.
+%
+% To join an existing cluster, a `Peer` _P_ must know the address of at least one
+% member _M_.
+% 1. _P_ sends a `Join_request` message to one or more members
+% 2. _M_ initiates a vote on whether _P_ can join
+% Member operations
+% --------------------------------------------------------------------------------
+% Unless otherwise specified, all `Member` messages are broadcast as regular
+% Dissent messages.
+%
+% In its own slot, any `Member` may:
+% - `Propose` a new `Roster` by specifying a proposed
+%     `Member Set`, and an arbitrary `linkScope` specific to this `Roster`, and
+%     signing it according to the `linkScope`. It also includes a round number for
+%     when the proposal should take effect.
+% - `Vote` by adding its signature to an existing `Roster` _(M, L, S_) by
+%    broadcasting _(M, L, S')_.
+%
+% Safety Analysis
+% ================================================================================
+% (What does it mean for a new roster to take effect?)
+% A new `Roster` is enacted by launching a new configuration.
+% (Do we need to re-shuffle or just reset the round?)
+% (We need a base case.)
+% Once any server learns that it is a server, it broadcasts that it is ready for
+% clients.
+% Clients can also enqueue themselves (?)
+% (what's a broadcast?)
+%
+% Security Analysis
+% ================================================================================
+% Limitations
+% -----------
+% * All clients know all other clients' IP addresses. This is not true in DiN.
+%
+% TODO
+% =============
+% * Distinguishing between members who are actually participating and members who
+%     are allowed to participate - this should not require all members to
+%     participate every round.
+% * How to verify the threshold has been met - need to decide if it's threshold of
+%     members or threshold of active participants
+% * Member sets should probably have IDs - it should be legal for a Peer to be a
+%     member of multiple clusters. Further, this allows for distinguishing between
+%     forming a new set and modifying an existing one (wouldn't want to be able to
+%     propose a tiny member set and then say the threshold of that new tiny member
+%     set is met so the new set takes effect)
+% * How role transitions actually occur
+%
+% Possible additions
+% ==================
+% * Adopting the intersection of multiple rosters with different signature sets?
+% * Proposing could involve having garbage for all the signature slots - once
+%     enough signature slots are readible, done.
+% * Idea: Don't deal with churn.
+% \subsection{Peer-to-Peer Layer}
