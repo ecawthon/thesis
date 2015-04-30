@@ -6,7 +6,13 @@
 
 % \documentclass[draftcopy,short]{srpaper}
 \documentclass[finalcopy,nolof,nolot]{srpaper}
-\usepackage{todonotes}
+\usepackage[colorinlistoftodos, color=blue!20]{todonotes}
+\setlength{\marginparwidth}{4cm}
+\newcommand{\todogrunt}[1]{\todo{TODO: #1}}
+\newcommand{\todoword}[1]{\todo[color=green!40]{TODO: #1}}
+\newcommand{\todosubst}[1]{\todo[color=orange]{TODO: #1}}
+\newcommand{\tocite}{\todo[color=yellow]{TODO: cite}}
+\newcommand{\note}[1]{\todo[inline,color=red!20]{#1}}
 
 \title{Decentralized Group Management in Dissent}
 \author{Eleanor Cawthon}
@@ -15,7 +21,7 @@
 \advisor{Professors Bryan Ford and Tzu-Yi Chen, advisors}
 \abstract{Decentralized approaches to private communication exhibit tradeoffs
 between decentralization and scalability. We present a protocol for achieving
-the best of both worlds.\todo[inline]{added to make it compile, this abstract is not a
+the best of both worlds.\note{added to make it compile, this abstract is not a
 draft}
 }
 \acknowledgment{}
@@ -27,7 +33,7 @@ draft}
 \input introduction.tex
 
 \chapter{Background and Related Work}\label{Chapter:Background}
-\todo{TODO: This is just what I turned in last semester; haven't reworked it
+\todosubst{This is just what I turned in last semester; haven't reworked it
 yet}
 \input litreview.tex
 
@@ -42,6 +48,7 @@ yet}
 \chapter{Evaluation}\label{Chapter:Evaluation}
 
 \chapter{Conclusion}\label{Chapter:Conclusion}
+\listoftodos
 
 % \chapter{Annotated Bibliography}\annotatedbibliography{annotated}
 \bibliography{annotated}
