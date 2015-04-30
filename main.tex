@@ -13,6 +13,7 @@
 \newcommand{\todosubst}[1]{\todo[color=orange]{TODO: #1}}
 \newcommand{\tocite}{\todo[color=yellow]{TODO: cite}}
 \newcommand{\note}[1]{\todo[inline,color=red!20]{#1}}
+\setcounter{tocdepth}{2}
 
 \title{Decentralized Group Management in Dissent}
 \author{Eleanor Cawthon}
@@ -29,7 +30,7 @@ draft}
 \begin{document}
 \frontmatter
 
-\preface\label{Chapter:Intro}
+\chapter{Introduction}\label{Chapter:Intro}
 \input introduction.tex
 
 \chapter{Background and Related Work}\label{Chapter:Background}
@@ -52,4 +53,8 @@ yet}
 
 % \chapter{Annotated Bibliography}\annotatedbibliography{annotated}
 \bibliography{annotated}
+\appendix
+\chapter{Why Intermediate Vote Counts Can't Be
+Secret}\label{Appendix:SecretProof}
+
 \end{document}
