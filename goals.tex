@@ -13,11 +13,28 @@ We refer to any single running instance of our protocol on a single machine as a
 \texttt{Peer}. When a \texttt{Peer} is part of a Dissent cluster, it is a
 \texttt{Member} of that cluster.
 
+Within the DIN layer, each \texttt{Member} takes on the role of a
+\texttt{Client} as described in \cite{wolinsky_dissent_2012}. In addition, a
+collectively-chosen subset of these \texttt{Member}s also runs a \texttt{Server}
+process (as described in \cite{wolinsky_dissent_2012}).
+
+\todo[inline]{TODO: Probably not relevant to mention Low
+Latency Dissent, but may be worth reworking this paragraph to refer to the
+possibility of generalizing}
 Based on membership operations, \texttt{Member}s may take on additional roles.
 In Dissent in Numbers a subset of \texttt{Member}s would also be
 \texttt{Server}s. In Low-Latency Dissent one \texttt{Member}s would
 also be (a) \texttt{Relay}(s). These roles are subject to change with future
-membership proposals.\todo{TODO: Probably not relevant to mention Low Latency
-Dissent, but may be worth reworking this paragraph to refer to the possibility
-of generalizing}
+membership proposals.
+
+\section{Assumptions/Non-Goals}
+\todo[inline]{TODO: turn bullet points into paragraphs}
+\todo[inline]{TODO: formalize in distributed systems verification terms
+(initially, next, etc.)}
+\begin{itemize}
+  \item There is an initial \texttt{Manifest} describing a Dissent-in-Numbers
+    setup, known to all \texttt{Members} it describes.
+  \item While the \texttt{Member} set may change according to votes, the
+    \texttt{Peer} set is fixed.
+\end{itemize}
 

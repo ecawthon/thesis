@@ -1,82 +1,59 @@
 \section{Peer-to-Peer Layer}
 Every \texttt{Member} maintains a TCP connection to every other \texttt{Member}.
-\todo[inline]{TODO: set up the notion of a state}
-At any logial time slice, there is a canonical \emph{Manifest} describing the
-state of the DIN layer. The \emph{Manifest} consists of
+
+For any instance of the DIN layer, there is a canonical \texttt{Manifest}
+maintained at the P2P layer describing its parameters.  The \texttt{Manifest}
+consists of
 \begin{itemize}
-  \item A
-  \item A ratio \emph{t}
+  \item A \texttt{Roster} $R$, mapping public keys to IP addresses for all
+    \texttt{Client}s,
+  \item A \texttt{Servers} list $S$, which is a subset of $R$,
+  \item A ratio $t$ specifying what proportion of \texttt{Member}s must
+    agree to a change in the composition of $R$ or $S$ in order for the change
+    to take effect
 \end{itemize}
 
-% Group Policy
-% ---------------------
-%  `Member Set`: A `Member Set` _M = (t, C, S)_ defines the parameters of a
-%  Dissent cluster's membership and policy. It consists of a ratio _t_ specifying
-%  what proportion of members must agree to a change in the composition of _M_ for
-%  the change to be implemented; and two possibly overlapping sets of `Peer`s: The
-%  client set _C_ and the server set _S_.
-%
-%  `Roster`: A `Roster` _R = (M, L, S)_ consists of a `Member Set` _M_, a
-%  `linkScope` _L_, and a collection of signatures _S_.
-%
-% Peer operations
-% ================================================================================
-% Joining
-% --------------------------------------------------------------------------------
-% A `Peer` may start its own cluster consisting of itself at any time.
-%
-% To join an existing cluster, a `Peer` _P_ must know the address of at least one
-% member _M_.
-% 1. _P_ sends a `Join_request` message to one or more members
-% 2. _M_ initiates a vote on whether _P_ can join
-% Member operations
-% --------------------------------------------------------------------------------
-% Unless otherwise specified, all `Member` messages are broadcast as regular
-% Dissent messages.
-%
-% In its own slot, any `Member` may:
-% - `Propose` a new `Roster` by specifying a proposed
-%     `Member Set`, and an arbitrary `linkScope` specific to this `Roster`, and
-%     signing it according to the `linkScope`. It also includes a round number for
-%     when the proposal should take effect.
-% - `Vote` by adding its signature to an existing `Roster` _(M, L, S_) by
-%    broadcasting _(M, L, S')_.
-%
-% Safety Analysis
-% ================================================================================
-% (What does it mean for a new roster to take effect?)
-% A new `Roster` is enacted by launching a new configuration.
-% (Do we need to re-shuffle or just reset the round?)
-% (We need a base case.)
-% Once any server learns that it is a server, it broadcasts that it is ready for
-% clients.
-% Clients can also enqueue themselves (?)
-% (what's a broadcast?)
-%
-% Security Analysis
-% ================================================================================
-% Limitations
-% -----------
-% * All clients know all other clients' IP addresses. This is not true in DiN.
-%
-% TODO
-% =============
-% * Distinguishing between members who are actually participating and members who
-%     are allowed to participate - this should not require all members to
-%     participate every round.
-% * How to verify the threshold has been met - need to decide if it's threshold of
-%     members or threshold of active participants
-% * Member sets should probably have IDs - it should be legal for a Peer to be a
-%     member of multiple clusters. Further, this allows for distinguishing between
-%     forming a new set and modifying an existing one (wouldn't want to be able to
-%     propose a tiny member set and then say the threshold of that new tiny member
-%     set is met so the new set takes effect)
-% * How role transitions actually occur
-%
-% Possible additions
-% ==================
-% * Adopting the intersection of multiple rosters with different signature sets?
-% * Proposing could involve having garbage for all the signature slots - once
-%     enough signature slots are readible, done.
-% * Idea: Don't deal with churn.
-% \subsection{Peer-to-Peer Layer}
+When a vote to change the \texttt{Manifest} passes, \todo[inline]{TODO: Describe how to
+  start a Dissent instance. This is a solved problem, I just need to summarize
+it.}
+
+\section{Dissent-in-Numbers Layer}
+The communication involved in establishing the \texttt{Manifest} takes place
+over an instance of Dissent in Numbers \cite{wolinsky_dissent_2012}. We sketch a
+black box model of Dissent in Numbers as it relates to our protocol.
+
+An instance of DIN consists of $n$ clients and $m$ servers. Communication takes
+place in \emph{rounds}, wherein each client has an opportunity to broadcast a
+message to the entire client set. Assuming $k$ of the $n$ clients are honest,
+each client is guaranteed that, at the protocol level, its message will be
+anonymous among the $k$ honest clients unless all servers collude with each
+other.\todoword{Move the security properties to the goals section and only
+describe the functionality here} Since all clients receive each client's
+messages in a deterministic order, there is a well-defined sequence of rounds
+which we can associate with a monotonically increasing \emph{round ID}.
+
+Within a round, each \texttt{Member} may \todosubst{Jamming by proposing
+ballots??? Infinite timeouts???} transmit a \texttt{Ballot}. A \texttt{Ballot}
+consists of:
+\begin{itemize}
+  \item A proposed \emph{Manifest}, as described above,
+  \item A \emph{Link Scope}\todogrunt{Explain}
+  \item A collection of \texttt{Signatures}\todogrunt{Explain}
+  \item A \emph{Round ID} when the ballot will expire.
+\end{itemize}
+
+Once a \emph{Ballot} has been proposed, the other \texttt{Member}s have the
+opportunity to \emph{vote}. A \texttt{Member} votes by transmitting the most
+recent version of the \texttt{Ballot}, but with the \texttt{Signatures} field
+modified to include the proposed \texttt{Manifest} signed with the voting
+\texttt{Member}'s private key for this link scope.\todoword{I think this is
+wrong}
+
+By the designated expiration round, all \texttt{Member}s have enough
+information to determine whether or not the \texttt{Ballot} \emph{passes}:
+Each \texttt{Member} should verify all signatures on the most recent
+version\todosubst{What if there are conflicting versions?}
+and compare the total number of valid signatures to the threshold $t$. If the
+\texttt{Ballot} passes, the new server set should immediately prepare for the
+next iteration of the DIN layer.\todo[inline]{TODO: finish describing new setup}
+
