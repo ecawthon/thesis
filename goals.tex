@@ -31,10 +31,75 @@ membership proposals.
 \todo[inline]{TODO: turn bullet points into paragraphs}
 \todo[inline]{TODO: formalize in distributed systems verification terms
 (initially, next, etc.)}
+We present the assumptions and goals of our model in informal terms here,
+before formalizing the definitions as part of proving the properties are
+satisfied in Chapter~\ref{Chapter:Proofs}.
+\subsection{Assumptions}
 \begin{itemize}
   \item There is an initial \texttt{Manifest} describing a Dissent-in-Numbers
     setup, known to all \texttt{Members} it describes.
   \item While the \texttt{Member} set may change according to votes, the
     \texttt{Peer} set is fixed.
 \end{itemize}
+\subsection{Limitations}
+\begin{itemize}
+  \item The \texttt{Peer} and \texttt{Member} sets are known. In Dissent in
+    Numbers, clients need not know the IP addresses of any other clients.
+  \item In order to use anonymous ring signatures for voting, it is necessary
+    for each signature within a scope to correspond to a specific member. An
+    adversary with the power to coerce \texttt{Member}s into revealing their
+    private keys after the fact may prove that a particular member voted a
+    particular way.\todogrunt{Need some kind of analysis of why this is still
+    useful despite that}
+  \item Further, intermediate vote counts are necessarily public. We prove
+    generally in Appendix~\ref{Appendix:SecretProof} that we cannot do better.
+\end{itemize}
 
+\section{Goals}
+\subsection{Desired Properties}
+\paragraph{Progress:}
+\begin{itemize}
+  \item If a valid \texttt{Member} wants to propose a \texttt{Ballot}, it can
+    do so within a finite number of rounds
+  \item If a \texttt{Ballot} is proposed, every \texttt{Member} should have
+    the opportunity to vote on it
+  \item If $t$ of $n$ clients vote for a \texttt{Ballot}, that \texttt{Ballot}
+    should take effect within a finite number of rounds.
+\end{itemize}
+\paragraph{Decentralization:}
+\begin{itemize}
+  \item No changes to the manifest occur without $t$ of the $n$ clients'
+    approval of the new manifest.
+  \item From any possible state, a cadre of $t$ of $n$ clients can cause the
+    manifest (and corresponding configuration) to change to any other valid
+    manifest.\todoword{Define state better}
+\end{itemize}
+\paragraph{Security:}
+\begin{itemize}
+  \item \texttt{Member}s who disrupt the protocol can be detected and removed,
+    without deanonymizing participants\todo[color=yellow]{TODO: Cite
+      \cite{corrigan-gibbs_proactively_2013}; this is solved}
+  \item  Votes should be
+  \begin{itemize}
+    \item Anonymous --- No member can learn which member voted which way.
+    \item Verifiable --- Once a vote is complete, any member can, given
+      a canonical \texttt{Ballot} containing $s$ signatures, verify how many
+      of the $s$ correspond to distinct, valid members' votes, and also that
+      their own vote is included.
+  \end{itemize}
+  \item While there are at least $t$ honest \texttt{Member}s, no changes to the
+    topology should occur without $t$ of the $n$ clients' approval
+  \item If there are fewer than $t$ honest \texttt{Member}s, those
+    \texttt{Member}s should still retain strong anonymity among the honest
+    clients, even if they no longer control the topology\todogrunt{This is
+    fuzzy, explain better}
+\end{itemize}
+\subsection{Adversary Model}
+We assume the adversary can
+\begin{itemize}
+  \item Monitor all network traffic
+  \item Control some fraction of the \texttt{Peers}, which may send arbitrary
+    messages to each other through secret channels and to the group through
+    ordinary channels
+  \item Inject traffic\todosubst{Do we? Specify this}
+\end{itemize}
