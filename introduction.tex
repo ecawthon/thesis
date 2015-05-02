@@ -24,18 +24,42 @@ How, then, might such a group minimize the risk of assigning enough power to a
 small group for that group to misbehave, while maximizing the economies of scale
 arising from delegating power?
 
-We present a protocol for group communication that provides both of these
-properties. By combining the Dissent in Numbers protocol for anonymous
-communication with decentralized trust, with a simple voting protocol utilizing
-linkable ring signatures, we show how a group might attain accountable
-scalability: where the scalable protocol is used most of the time, but where
-the peer-to-peer consensus can always rescind the power it has
-delegated.
+The electoral process itself is a particularly interesting example of this
+phenomenon. Elections frequently utilize secret ballots in order to prevent
+voters from being coerced into voting a particular way\tocite, but these schemes
+traditionally involve trusting a centralized entity to honestly count the votes.
+In contrast, election mechanisms that allow voters to verify their votes have
+been counted correctly, such as a vote by role call or raise of hand, typically
+sacrifice ballot secrecy\tocite. \todoword{transition sentence?}
 
-As a motivating example, \todogrunt{Describe something like the workers for
-justice example}
+Various computational approaches exist to addressing these limitations of
+traditional elections. The trust considerations decentralized groups face,
+however, extend beyond the voting process itself. Noam Chomsky writes that
+``[t]he smart way to keep people passive and obedient is to strictly limit the
+spectrum of acceptable opinion, but allow very lively debate within that
+spectrum'' \cite{chomsky1998common}. To have truly free elections, the means for
+calling an election and for drafting the ballot must also be decentralized. For
+example, in \tocite many systems, there is a mechanism for claling a vote of no
+confidence\todoword{capitalize or hyphenate?} to potentially remove elected
+leaders in the middle of a term. Existing electronic voting protocols do not
+provide a way of protecting the identity of the voter who decides such a
+referrendum should take place.
 
-Our protocol could help this group.\todogrunt{Describe how they could use it}
+We present a protocol for egalitarian groups to determine their leadership in a
+fashion that is anonymous, verifiable, and reversible.  By combining the Dissent
+in Numbers protocol for anonymous communication with decentralized trust, with a
+simple voting protocol utilizing linkable ring signatures, we show how a group
+might attain accountable scalability: where the scalable protocol is used most
+of the time, but where the peer-to-peer consensus can always rescind the power
+it has delegated.\todogrunt{rewrite this to be in terms of the above desired
+properties}
 
-\todo[inline]{TODO: roadmap}
-
+Chapter~\ref{Chapter:Background} provides an overview of existing work on
+decentralized decisionmaking, with particular attention to anonymity and
+electronic voting systems, before situating our contribution with discussion of
+these systems' limitations. Chapter~\ref{Chapter:Goals} outlines the
+functionality and security properties our protocol sets out to provide.
+Chapter~\ref{Chapter:Protocol} describes our protocol specification.
+Chapter~\ref{Chapter:Proofs} formalizes the properties set out in
+Chapter~\ref{Chapter:Goals} and includes proofs that our protocol
+satisfies them. Chapter~\ref{Chapter:Conclusion} concludes.\todoword{conclude}
