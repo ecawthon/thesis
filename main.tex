@@ -12,6 +12,7 @@
 \newcommand{\todoword}[1]{\todo[color=green!40]{TODO: #1}}
 \newcommand{\todosubst}[1]{\todo[color=orange]{TODO: #1}}
 \newcommand{\tocite}{\todo[color=yellow]{TODO: cite}}
+\newcommand{\toadd}[1]{\todo[inline]{TODO: #1}}
 \newcommand{\note}[1]{\todo[inline,color=red!20]{#1}}
 \setcounter{tocdepth}{2}
 
@@ -33,9 +34,7 @@ draft}
 \chapter{Introduction}\label{Chapter:Intro}
 \input introduction.tex
 
-\chapter{Background and Related Work}\label{Chapter:Background}
-\todosubst{This is just what I turned in last semester; haven't reworked it
-yet}
+\chapter{Background}\label{Chapter:Background}
 \input litreview.tex
 
 \chapter{Goals and Non-Goals}\label{Chapter:Security}
@@ -45,8 +44,7 @@ yet}
 \input protocol.tex
 
 \chapter{Security Properties and Correctness}\label{Chapter:Proofs}
-
-\chapter{Evaluation}\label{Chapter:Evaluation}
+\input proofs.tex
 
 \chapter{Conclusion}\label{Chapter:Conclusion}
 \listoftodos
@@ -56,5 +54,6 @@ yet}
 \appendix
 \chapter{Why Intermediate Vote Counts Can't Be
 Secret}\label{Appendix:SecretProof}
+\input secret.tex
 
 \end{document}

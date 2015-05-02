@@ -13,7 +13,7 @@ consists of
     to take effect
 \end{itemize}
 
-When a vote to change the \texttt{Manifest} passes, \todo[inline]{TODO: Describe how to
+When a vote to change the \texttt{Manifest} passes, \toadd{Describe how to
   start a Dissent instance. This is a solved problem, I just need to summarize
 it.}
 
@@ -31,6 +31,14 @@ other.\todoword{Move the security properties to the goals section and only
 describe the functionality here} Since all clients receive each client's
 messages in a deterministic order, there is a well-defined sequence of rounds
 which we can associate with a monotonically increasing \emph{round ID}.
+
+The DIN configuration file specifies the size and ordering of clients' message
+slots\todogrunt{Need to define client and slot somewhere}.
+
+\missingfigure{Illustrate the round message format, which will consist of, for
+  each of the $n$ clients: space for a \texttt{Ballot}, and space for up to
+  $n$ signatures so the client can sign whatever other proposals are in play.
+We only allow any given client to have one proposal at any given time.}
 
 Within a round, each \texttt{Member} may \todosubst{Jamming by proposing
 ballots??? Infinite timeouts???} transmit a \texttt{Ballot}. A \texttt{Ballot}
@@ -55,5 +63,5 @@ Each \texttt{Member} should verify all signatures on the most recent
 version\todosubst{What if there are conflicting versions?}
 and compare the total number of valid signatures to the threshold $t$. If the
 \texttt{Ballot} passes, the new server set should immediately prepare for the
-next iteration of the DIN layer.\todo[inline]{TODO: finish describing new setup}
+next iteration of the DIN layer.\toadd{finish describing new setup}
 
