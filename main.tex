@@ -3,10 +3,12 @@
 
 % Based on Pomona's template here:
 % http://www.cs.pomona.edu/classes/senior-exercise/2011/
+% also based on Yale's papers repository makefile setup
 
 % \documentclass[draftcopy,short]{srpaper}
 \documentclass[finalcopy,nolof,nolot]{srpaper}
 \usepackage[colorinlistoftodos, color=blue!20]{todonotes}
+\usepackage[pdftex,pdfusetitle]{hyperref}
 \setlength{\marginparwidth}{4cm}
 \newcommand{\todogrunt}[1]{\todo{TODO: #1}}
 \newcommand{\todoword}[1]{\todo[color=green!40]{TODO: #1}}
@@ -26,7 +28,23 @@ between decentralization and scalability. We present a protocol for achieving
 the best of both worlds.\note{added to make it compile, this abstract is not a
 draft}
 }
+% \abstract{In any sufficiently large group of cooperating actors, it is
+% frequently useful to elect a subset of the group to perform particular
+% responsibilities.\todoword{this is clunky}  }
 \acknowledgment{}
+
+% hyperref setup, from template
+\hypersetup{
+           plainpages=false,
+           pageanchor=true,
+           breaklinks=true,
+           bookmarkstype=toc,
+           bookmarksopenlevel=2,
+           bookmarksnumbered=true,
+           colorlinks=true,
+           linkcolor=black,
+           urlcolor=magenta,
+           citecolor=black}
 
 \begin{document}
 \frontmatter
@@ -37,7 +55,7 @@ draft}
 \chapter{Background}\label{Chapter:Background}
 \input litreview.tex
 
-\chapter{Goals and Non-Goals}\label{Chapter:Security}
+\chapter{Goals and Non-Goals}\label{Chapter:Goals}
 \input goals.tex
 
 \chapter{Protocol Description}\label{Chapter:Protocol}
