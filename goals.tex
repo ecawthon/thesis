@@ -18,7 +18,7 @@ Within the DIN layer, each \texttt{Member} takes on the role of a
 collectively-chosen subset of these \texttt{Member}s also runs a \texttt{Server}
 process (as described in \cite{wolinsky_dissent_2012}).
 
-\todo[inline]{TODO: Probably not relevant to mention Low
+\toadd{Probably not relevant to mention Low
 Latency Dissent, but may be worth reworking this paragraph to refer to the
 possibility of generalizing}
 Based on membership operations, \texttt{Member}s may take on additional roles.
@@ -28,8 +28,8 @@ also be (a) \texttt{Relay}(s). These roles are subject to change with future
 membership proposals.
 
 \section{Assumptions/Non-Goals}
-\todo[inline]{TODO: turn bullet points into paragraphs}
-\todo[inline]{TODO: formalize in distributed systems verification terms
+\toadd{turn bullet points into paragraphs}
+\toadd{formalize in distributed systems verification terms
 (initially, next, etc.)}
 We present the assumptions and goals of our model in informal terms here,
 before formalizing the definitions as part of proving the properties are
@@ -56,6 +56,43 @@ satisfied in Chapter~\ref{Chapter:Proofs}.
 \end{itemize}
 
 \section{Goals}
+  \subsection{Potential Goals}
+  \toadd{Taken from lit review, need to remove redundancy}
+    \paragraph{Verifiability:} A protocol is verifiable if its output can be
+    inspected to confirm that the protocol was carried out correctly. A simple
+    example of this is signing a message with the private key associated with a
+    well-known public key: Anyone who knows the public key can verify the
+    validity of the signature. Dissent \cite{corrigan-gibbs_proactively_2013}
+    and the Neff shuffle \cite{neff_verifiable_2001} both use zero-knowledge
+    proofs to achieve verifiability.
+    \paragraph{Accountability:} In the context of Dissent, accountability refers
+    to the ability of a protocol to detect and exclude participants who disrupt
+    the protocol \cite{syta_security_2014}, while proving that the disruptor did
+    indeed disrupt the protocol. Such a mechanism is necessary in peer-to-peer
+    protocols like Dining Cryptographers in which a single disruptor can make
+    the result of a round unusable. In Dissent, accountability checks occur
+    without revealing the link between any message and its sender --- moreover,
+    it is not possible to deliberately exclude a participant on the basis of
+    valid messages the participant sends. That is, the Dissent accountability
+    mechanism does not break anonymity.
+    \paragraph{Forward Progress:} A protocol that guarantees forward progress
+    given certain conditions will eventually make progress as long as those
+    conditions are met. More strict bounds on what ``eventually'' means are
+    possible. In the original Dissent, for example, forward progress can be
+    guaranteed if all clients follow the protocol and remain online, but not
+    otherwise: The accountability mechanism was so arduous that $f$ disrupting
+    clients could prevent any messages from being transmitted for $f$ hours
+    \cite{corrigan-gibbs_proactively_2013}. Protocols that make use of quorums
+    rather than being fully peer-to-peer are able to provide stronger guarantees
+    of forward progress \cite{lamport_part-time_1998}.
+    \paragraph{Anonymity:} A protocol guarantees anonymity in some operation a
+    client can complete if the output of that operation is unlinkable (or, more
+    precisely, cryptographically very difficult to link) to the client who
+    completed it \cite{corrigan-gibbs_dissent:_2010}. Dissent makes use of
+    pseudonyms to provide this, separating the protocol correctness and
+    accountability layer from the layer in which messages are revealed. Group
+    membership voting could conceivably take place at either.
+
 \subsection{Desired Properties}
 \paragraph{Progress:}
 \begin{itemize}

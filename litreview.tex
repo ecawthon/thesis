@@ -16,10 +16,14 @@ This review will first examine the existing anonymity tools The Onion Router
 guarantees. Higher performance versions of both Tor and Dissent, however, rely
 on well-known relay servers which present challenges for availability.
 Section~\ref{Section:p2p} will examine decentralized, peer-to-peer techniques
-that might be used to improve Dissent's availability.
-
-\section{Anonymity Designs and Threat Models}
-\label{Section:ExistingAnonymity}
+that might be used to improve Dissent's availability.\todogrunt{Rework this
+intro}
+\section{Related Work}
+\toadd{This section is not necessary for understanding the rest of the
+  thesis, but it is related work and I had already written it\ldots may remove
+later}
+\subsection{Anonymity Designs and Threat Models}
+\label{subsection:ExistingAnonymity}
   Every anonymity tool shares one basic goal: Given a set of assumptions about
   an adversary's capabilities, an anonymity tool provides a way for a user to
   broadcast a message without the adversary being able to discover the author of
@@ -28,8 +32,8 @@ that might be used to improve Dissent's availability.
   first consider The Onion Router (Tor), the most widely used anonymity tool
   today\cite{ford_hiding_2014}
 
-  \subsection{Onion Routing with Tor}
-  \label{Subsection:Tor}
+  \subsubsection{Onion Routing with Tor}
+  \label{Subsubsection:Tor}
     Tor aims to provide an anonymity service that, to the end user, behaves like
     a one-hop proxy: If Alicia wants to send an HTTP request to Badru using Tor,
     Alicia sends a request through Tor, Tor forwards the request to Badru, Badru
@@ -51,13 +55,13 @@ that might be used to improve Dissent's availability.
     Security Agency actively uses such attacks, and so a new protocol is
     necessary in order to remain anonymous from the N.S.A.
 
-  \subsection{New Threat Models}
-  \label{Subsection:NewThreats} To
+  \subsubsection{New Threat Models}
+  \label{Subsubsection:NewThreats} To
     provide anonymity from an adversary like the N.S.A., a modern anonymity
     protocol must protect against several forms of attacks. Feigenbaum et.
     al.\cite{feigenbaum_seeking_2013} highlight five specific attacks to which
     onion routing is vulnerable:
-    \subparagraph{Global traffic analysis:} If the
+    \paragraph{Global traffic analysis:} If the
     adversary can monitor most of the traffic on the internet globally, the
     adversary can with high probability see the link from Alicia to the Tor
     network and from the Tor exit relay to Badru. This means the adversary can
@@ -65,7 +69,7 @@ that might be used to improve Dissent's availability.
     some short amount of time later. Even if the messages themselves are
     encrypted, the adversary can analyze the lengths and other metadata about
     the messages to correlate this traffic.
-    \subparagraph{Active attacks:}
+    \paragraph{Active attacks:}
     Global traffic analysis attacks only require the adversary to be able to
     monitor global traffic. If the adversary can also modify or generate
     traffic, several other attacks are possible. The adversary can launch
@@ -77,7 +81,7 @@ that might be used to improve Dissent's availability.
     prevent users from connecting to Tor at all, or force Tor traffic to go
     through particular, potentially adversary-controlled, Tor nodes ---
     de-anonymizing the users.
-    `\subparagraph{Intersection attacks:} In general,
+    \paragraph{Intersection attacks:} In general,
     it is possible to tell when users are using an anonymity service --- the
     anonymity comes from the difficulty of linking any particular user to
     particular messages produced by the service. Over time, however, the client
@@ -87,112 +91,10 @@ that might be used to improve Dissent's availability.
     potentially, for example, updated a particular blog with a static
     pseudonym, by excluding users  not online during all updates to the
     blog.
+    \toadd{conclusion}
 
-    We now turn to an anonymity service designed to be resilient to these threat
-    models.
-
-  \subsection{Dissent}
-  \label{Subsection:Dissent}
-    Dissent is an alternative to Tor that provides provable anonymity even if
-    only one server in the network is honest\cite{corrigan-gibbs_dissent:_2010}.
-    In its present form, a Dissent cluster consists of $m$ servers and $n$
-    connected clients\cite{wolinsky_dissent_2012}. Provable anonymity is
-    achieved through a modified version of the Dining Cryptographers
-    problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
-    with each server $j$. Communication proceeds in rounds, within which each
-    client has a designated $k$-bit slot.  Before any messages are sent, a
-    secure shuffle\cite{neff_verifiable_2001} assigns each client to a slot so
-    that the owner of a slot is the only node in the system which knows who owns
-    that slot.  In any client $s$'s slot, every client and every server
-    generates $k$ bits of random noise seeded with each of its shared secrets
-    $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
-    that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
-    with its noise to create its ciphertext. The combination (via xor) of all
-    clients' and servers' ciphertext includes the noise stream associated with
-    each shared secret twice, and so all noise cancels out and client $s$'
-    message is revealed. However, since deciphering this requires the
-    participation of all nodes in the system, it is impossible to tell which
-    client transmitted a message in a given slot. Dissent also incorporates an
-    accountability mechanism, allowing any node that disrupts the protocol to be
-    detected and removed from the cluster
-    \cite{corrigan-gibbs_proactively_2013}.
-
-    The original Dissent was fully peer-to-peer
-    \cite{corrigan-gibbs_dissent:_2010}. The shift to a client-server model
-    allows for significantly improved performance, but it introduces several new
-    concerns, particularly relating to misbehaving servers, a new class of DoS
-    attacks, and group formation.
-
-  \subsection{The Trouble with Relays}
-  \label{Subsection:Relays}
-    One potential approach to making Dissent widely available would be to have
-    well-known, globally dispersed Dissent servers available for clients to
-    connect to, similar to the current state of Tor. Any such well-known server
-    list, however, is susceptible to blocking by internet service providers. It
-    would therefore be preferable to have servers be short-lived, or at least
-    not well known. Since Dissent takes place over regular TCP connections,
-    detecting that the protocol is being executed without knowledge of the
-    addresses of servers would be difficult to accomplish without a great number
-    of false positives \cite{houmansadr_parrot_2013}, so this may be enough to
-    realistically preclude most attempts to block access to the protocol
-    entirely.  Additionally, while the current version of Dissent guarantees
-    that malicious servers cannot deanonymize a client without the cooperation
-    of all servers, and guarantees that disrupting servers can be exposed, it
-    provides no way to remove a disrupting or malicious server form the system.
-
-    One way to resolve these problems would be to have clusters of Dissent
-    clients elect temporary servers among themselves, allowing servers to either
-    step down (e.g., by going offline) or be impeached by some portion of the
-    clients.  Doing so in a truly decentralized and fair fashion is a
-    non-trivial problem.  We consider several other areas of research relevant
-    to solving it.
-
-\section{Distributed Decision-Making}
-\label{Section:p2p}
-  In a peer-to-peer Dissent protocol that does not specify leaders or servers
-  prior to starting, there must be some way for participants to collectively
-  decide on features of the cluster, such as which nodes will act as servers. In
-  this section, we examine various existing approaches to distributed
-  decision-making problems. We first consider several potential design goals,
-  and then discuss particular approaches to these problems.
-
-  \subsection{Potential Goals}
-    \paragraph{Verifiability:} A protocol is verifiable if its output can be
-    inspected to confirm that the protocol was carried out correctly. A simple
-    example of this is signing a message with the private key associated with a
-    well-known public key: Anyone who knows the public key can verify the
-    validity of the signature. Dissent \cite{corrigan-gibbs_proactively_2013}
-    and the Neff shuffle \cite{neff_verifiable_2001} both use zero-knowledge
-    proofs to achieve verifiability.
-    \paragraph{Accountability:} In the context of Dissent, accountability refers
-    to the ability of a protocol to detect and exclude participants who disrupt
-    the protocol \cite{syta_security_2014}, while proving that the disruptor did
-    indeed disrupt the protocol. Such a mechanism is necessary in peer-to-peer
-    protocols like Dining Cryptographers in which a single disruptor can make
-    the result of a round unusable. In Dissent, accountability checks occur
-    without revealing the link between any message and its sender --- moreover,
-    it is not possible to deliberately exclude a participant on the basis of
-    valid messages the participant sends. That is, the Dissent accountability
-    mechanism does not break anonymity.
-    \paragraph{Forward Progress:} A protocol that guarantees forward progress
-    given certain conditions will eventually make progress as long as those
-    conditions are met. More strict bounds on what ``eventually'' means are
-    possible. In the original Dissent, for example, forward progress can be
-    guaranteed if all clients follow the protocol and remain online, but not
-    otherwise: The accountability mechanism was so arduous that $f$ disrupting
-    clients could prevent any messages from being transmitted for $f$ hours
-    \cite{corrigan-gibbs_proactively_2013}. Protocols that make use of quorums
-    rather than being fully peer-to-peer are able to provide stronger guarantees
-    of forward progress \cite{lamport_part-time_1998}.
-    \paragraph{Anonymity:} A protocol guarantees anonymity in some operation a
-    client can complete if the output of that operation is unlinkable (or, more
-    precisely, cryptographically very difficult to link) to the client who
-    completed it \cite{corrigan-gibbs_dissent:_2010}. Dissent makes use of
-    pseudonyms to provide this, separating the protocol correctness and
-    accountability layer from the layer in which messages are revealed. Group
-    membership voting could conceivably take place at either.
-
-  \subsection{Consensus Protocols}
+\subsection{Distributed Decision-Making}
+  \subsubsection{Consensus Protocols}
     Distributed consensus protocols allow groups of nodes to come to an
     agreement on canonical values. For example, in a distributed database, if an
     unreliable power supply causes some portion of servers to be offline for
@@ -237,7 +139,7 @@ that might be used to improve Dissent's availability.
     election protocols, it must be assumed that honest nodes may disagree on
     which servers they wish to elect.
 
-  \subsection{Electronic Voting}
+  \subsubsection{Electronic Voting}
     Secure electronic voting systems have arisen largely out of a desire to
     retain secret ballots (no one should learn how a particular voter voted)
     while also guaranteeing accurate and fair counting of votes. Unlike
@@ -281,3 +183,67 @@ that might be used to improve Dissent's availability.
     These protocols provide useful templates for how a distributed voting
     protocol might accomplish similar security properties.
 
+
+\section{Strong Anonymity with Dissent}
+  \label{Subsection:Dissent}
+  \toadd{Especially if I do take out the related work, I should add a short
+  intro to why Dissent is a good thing to use}
+    Dissent is an alternative to Tor that provides provable anonymity even if
+    only one server in the network is honest\cite{corrigan-gibbs_dissent:_2010}.
+    In its present form, a Dissent cluster consists of $m$ servers and $n$
+    connected clients\cite{wolinsky_dissent_2012}. Provable anonymity is
+    achieved through a modified version of the Dining Cryptographers
+    problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
+    with each server $j$. Communication proceeds in rounds, within which each
+    client has a designated $k$-bit slot.  Before any messages are sent, a
+    secure shuffle\cite{neff_verifiable_2001} assigns each client to a slot so
+    that the owner of a slot is the only node in the system which knows who owns
+    that slot.  In any client $s$'s slot, every client and every server
+    generates $k$ bits of random noise seeded with each of its shared secrets
+    $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
+    that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
+    with its noise to create its ciphertext. The combination (via xor) of all
+    clients' and servers' ciphertext includes the noise stream associated with
+    each shared secret twice, and so all noise cancels out and client $s$'
+    message is revealed. However, since deciphering this requires the
+    participation of all nodes in the system, it is impossible to tell which
+    client transmitted a message in a given slot. Dissent also incorporates an
+    accountability mechanism, allowing any node that disrupts the protocol to be
+    detected and removed from the cluster
+    \cite{corrigan-gibbs_proactively_2013}.
+
+    The original Dissent was fully peer-to-peer
+    \cite{corrigan-gibbs_dissent:_2010}. The shift to a client-server model
+    allows for significantly improved performance, but it introduces several new
+    concerns, particularly relating to misbehaving servers, a new class of DoS
+    attacks, and group formation.
+
+  \subsection{Dissent in Numbers}
+  \toadd{Explain it and its properties}
+  \subsection{The Trouble with Relays}
+  \label{Subsection:Relays}
+    One potential approach to making Dissent widely available would be to have
+    well-known, globally dispersed Dissent servers available for clients to
+    connect to, similar to the current state of Tor. Any such well-known server
+    list, however, is susceptible to blocking by internet service providers. It
+    would therefore be preferable to have servers be short-lived, or at least
+    not well known. Since Dissent takes place over regular TCP connections,
+    detecting that the protocol is being executed without knowledge of the
+    addresses of servers would be difficult to accomplish without a great number
+    of false positives \cite{houmansadr_parrot_2013}, so this may be enough to
+    realistically preclude most attempts to block access to the protocol
+    entirely.  Additionally, while the current version of Dissent guarantees
+    that malicious servers cannot deanonymize a client without the cooperation
+    of all servers, and guarantees that disrupting servers can be exposed, it
+    provides no way to remove a disrupting or malicious server form the system.
+
+    One way to resolve these problems would be to have clusters of Dissent
+    clients elect temporary servers among themselves, allowing servers to either
+    step down (e.g., by going offline) or be impeached by some portion of the
+    clients.  Doing so in a truly decentralized and fair fashion is a
+    non-trivial problem.  We consider several other areas of research relevant
+    to solving it.
+
+\section{Linkable Ring Signatures}
+\label{Section:p2p}
+\toadd{Explain}
