@@ -6,16 +6,22 @@
 % also based on Yale's papers repository makefile setup
 
 % \documentclass[draftcopy,short]{srpaper}
-\documentclass[finalcopy,nolof,nolot]{srpaper}
+\documentclass[draftcopy,nolof,nolot]{srpaper}
 \usepackage[colorinlistoftodos, color=blue!20]{todonotes}
 \usepackage[pdftex,pdfusetitle]{hyperref}
-\setlength{\marginparwidth}{4cm}
-\newcommand{\todogrunt}[1]{\todo{TODO: #1}}
-\newcommand{\todoword}[1]{\todo[color=green!40]{TODO: #1}}
-\newcommand{\todosubst}[1]{\todo[color=orange]{TODO: #1}}
+\usepackage{setspace}
+\setlength{\marginparwidth}{2.5cm}
+\newcommand{\todogrunt}[1]{\todo[caption={#1}]
+  {\begin{spacing}{1.0}TODO: #1\end{spacing}}}
+\newcommand{\todoword}[1]{\todo[color=green!40,caption={#1}]
+  {\begin{spacing}{1.0}TODO: #1\end{spacing}}}
+\newcommand{\todosubst}[1]{\todo[color=orange,caption={#1}]
+  {\begin{spacing}{1.0}TODO: #1\end{spacing}}}
 \newcommand{\tocite}{\todo[color=yellow]{TODO: cite}}
-\newcommand{\toadd}[1]{\todo[inline]{TODO: #1}}
-\newcommand{\note}[1]{\todo[inline,color=red!20]{#1}}
+\newcommand{\toadd}[1]{\todo[inline,caption={#1}]
+  {\begin{spacing}{1.0}TODO: #1\end{spacing}}}
+\newcommand{\note}[1]{\todo[inline,color=red!20,caption={#1}]
+  {\begin{spacing}{1.0}#1\end{spacing}}}
 \setcounter{tocdepth}{2}
 
 \title{Decentralized Group Management in Dissent}
