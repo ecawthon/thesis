@@ -1,34 +1,116 @@
-In transforming Dissent in Numbers\cite{wolinsky_dissent_2012} to a fully
-decentralized context, some differential terminology is necessary. We define
-several components of our protocol before moving on to discuss desired security
-properties.
+\section{Goals}
+\subsection{Verifiability:}
+We provide individual and universal verifiability of votes, as defined in
+Section~\ref{Subsection:evoting}. More precisely, we provide the following:
+\paragraph{Authentication:} At the end of an election, all members either know
+that all votes were cast by group members, or they know which ones were not
+valid.\todogrunt{and can kick out, potentially? For another time\ldots}
+\paragraph{Individual Verifiability:} Each member can verify that its vote has
+been included in the canonical result\todosubst{double check how DIN handles
+equivocation --- i.e. that it can be detected and not just that it doesn't
+de-anonymize}
+\paragraph{Universal Verifiability:} At the end of an election, all members
+either know the result of the vote, or know that the result is
+invalid\todoword{formalize}
+\subsection{Anonymity:}
+We provide anonymity in two important domains:
+\paragraph{Ballot Secrecy:} The adversary should gain no information about which
+member cast which vote in a given election.\todogrunt{Formalize/define
+``member'', ``vote'', and ``election''}
+\paragraph{Instigator Secrecy:} The adversary should gain no information about
+which member proposed any given proposal.\todogrunt{flesh out}
+\todo[caption={},color=orange,inline]{
+  \begin{spacing}{1.0}TODO: There is apparent redundancy because
+  DIN already has shuffled slots, so why would we need LRS instead of just
+  plaintext writing the vote? I should write/think through at least one of:
+  \begin{itemize}
+  \item A special case for before DIN is set up where the LRS anonymity is
+    necessary, and/or
+  \item Efficiency advantage to not having to re-do the Neff shuffle every time
+    there's an election --- would we have to reshuffle anyway to switch servers?
+    (potentially not!)
+\end{itemize}\end{spacing}}
+\subsection{Reversibility:}
 
-\section{Terminology}
-The protocol consists of two logical layers: A Dissent in Numbers layer, where
-most communication takes place, and an underlying peer-to-peer layer where
-management of the Dissent configuration occurs. We refer to the entire protocol
-as Dissent, and refer to the Dissent in Numbers layer as \textit{DIN}.
-
-We refer to any single running instance of our protocol on a single machine as a
-\texttt{Peer}. When a \texttt{Peer} is part of a Dissent cluster, it is a
-\texttt{Member} of that cluster.
-
-Within the DIN layer, each \texttt{Member} takes on the role of a
-\texttt{Client} as described in \cite{wolinsky_dissent_2012}. In addition, a
-collectively-chosen subset of these \texttt{Member}s also runs a \texttt{Server}
-process (as described in \cite{wolinsky_dissent_2012}).
-
-\toadd{Probably not relevant to mention Low
-Latency Dissent, but may be worth reworking this paragraph to refer to the
-possibility of generalizing}
-Based on membership operations, \texttt{Member}s may take on additional roles.
-In Dissent in Numbers a subset of \texttt{Member}s would also be
-\texttt{Server}s. In Low-Latency Dissent one \texttt{Member}s would
-also be (a) \texttt{Relay}(s). These roles are subject to change with future
-membership proposals.
-
+% In transforming Dissent in Numbers\cite{wolinsky_dissent_2012} to a fully
+% decentralized context, some differential terminology is necessary. We define
+% several components of our protocol before moving on to discuss desired security
+% properties.
+%
+% \section{Terminology}
+% The protocol consists of two logical layers: A Dissent in Numbers layer, where
+% most communication takes place, and an underlying peer-to-peer layer where
+% management of the Dissent configuration occurs. We refer to the entire protocol
+% as Dissent, and refer to the Dissent in Numbers layer as \textit{DIN}.
+%
+% We refer to any single running instance of our protocol on a single machine as a
+% \texttt{Peer}. When a \texttt{Peer} is part of a Dissent cluster, it is a
+% \texttt{Member} of that cluster.
+%
+% Within the DIN layer, each \texttt{Member} takes on the role of a
+% \texttt{Client} as described in \cite{wolinsky_dissent_2012}. In addition, a
+% collectively-chosen subset of these \texttt{Member}s also runs a \texttt{Server}
+% process (as described in \cite{wolinsky_dissent_2012}).
+%
+% \toadd{Probably not relevant to mention Low
+% Latency Dissent, but may be worth reworking this paragraph to refer to the
+% possibility of generalizing}
+% Based on membership operations, \texttt{Member}s may take on additional roles.
+% In Dissent in Numbers a subset of \texttt{Member}s would also be
+% \texttt{Server}s. In Low-Latency Dissent one \texttt{Member}s would
+% also be (a) \texttt{Relay}(s). These roles are subject to change with future
+% membership proposals.
+%
+%
+% \section{Goals}
+% \subsection{Desired Properties}
+% \paragraph{Progress:}
+% \begin{itemize}
+%   \item If a valid \texttt{Member} wants to propose a \texttt{Ballot}, it can
+%     do so within a finite number of rounds
+%   \item If a \texttt{Ballot} is proposed, every \texttt{Member} should have
+%     the opportunity to vote on it
+%   \item If $t$ of $n$ clients vote for a \texttt{Ballot}, that \texttt{Ballot}
+%     should take effect within a finite number of rounds.
+% \end{itemize}
+% \paragraph{Decentralization:}
+% \begin{itemize}
+%   \item No changes to the manifest occur without $t$ of the $n$ clients'
+%     approval of the new manifest.
+%   \item From any possible state, a cadre of $t$ of $n$ clients can cause the
+%     manifest (and corresponding configuration) to change to any other valid
+%     manifest.\todoword{Define state better}
+% \end{itemize}
+% \paragraph{Security:}
+% \begin{itemize}
+%   \item \texttt{Member}s who disrupt the protocol can be detected and removed,
+%     without deanonymizing participants\todo[color=yellow]{TODO: Cite
+%       \cite{corrigan-gibbs_proactively_2013}; this is solved}
+%   \item  Votes should be
+%   \begin{itemize}
+%     \item Anonymous --- No member can learn which member voted which way.
+%     \item Verifiable --- Once a vote is complete, any member can, given
+%       a canonical \texttt{Ballot} containing $s$ signatures, verify how many
+%       of the $s$ correspond to distinct, valid members' votes, and also that
+%       their own vote is included.
+%   \end{itemize}
+%   \item While there are at least $t$ honest \texttt{Member}s, no changes to the
+%     topology should occur without $t$ of the $n$ clients' approval
+%   \item If there are fewer than $t$ honest \texttt{Member}s, those
+%     \texttt{Member}s should still retain strong anonymity among the honest
+%     clients, even if they no longer control the topology\todogrunt{This is
+%     fuzzy, explain better}
+% \end{itemize}
+% \subsection{Adversary Model}
+% We assume the adversary can
+% \begin{itemize}
+%   \item Monitor all network traffic
+%   \item Control some fraction of the \texttt{Peers}, which may send arbitrary
+%     messages to each other through secret channels and to the group through
+%     ordinary channels
+%   \item Inject traffic\todosubst{Do we? Specify this}
+% \end{itemize}
 \section{Assumptions/Non-Goals}
-\toadd{turn bullet points into paragraphs}
 \toadd{formalize in distributed systems verification terms
 (initially, next, etc.)}
 We present the assumptions and goals of our model in informal terms here,
@@ -53,53 +135,4 @@ satisfied in Chapter~\ref{Chapter:Proofs}.
     useful despite that}
   \item Further, intermediate vote counts are necessarily public. We prove
     generally in Appendix~\ref{Appendix:SecretProof} that we cannot do better.
-\end{itemize}
-
-\section{Goals}
-\subsection{Desired Properties}
-\paragraph{Progress:}
-\begin{itemize}
-  \item If a valid \texttt{Member} wants to propose a \texttt{Ballot}, it can
-    do so within a finite number of rounds
-  \item If a \texttt{Ballot} is proposed, every \texttt{Member} should have
-    the opportunity to vote on it
-  \item If $t$ of $n$ clients vote for a \texttt{Ballot}, that \texttt{Ballot}
-    should take effect within a finite number of rounds.
-\end{itemize}
-\paragraph{Decentralization:}
-\begin{itemize}
-  \item No changes to the manifest occur without $t$ of the $n$ clients'
-    approval of the new manifest.
-  \item From any possible state, a cadre of $t$ of $n$ clients can cause the
-    manifest (and corresponding configuration) to change to any other valid
-    manifest.\todoword{Define state better}
-\end{itemize}
-\paragraph{Security:}
-\begin{itemize}
-  \item \texttt{Member}s who disrupt the protocol can be detected and removed,
-    without deanonymizing participants\todo[color=yellow]{TODO: Cite
-      \cite{corrigan-gibbs_proactively_2013}; this is solved}
-  \item  Votes should be
-  \begin{itemize}
-    \item Anonymous --- No member can learn which member voted which way.
-    \item Verifiable --- Once a vote is complete, any member can, given
-      a canonical \texttt{Ballot} containing $s$ signatures, verify how many
-      of the $s$ correspond to distinct, valid members' votes, and also that
-      their own vote is included.
-  \end{itemize}
-  \item While there are at least $t$ honest \texttt{Member}s, no changes to the
-    topology should occur without $t$ of the $n$ clients' approval
-  \item If there are fewer than $t$ honest \texttt{Member}s, those
-    \texttt{Member}s should still retain strong anonymity among the honest
-    clients, even if they no longer control the topology\todogrunt{This is
-    fuzzy, explain better}
-\end{itemize}
-\subsection{Adversary Model}
-We assume the adversary can
-\begin{itemize}
-  \item Monitor all network traffic
-  \item Control some fraction of the \texttt{Peers}, which may send arbitrary
-    messages to each other through secret channels and to the group through
-    ordinary channels
-  \item Inject traffic\todosubst{Do we? Specify this}
 \end{itemize}
