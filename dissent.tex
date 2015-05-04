@@ -1,0 +1,35 @@
+\toadd{Especially if I do take out the related work, I should add a short
+intro to why Dissent is a good thing to use}
+  Dissent is an alternative to Tor that provides provable anonymity even if
+  only one server in the network is honest\cite{corrigan-gibbs_dissent:_2010}.
+  \section{Protocol Explanation}
+  In its present form, a Dissent cluster consists of $m$ servers and $n$
+  connected clients\cite{wolinsky_dissent_2012}. Provable anonymity is
+  achieved through a modified version of the Dining Cryptographers
+  problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
+  with each server $j$. Communication proceeds in rounds, within which each
+  client has a designated $k$-bit slot.  Before any messages are sent, a
+  secure shuffle\cite{neff_verifiable_2001} assigns each client to a slot so
+  that the owner of a slot is the only node in the system which knows who owns
+  that slot.  In any client $s$'s slot, every client and every server
+  generates $k$ bits of random noise seeded with each of its shared secrets
+  $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
+  that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
+  with its noise to create its ciphertext. The combination (via xor) of all
+  clients' and servers' ciphertext includes the noise stream associated with
+  each shared secret twice, and so all noise cancels out and client $s$'
+  message is revealed. However, since deciphering this requires the
+  participation of all nodes in the system, it is impossible to tell which
+  client transmitted a message in a given slot. Dissent also incorporates an
+  accountability mechanism, allowing any node that disrupts the protocol to be
+  detected and removed from the cluster
+  \cite{corrigan-gibbs_proactively_2013}.
+
+  The original Dissent was fully peer-to-peer
+  \cite{corrigan-gibbs_dissent:_2010}. The shift to a client-server model
+  allows for significantly improved performance, but it introduces several new
+  concerns, particularly relating to misbehaving servers, a new class of DoS
+  attacks, and group formation.
+
+  \section{Properties}
+  \section{Evaluation}

@@ -18,44 +18,65 @@ on well-known relay servers which present challenges for availability.
 Section~\ref{Section:p2p} will examine decentralized, peer-to-peer techniques
 that might be used to improve Dissent's availability.\todogrunt{Rework this
 intro}
-\section{Distributed Decision-Making}
-  \subsection{Goals/Threat Models}
-  \toadd{COPY EDIT, this doesn't make sense here}
-    \paragraph{Verifiability:} A protocol is verifiable if its output can be
-    inspected to confirm that the protocol was carried out correctly. A simple
-    example of this is signing a message with the private key associated with a
-    well-known public key: Anyone who knows the public key can verify the
-    validity of the signature. Dissent \cite{corrigan-gibbs_proactively_2013}
-    and the Neff shuffle \cite{neff_verifiable_2001} both use zero-knowledge
-    proofs to achieve verifiability.
-    \paragraph{Accountability:} In the context of Dissent, accountability refers
-    to the ability of a protocol to detect and exclude participants who disrupt
-    the protocol \cite{syta_security_2014}, while proving that the disruptor did
-    indeed disrupt the protocol. Such a mechanism is necessary in peer-to-peer
-    protocols like Dining Cryptographers in which a single disruptor can make
-    the result of a round unusable. In Dissent, accountability checks occur
-    without revealing the link between any message and its sender --- moreover,
-    it is not possible to deliberately exclude a participant on the basis of
-    valid messages the participant sends. That is, the Dissent accountability
-    mechanism does not break anonymity.
-    \paragraph{Forward Progress:} A protocol that guarantees forward progress
-    given certain conditions will eventually make progress as long as those
-    conditions are met. More strict bounds on what ``eventually'' means are
-    possible. In the original Dissent, for example, forward progress can be
-    guaranteed if all clients follow the protocol and remain online, but not
-    otherwise: The accountability mechanism was so arduous that $f$ disrupting
-    clients could prevent any messages from being transmitted for $f$ hours
-    \cite{corrigan-gibbs_proactively_2013}. Protocols that make use of quorums
-    rather than being fully peer-to-peer are able to provide stronger guarantees
-    of forward progress \cite{lamport_part-time_1998}.
-    \paragraph{Anonymity:} A protocol guarantees anonymity in some operation a
-    client can complete if the output of that operation is unlinkable (or, more
-    precisely, cryptographically very difficult to link) to the client who
-    completed it \cite{corrigan-gibbs_dissent:_2010}. Dissent makes use of
-    pseudonyms to provide this, separating the protocol correctness and
-    accountability layer from the layer in which messages are revealed. Group
-    membership voting could conceivably take place at either.
 
+This project brings together several disparate but related areas of computer
+science research. We consider work on distributed decision-making in the offline
+model employed by most electronic voting research,
+
+The major contribution of this work is to provide a protocol in which not only
+are elections verifiable, but the decision to have an election and the content
+of the ballots can be determined by any member at any time,
+anonymously.\todo{highlight this paragraph but rewrite it because I'm
+tired\ldots}
+
+Pluralism: More than one valid opinion is possible
+
+Networked: Adversary model is ridiculous
+
+Decentralized: We don't trust anyone.
+
+\section{Goals/Threat Models}
+\toadd{COPY EDIT, this doesn't make sense here}
+\subsection{Verifiability}
+  A protocol is verifiable if its output can be
+  inspected to confirm that the protocol was carried out correctly. A simple
+  example of this is signing a message with the private key associated with a
+  well-known public key: Anyone who knows the public key can verify the
+  validity of the signature.
+
+  % Dissent \cite{corrigan-gibbs_proactively_2013}
+  % and the Neff shuffle \cite{neff_verifiable_2001} both use zero-knowledge
+  % proofs to achieve verifiability.
+\subsection{Anonymity}
+  \paragraph{Anonymity:} A protocol guarantees anonymity in some operation a
+  client can complete if the output of that operation is unlinkable (or, more
+  precisely, cryptographically very difficult to link) to the client who
+  completed it \cite{corrigan-gibbs_dissent:_2010}. Dissent makes use of
+  pseudonyms to provide this, separating the protocol correctness and
+  accountability layer from the layer in which messages are revealed. Group
+  membership voting could conceivably take place at either.
+
+\subsection{Decentralization}
+  \paragraph{Accountability:} In the context of Dissent, accountability refers
+  to the ability of a protocol to detect and exclude participants who disrupt
+  the protocol \cite{syta_security_2014}, while proving that the disruptor did
+  indeed disrupt the protocol. Such a mechanism is necessary in peer-to-peer
+  protocols like Dining Cryptographers in which a single disruptor can make
+  the result of a round unusable. In Dissent, accountability checks occur
+  without revealing the link between any message and its sender --- moreover,
+  it is not possible to deliberately exclude a participant on the basis of
+  valid messages the participant sends. That is, the Dissent accountability
+  mechanism does not break anonymity.
+  \paragraph{Forward Progress:} A protocol that guarantees forward progress
+  given certain conditions will eventually make progress as long as those
+  conditions are met. More strict bounds on what ``eventually'' means are
+  possible. In the original Dissent, for example, forward progress can be
+  guaranteed if all clients follow the protocol and remain online, but not
+  otherwise: The accountability mechanism was so arduous that $f$ disrupting
+  clients could prevent any messages from being transmitted for $f$ hours
+  \cite{corrigan-gibbs_proactively_2013}. Protocols that make use of quorums
+  rather than being fully peer-to-peer are able to provide stronger guarantees
+  of forward progress \cite{lamport_part-time_1998}.
   \subsubsection{Fault Tolerance}
   \toadd{I'm not really using any of the fault tolerance stuff; may want to
   remove this section or just talk briefly about Byzantine threat models}
@@ -76,6 +97,7 @@ intro}
     the cluster to maintain a consistent record of transactions as long as a
     quorum is present.
 
+  \paragraph{Byzantine Fault Tolerance}
     Paxos and many similar protocols makes the simplifying assumption that all
     nodes in the system are honest --- the only faults considered are those
     triggered by nodes suddenly going offline. If nodes may be malicious, they
@@ -102,8 +124,9 @@ intro}
     not knowable a priori. If our leader election algorithm is modeled on other
     election protocols, it must be assumed that honest nodes may disagree on
     which servers they wish to elect.
-
-  \subsection{Electronic Voting Existing Work} \label{Subsection:evoting}
+\section{Evaluation of Existing Systems}
+\subsection{Fault Tolerance}
+\subsection{Electronic Voting} \label{Subsection:evoting}
   \toadd{beef up this section.}
     Secure electronic voting systems have arisen largely out of a desire to
     retain secret ballots (no one should learn how a particular voter voted)
@@ -148,8 +171,7 @@ intro}
     These protocols provide useful templates for how a distributed voting
     protocol might accomplish similar security properties.
 
-
-\section{Anonymity}
+\subsection{Anonymity Protocols}
 \label{subsection:ExistingAnonymity}
 \toadd{Set this up as problems with electronic voting schemes}
   Every anonymity tool shares one basic goal: Given a set of assumptions about
@@ -247,41 +269,64 @@ intro}
     non-trivial problem.  We consider several other areas of research relevant
     to solving it.
 
-\subsection{Strong Anonymity with Dissent}
-  \label{Subsection:Dissent}
-  \toadd{Especially if I do take out the related work, I should add a short
-  intro to why Dissent is a good thing to use}
-    Dissent is an alternative to Tor that provides provable anonymity even if
-    only one server in the network is honest\cite{corrigan-gibbs_dissent:_2010}.
-    In its present form, a Dissent cluster consists of $m$ servers and $n$
-    connected clients\cite{wolinsky_dissent_2012}. Provable anonymity is
-    achieved through a modified version of the Dining Cryptographers
-    problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
-    with each server $j$. Communication proceeds in rounds, within which each
-    client has a designated $k$-bit slot.  Before any messages are sent, a
-    secure shuffle\cite{neff_verifiable_2001} assigns each client to a slot so
-    that the owner of a slot is the only node in the system which knows who owns
-    that slot.  In any client $s$'s slot, every client and every server
-    generates $k$ bits of random noise seeded with each of its shared secrets
-    $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
-    that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
-    with its noise to create its ciphertext. The combination (via xor) of all
-    clients' and servers' ciphertext includes the noise stream associated with
-    each shared secret twice, and so all noise cancels out and client $s$'
-    message is revealed. However, since deciphering this requires the
-    participation of all nodes in the system, it is impossible to tell which
-    client transmitted a message in a given slot. Dissent also incorporates an
-    accountability mechanism, allowing any node that disrupts the protocol to be
-    detected and removed from the cluster
-    \cite{corrigan-gibbs_proactively_2013}.
+\section{Conclusion}\todoword{better name}
+% \begin{tabular}{p{2.5cm}p{2cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+%   \cline{3-12}
+%   & & \multicolumn{3}{c|}{Voting Protocols}     &
+%                               \multicolumn{3}{|c|}{Consensus Protocols} &
+%                                                           \multicolumn{3}{|c|}{Anonymity Protocols} & This Protocol\\
+%   \cline{3-12}
+%   & &                     Neff & Kremer & Juels & Paxos & Byzantine
+%                                                           Paxos & King & Tor & Dissent & Dissent
+%                                                                                          in
+%                                                                                          Numbers    &   \\
+%   \cline{1-12}
+%   \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Verifiability} } &
+%   \multicolumn{1}{|p{2cm}|}{Individual}        & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{2-12}
+%   \multicolumn{1}{|c}{} &
+%   \multicolumn{1}{|p{2cm}|}{Universal}         & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{1-12}
+%   \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Anonymity} } &
+%   \multicolumn{1}{|p{2cm}|}{Secret Ballots}    & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{2-12}
+%   \multicolumn{1}{|c}{} &
+%   \multicolumn{1}{|p{2cm}|}{Secret Initiators} & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{1-12}
+%   \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Decentralized Trust/Netowrk} }&
+%   \multicolumn{1}{|p{2cm}|}{Byzantine}         & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{2-12}
+%   \multicolumn{1}{|c}{} &
+%   \multicolumn{1}{|p{2cm}|}{Global Passive}    & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{1-12}
+% \end{tabular}
 
-    The original Dissent was fully peer-to-peer
-    \cite{corrigan-gibbs_dissent:_2010}. The shift to a client-server model
-    allows for significantly improved performance, but it introduces several new
-    concerns, particularly relating to misbehaving servers, a new class of DoS
-    attacks, and group formation.
-
-      \subsubsection{Dissent in Numbers}
-      \toadd{Explain it and its properties}
-    \subsection{Linkable Ring Signatures}
-    \toadd{Explain}
+\begin{table}
+\begin{center}
+\begin{tabularx}{0.75\paperwidth}{XX|X|X|X|X|X|X|}
+  \cline{3-8}
+  & & \multicolumn{2}{X|}{Verifiability} & \multicolumn{2}{|X|}{Anonymity} &
+  \multicolumn{2}{|X|}{Decentralized Trust/Network} \\ \cline{3-8}
+& & Individual & Universal & Secret Ballots & Secret Initiators & Byzantine &
+Global Passive \\
+\cline{1-8}
+\multicolumn{1}{|X}{\multirow{3}{*}{Voting Protocols} } &
+\multicolumn{1}{|X|}{Neff} & & & & &\\ \cline{2-8}
+\multicolumn{1}{|X}{} &
+\multicolumn{1}{|X|}{Kremer} & & & & &\\ \cline{2-8}
+\multicolumn{1}{|X}{} &
+\multicolumn{1}{|X|}{Juels} & & & & &\\ \cline{1-8}
+\multicolumn{1}{|X}{\multirow{3}{*}{Consensus Protocols} } &
+\multicolumn{1}{|X|}{Neff} & & & & &\\ \cline{2-8}
+\multicolumn{1}{|X}{} &
+\multicolumn{1}{|X|}{Kremer} & & & & &\\ \cline{2-8}
+\multicolumn{1}{|X}{} &
+\multicolumn{1}{|X|}{Juels} & & & & &\\ \cline{1-8}
+\multicolumn{1}{|X}{\multirow{3}{*}{Anonymity Protocols} } &
+\multicolumn{1}{|X|}{Neff} & & & & &\\ \cline{2-8}
+\multicolumn{1}{|X}{} &
+\multicolumn{1}{|X|}{Kremer} & & & & &\\ \cline{2-8}
+\multicolumn{1}{|X}{} &
+\multicolumn{1}{|X|}{Juels} & & & & &\\ \cline{1-8}
+\multicolumn{1}{|X}{This Protocol} & & & & & & \\ \cline{1-8}
+% \multicolumn{1}{|p{2cm}}{\multirow{3}{*}{This Protocol} } &
+% \multicolumn{1}{|p{2cm}}{} &
+% \multicolumn{1}{|p{2cm}}{} &
+% \multicolumn{1}{|p{2cm}}{} \\ \cline{1-8}
+\end{tabularx}
+\end{center}
+\end{table}

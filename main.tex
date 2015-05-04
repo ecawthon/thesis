@@ -6,10 +6,12 @@
 % also based on Yale's papers repository makefile setup
 
 % \documentclass[draftcopy,short]{srpaper}
-\documentclass[draftcopy,nolof,nolot]{srpaper}
+\documentclass[finalcopy,nolof,nolot]{srpaper}
 \usepackage[colorinlistoftodos, color=blue!20]{todonotes}
 \usepackage[pdftex,pdfusetitle]{hyperref}
 \usepackage{setspace}
+\usepackage{multirow}
+\usepackage{tabularx}
 \setlength{\marginparwidth}{2.5cm}
 \newcommand{\todogrunt}[1]{\todo[caption={#1}]
   {\begin{spacing}{1.0}TODO: #1\end{spacing}}}
@@ -50,7 +52,8 @@ draft}
            colorlinks=true,
            linkcolor=black,
            urlcolor=magenta,
-           citecolor=black}
+           citecolor=black
+         }
 
 \begin{document}
 \frontmatter
@@ -61,9 +64,12 @@ draft}
 \chapter{Background}\label{Chapter:Background}
 \input litreview.tex
 
-\chapter{Goals and Non-Goals}\label{Chapter:Goals}
-\input goals.tex
+\chapter{Dissent}\label{Chapter:Dissent}
+\input dissent.tex
 
+% \chapter{Goals and Non-Goals}\label{Chapter:Goals}
+% \input goals.tex
+%
 \chapter{Protocol Description}\label{Chapter:Protocol}
 \input protocol.tex
 
