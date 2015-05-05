@@ -1,6 +1,9 @@
   % \item Further, intermediate vote counts are necessarily public. We prove
   %   generally in Appendix~\ref{Appendix:SecretProof} that we cannot do better.
 % \end{itemize}
+We operate a simple voting protocol based on linkable ring signatures
+\cite{lrs}, on top of a Dissent instance that provides instigator anonymity,
+along with acccountability to handle byzantine faults.
 \section{Initial formation}
 We assume the member set is well known, and that every member has a secure
 channel through which it can communicate with every other member, and that
@@ -10,7 +13,13 @@ cluster \cite{p2pd} using some consensus protocol such
 as Byzantine Paxos, as discussed in \cite{sec}.
 
 \section{Peer-to-Peer Layer}
-Every \texttt{Member} maintains a TCP connection to every other \texttt{Member}.
+Every \texttt{Member} maintains a TCP connection to every other \texttt{Member},
+and uses this to execute the peer to peer version of Dissent \cite{sec}. The
+primary limitation of this version is performance --- there is a detailed
+security analysis demonstrating the anonymity preserving properties of this
+layer, and so we use it as a fallback layer for reconfiguring if servers
+misbehave by dropping out, and for initial setup of the Dissent in Numbers (DIN)
+layer.
 
 For any instance of the DIN layer, there is a canonical \texttt{Manifest}
 maintained at the P2P layer describing its parameters.  The \texttt{Manifest}
@@ -73,7 +82,7 @@ information to determine whether or not the \texttt{Ballot} \emph{passes}:
 Each \texttt{Member} should verify all signatures on the most recent
 version\todosubst{What if there are conflicting versions?}
 and compare the total number of valid signatures to the threshold $t$. If the
-\texttt{Ballot} passes, the new server set should immediately prepare for the
+\texttt{Ballot} passes, the new server set should immediately set up the
 next iteration of the DIN layer.\toadd{finish describing new setup}
 
 \subsection{Limitations and Non-Goals}
