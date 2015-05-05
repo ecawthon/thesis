@@ -8,7 +8,7 @@
   publisher={Odonian Press}
 }
 
-@inproceedings{wolinsky_dissent_2012,
+@inproceedings{din,
 	address = {Hollywood, {CA}},
 	title = {Dissent in Numbers: Making Strong Anonymity Scale},
 	isbn = {978-1-931971-96-6},
@@ -23,7 +23,7 @@
 	file = {osdi12-final-115.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/9ACKKADW/osdi12-final-115.pdf:application/pdf}
 }
 
-@article{syta_security_2014,
+@article{sec,
 	title = {Security Analysis of Accountable Anonymity in Dissent},
 	volume = {17},
 	issn = {10949224},
@@ -65,7 +65,7 @@
 	file = {Snapshot:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/IFBWMAWK/978-3-319-09885-2_20.html:text/html}
 }
 
-@inproceedings{neff_verifiable_2001,
+@inproceedings{neff,
 	address = {New York, {NY}, {USA}},
 	series = {{CCS} '01},
 	title = {A Verifiable Secret Shuffle and Its Application to e-Voting},
@@ -147,7 +147,7 @@ from the N.S.A.",
 	file = {tor-design.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/TH76ZCRG/tor-design.pdf:application/pdf}
 }
 
-@inproceedings{corrigan-gibbs_proactively_2013,
+@inproceedings{verdict,
 	address = {Washington, D.C.},
 	title = {Proactively Accountable Anonymous Messaging in Verdict},
 	isbn = {978-1-931971-03-4},
@@ -164,7 +164,7 @@ Verdict attempts to solve the jamming problems in Dissent in Numbers. It eschews
 	file = {12301-sec13-paper_corrigan-gibbs.pdf:/home/eleanor/.mozilla/firefox/q0t17v7k.default/zotero/storage/DGG33QBQ/12301-sec13-paper_corrigan-gibbs.pdf:application/pdf}
 }
 
-@inproceedings{corrigan-gibbs_dissent:_2010,
+@inproceedings{p2pd,
 	address = {New York, {NY}, {USA}},
 	series = {{CCS} '10},
 	title = {Dissent: Accountable Anonymous Group Messaging},
@@ -269,7 +269,7 @@ Verdict attempts to solve the jamming problems in Dissent in Numbers. It eschews
 }
 
 
-@article{lamport_part-time_1998,
+@article{paxos,
 	title = {The Part-time Parliament},
 	volume = {16},
 	issn = {0734-2071},
@@ -398,4 +398,44 @@ Verdict attempts to solve the jamming problems in Dissent in Numbers. It eschews
 	pages = {61--70},
 	annotate = "Describes an approach to electronic voting that maintains forward secrecy in order to prevent a coercive adversary who learns a voter's secret key from confirming that the voter voted as instructed. Illustrates an important design trade-off in individual verifiability properties.",
 	file = {ACM Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/H7K3PNXF/Juels et al. - 2005 - Coercion-resistant Electronic Elections.pdf:application/pdf}
+}
+
+@incollection{lrs,
+	series = {Lecture {Notes} in {Computer} {Science}},
+	title = {Linkable {Spontaneous} {Anonymous} {Group} {Signature} for {Ad} {Hoc} {Groups}},
+	copyright = {©2004 Springer-Verlag Berlin Heidelberg},
+	isbn = {978-3-540-22379-5, 978-3-540-27800-9},
+	url = {http://link.springer.com/chapter/10.1007/978-3-540-27800-9_28},
+	abstract = {We present a linkable spontaneously anonymous group (LSAG) signature scheme (alternatively known as linkable ring signature scheme) satisfying the following three properties. (1) Anonymity, or signer indistinguishability. (2) Linkability: That two signatures by the same signer can be linked. (3) Spontaneity: No group secret, therefore no group manager or group secret sharing setup. We reduce the security of our scheme to well-known problems under the random oracle model. Using the scheme, we construct a new efficient one-round e-voting system which does not have a registration phase. We also present a new efficient reduction of famous rewind simulation lemma which only relies on elementary probability theory. Threshold extensions of our scheme are also presented.},
+	language = {en},
+	number = {3108},
+	urldate = {2015-05-05},
+	booktitle = {Information {Security} and {Privacy}},
+	publisher = {Springer Berlin Heidelberg},
+	author = {Liu, Joseph K. and Wei, Victor K. and Wong, Duncan S.},
+	editor = {Wang, Huaxiong and Pieprzyk, Josef and Varadharajan, Vijay},
+	year = {2004},
+	keywords = {Algorithm Analysis and Problem Complexity, Computer Communication Networks, Computers and Society, Data Encryption, Management of Computing and Information Systems, Operating Systems},
+	pages = {325--335},
+	file = {Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/WT5KW8F4/Liu et al. - 2004 - Linkable Spontaneous Anonymous Group Signature for.pdf:application/pdf;Snapshot:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/CEJFEJGX/10.html:text/html}
+}
+
+@incollection{rs,
+	series = {Lecture {Notes} in {Computer} {Science}},
+	title = {How to {Leak} a {Secret}},
+	copyright = {©2001 Springer-Verlag Berlin Heidelberg},
+	isbn = {978-3-540-42987-6, 978-3-540-45682-7},
+	url = {http://link.springer.com/chapter/10.1007/3-540-45682-1_32},
+	abstract = {In this paper we formalize the notion of a ring signature, which makes it possible to specify a set of possible signers without revealing which member actually produced the signature.Unlike group signatures, ring signatures have no group managers, no setup procedures, no revocation procedures, and no coordination:any user can choose any set of possible signers that includes himself,and sign any message by using his secret key and the others’ public keys,without getting their approval or assistance. Ring signatures provide an elegant way to leak authoritativ secrets in an anonymous way, to sign casual email in a way which can only be verified by its intended recipient, and to solve other problems in multiparty computations. The main contribution of this paper is a new construction of such signatures which is unconditionally signer-ambiguous, provably secure in the random oracle model,and exceptionally efficient:adding each ring member increases the cost of signing or verifying by a single modular multiplication and a single symmetric encryption.},
+	language = {en},
+	number = {2248},
+	urldate = {2015-05-05},
+	booktitle = {Advances in {Cryptology} — {ASIACRYPT} 2001},
+	publisher = {Springer Berlin Heidelberg},
+	author = {Rivest, Ronald L. and Shamir, Adi and Tauman, Yael},
+	editor = {Boyd, Colin},
+	year = {2001},
+	keywords = {Algorithm Analysis and Problem Complexity, Computer Communication Networks, Data Encryption, designated verifier signature scheme, Discrete Mathematics in Computer Science, group signature scheme, Management of Computing and Information Systems, Operating Systems, ring signature scheme, signature scheme, signer-ambiguous signature scheme},
+	pages = {552--565},
+	file = {Full Text PDF:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/VRPRE4PV/Rivest et al. - 2001 - How to Leak a Secret.pdf:application/pdf;Snapshot:/home/eleanor/.mozilla/firefox/4yx5jkvn.default/zotero/storage/JXVCUTHD/10.html:text/html}
 }

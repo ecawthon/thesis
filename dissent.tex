@@ -1,15 +1,15 @@
 \toadd{Especially if I do take out the related work, I should add a short
 intro to why Dissent is a good thing to use}
   Dissent is an alternative to Tor that provides provable anonymity even if
-  only one server in the network is honest\cite{corrigan-gibbs_dissent:_2010}.
+  only one server in the network is honest\cite{p2pd}.
   \section{Protocol Explanation}
   In its present form, a Dissent cluster consists of $m$ servers and $n$
-  connected clients\cite{wolinsky_dissent_2012}. Provable anonymity is
+  connected clients\cite{din}. Provable anonymity is
   achieved through a modified version of the Dining Cryptographers
   problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
   with each server $j$. Communication proceeds in rounds, within which each
   client has a designated $k$-bit slot.  Before any messages are sent, a
-  secure shuffle\cite{neff_verifiable_2001} assigns each client to a slot so
+  secure shuffle\cite{neff} assigns each client to a slot so
   that the owner of a slot is the only node in the system which knows who owns
   that slot.  In any client $s$'s slot, every client and every server
   generates $k$ bits of random noise seeded with each of its shared secrets
@@ -23,10 +23,10 @@ intro to why Dissent is a good thing to use}
   client transmitted a message in a given slot. Dissent also incorporates an
   accountability mechanism, allowing any node that disrupts the protocol to be
   detected and removed from the cluster
-  \cite{corrigan-gibbs_proactively_2013}.
+  \cite{verdict}.
 
   The original Dissent was fully peer-to-peer
-  \cite{corrigan-gibbs_dissent:_2010}. The shift to a client-server model
+  \cite{p2pd}. The shift to a client-server model
   allows for significantly improved performance, but it introduces several new
   concerns, particularly relating to misbehaving servers, a new class of DoS
   attacks, and group formation.

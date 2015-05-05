@@ -2,8 +2,8 @@
 We assume the member set is well known, and that every member has a secure
 channel through which it can communicate with every other member. Initially, the
 members organize themselves into a Peer-to-Peer Dissent
-cluster \cite{corrigan-gibbs_dissent:_2010} using some consensus protocol such
-as Byzantine Paxos, as discussed in \cite{syta_security_2014}.
+cluster \cite{p2pd} using some consensus protocol such
+as Byzantine Paxos, as discussed in \cite{sec}.
 
 \section{Peer-to-Peer Layer}
 Every \texttt{Member} maintains a TCP connection to every other \texttt{Member}.
@@ -26,7 +26,7 @@ it.}
 
 \section{Dissent-in-Numbers Layer}
 The communication involved in establishing the \texttt{Manifest} takes place
-over an instance of Dissent in Numbers \cite{wolinsky_dissent_2012}. We sketch a
+over an instance of Dissent in Numbers \cite{din}. We sketch a
 black box model of Dissent in Numbers as it relates to our protocol.
 
 An instance of DIN consists of $n$ clients and $m$ servers. Communication takes
