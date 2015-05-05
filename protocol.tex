@@ -1,6 +1,10 @@
+  % \item Further, intermediate vote counts are necessarily public. We prove
+  %   generally in Appendix~\ref{Appendix:SecretProof} that we cannot do better.
+% \end{itemize}
 \section{Initial formation}
 We assume the member set is well known, and that every member has a secure
-channel through which it can communicate with every other member. Initially, the
+channel through which it can communicate with every other member, and that
+members remain connected. Initially, the
 members organize themselves into a Peer-to-Peer Dissent
 cluster \cite{p2pd} using some consensus protocol such
 as Byzantine Paxos, as discussed in \cite{sec}.
@@ -72,3 +76,51 @@ and compare the total number of valid signatures to the threshold $t$. If the
 \texttt{Ballot} passes, the new server set should immediately prepare for the
 next iteration of the DIN layer.\toadd{finish describing new setup}
 
+\subsection{Limitations and Non-Goals}
+  \paragraph{Intersection Attacks:} The \texttt{Peer} and \texttt{Member} sets are known. In Dissent in
+    Numbers, clients need not know the IP addresses of any other clients. We
+    believe it is useful to have a protocol for a group with static membership.
+    If there is membership churn, our protocol remains vulnerable to
+    intersection attacks.
+  \paragraph{Coercion-Resistance:} In order to use anonymous ring signatures for voting, it is necessary
+    for each signature within a scope to correspond to a specific member. An
+    adversary with the power to coerce \texttt{Member}s into revealing their
+    private keys after the fact may prove that a particular member voted a
+    particular way\cite{lrs}.
+    \todogrunt{Need some kind of analysis of why this is still
+    useful despite that}
+  % todo: put this somewhere
+  % \paragraph{Accountability:} In the context of Dissent, accountability refers
+  % to the ability of a protocol to detect and exclude participants who disrupt
+  % the protocol \cite{sec}, while proving that the disruptor did
+  % indeed disrupt the protocol. Such a mechanism is necessary in peer-to-peer
+  % protocols like Dining Cryptographers in which a single disruptor can make
+  % the result of a round unusable. In Dissent, accountability checks occur
+  % without revealing the link between any message and its sender --- moreover,
+  % it is not possible to deliberately exclude a participant on the basis of
+  % valid messages the participant sends. That is, the Dissent accountability
+  % mechanism does not break anonymity.
+  \paragraph{Forward Progress:} A protocol that guarantees forward progress
+  given certain conditions will eventually make progress as long as those
+  conditions are met. More strict bounds on what ``eventually'' means are
+  possible. In the original Dissent, for example, forward progress can be
+  guaranteed if all clients follow the protocol and remain online, but not
+  otherwise: The accountability mechanism was so arduous that $f$ disrupting
+  clients could prevent any messages from being transmitted for $f$ hours
+  \cite{verdict}. Protocols that make use of quorums
+  rather than being fully peer-to-peer are able to provide stronger guarantees
+  of forward progress \cite{paxos}. Since we do not handle traditional fault
+  tolerance or network churn,  this is an area
+  for future work \todo{lulz}
+  \paragraph{Active attacks:}
+  Global traffic analysis attacks only require the adversary to be able to
+  monitor global traffic. If the adversary can also modify or generate
+  traffic, several other attacks are possible. The adversary can launch
+  \emph{man-in-the-middle} (MITM) attacks in which it impersonates Alicia,
+  Badru, or one or more Tor nodes. The adversary can launch \emph{Sybil}
+  attacks, in which many different Tor clients controlled by the same
+  adversary join the network as individual clients. Either of these can be
+  used to create \emph{Denial-of-Service} (DoS) attacks, which might either
+  prevent users from connecting to Tor at all, or force Tor traffic to go
+  through particular, potentially adversary-controlled, Tor nodes ---
+  de-anonymizing the users.
