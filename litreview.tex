@@ -1,42 +1,32 @@
-Anonymous communication significantly constrains the ability of oppressive
-regimes and vigilante groups alike to suppress dissent. Newly available
-information about vulnerabilities and global-scale surveillance in today's
-centralized internet infrastructure has rendered a swath of anonymity tools
-obsolete, and poses a significant threat to those that remain.
-
-A trustworthy anonymity tool in the post-Snowden era must be resilient to both
-surveillance and censorship: It should guarantee its users' anonymity even in
-the face of a global passive adversary, and it should be unrealistic for such an
-adversary to simply prevent users from accessing it. A useful anonymity tool
-must also perform with reasonably low latency - a property which often trades
-off with security and availability.
-
-This review will first examine the existing anonymity tools The Onion Router
-(Tor) and Dissent, considering their ability to provide strong anonymity
-guarantees. Higher performance versions of both Tor and Dissent, however, rely
-on well-known relay servers which present challenges for availability.
-Section~\ref{Section:p2p} will examine decentralized, peer-to-peer techniques
-that might be used to improve Dissent's availability.\todogrunt{Rework this
-intro}
-
+% Anonymous communication significantly constrains the ability of oppressive
+% regimes and vigilante groups alike to suppress dissent. Newly available
+% information about vulnerabilities and global-scale surveillance in today's
+% centralized internet infrastructure has rendered a swath of anonymity tools
+% obsolete, and poses a significant threat to those that remain.
+%
+% A trustworthy anonymity tool in the post-Snowden era must be resilient to both
+% surveillance and censorship: It should guarantee its users' anonymity even in
+% the face of a global passive adversary, and it should be unrealistic for such an
+% adversary to simply prevent users from accessing it. A useful anonymity tool
+% must also perform with reasonably low latency - a property which often trades
+% off with security and availability.
+%
+% This review will first examine the existing anonymity tools The Onion Router
+% (Tor) and Dissent, considering their ability to provide strong anonymity
+% guarantees. Higher performance versions of both Tor and Dissent, however, rely
+% on well-known relay servers which present challenges for availability.
+% Section~\ref{Section:p2p} will examine decentralized, peer-to-peer techniques
+% that might be used to improve Dissent's availability.\todogrunt{Rework this
+% intro}
+%
 This project brings together several disparate but related areas of computer
-science research. We consider work on distributed decision-making in the offline
-model employed by most electronic voting research,
-
-The major contribution of this work is to provide a protocol in which not only
-are elections verifiable, but the decision to have an election and the content
-of the ballots can be determined by any member at any time,
-anonymously.\todo{highlight this paragraph but rewrite it because I'm
-tired\ldots}
-
-Pluralism: More than one valid opinion is possible
-
-Networked: Adversary model is ridiculous
-
-Decentralized: We don't trust anyone.
-
+science research. We begin with an overview of the properties group management
+protocols might provide. We then examine existing systems, before exploring
+security considerations that pose unresolved  challenges for them.
+% We consider work on distributed decision-making in the offline
+% model employed by most electronic voting research,
+%
 \section{Desired Properties}
-\toadd{Intro}
   \subsection{Verifiability}\label{Subsection:verif}
   A protocol is verifiable if its output can be inspected to confirm that the
   protocol was carried out correctly. A simple example of this is signing a
@@ -57,54 +47,156 @@ Decentralized: We don't trust anyone.
   % proofs to achieve verifiability.
 
   \subsection{Anonymity}\label{Subsection:anon}
-  A protocol guarantees \emph{anonymity} in some operation a client can
-  complete if the output of that operation is unlinkable (or, more precisely,
-  cryptographically very difficult to link) to the client who completed it
-  \cite{p2pd}\todo{you can do a better cite than that}. \todogrunt{why
-  anonymity matters}
+  Members of any group often face reprocussions if they participate in group
+  governance in ways that run contrary to the interests of other members of
+  the group. For this reason, election protocols often incorporate some notion
+  of anonymity. A protocol guarantees \emph{anonymity} in some operation a
+  client can complete if the output of that operation is unlinkable (or, more
+  precisely, cryptographically very difficult to link) to the participant who
+  completed it\cite{ford_hiding_2014}.
 
   We are interested in two types of anonymity: First, within an election,
-  each voter's confidentiality should be preserved.
+  each voter's confidentiality should be preserved. Second, the instigator of an
+  election, who may also be the author of the proposed petition, should be
+  anonymous.
 
-  \subsubsection{Secret Ballots}
-  A vote encodes information about the eligibility of the voter, and
-  information about the voter's preference. To determine the results of the
-  elction while providing the verifiability properties discussed in
-  Section~\ref{Subsection:verif}, there must be a public record of some
-  aggregate information about each: An auditor must be able to tell that every
-  voter was eligible, and also what the outcome of the election was. To provide
-  voter confidentiality, we must provide a way for each voter to provide both
-  bits of information without exposing the correlation between the two. In
-  other words, if Badru wants to vote for Alicia to be president, Badru must
-  convey that Badru (or someone with Badru's credentials) voted, and that a
-  vote has been cast for Alicia, without revealing that Badru cast a vote for
-  Alicia. We can represent the information Badru provides as a
-  \emph{ballot}\todoword{make sure we're using ``ballot'' consistently - maybe
-  petition?} tuple $(sig, vote)$, where $sig$ encodes Badru's credentials and
-  $vote$ encodes his candidate choice.
-
-  To provide the necessary information while preserving his
-  confidentiality, Badru must encrypt part or all of his ballot. We show
-  in Appendix~\ref{Appendix:SecretProof}\todosubst{I think this is actually
-  only true if people vote at different times} that it is impossible to design
-  a Byzantine Fault Tolerant protocol where both are kept secret. This leaves
-  two possibilities: Either Badru can encode his credentials in a $sig$ that is
-  anonymous\cite{lrs}\todogrunt{talk about LRS/refer to it here}, or he can
-  encrypt $vote$ so that Badru's choice of candidates can only be decyphered in
-  aggregate, once the connection to Badru's public signature has been lost.
-
-  \subsubsection{Anonymous Instigators}
-  \toadd{write}
-  The instigator of the election, who may also be the author of the proposed
-  ballot, should be anonymous. Second,
-
-  \todosubst{discussion of trust models here?}
+  % \todosubst{discussion of trust models here?}
   % Dissent makes use of
   % pseudonyms to provide this, separating the protocol correctness and
   % accountability layer from the layer in which messages are revealed. Group
   % membership voting could conceivably take place at either.
   %
+\section{Existing Systems}
+\subsection{Electronic Voting} \label{Subsection:evoting}
+  \toadd{beef up this section.}
+  %evoting intro
+  Secure electronic voting systems have arisen largely out of a desire to
+  retain secret ballots (no one should learn how a particular voter voted)
+  while also guaranteeing accurate and fair counting of votes. Unlike
+  distributed consensus protocols, secure electronic voting systems generally
+  achieve their security properties through decentralization of trust rather
+  than computation. They normally depend on a single executor of the vote
+  aggregation protocol, using verifiability to ensure that each voter can be
+  confident their vote was tallied fairly.
+
+  One solution is presented in \cite{neff}, and the initial assignment of
+  pseudonyms in Dissent already uses a variation on this protocol. In the Neff
+  shuffle, each voter encrypts their vote in such a way that the aggregator
+  must permute the vote ciphertexts before being able to decrypt them. The
+  result is a permutation which no one knows --- a voter can verify that their
+  ciphertext is present in the permutation, but gains no information about the
+  correspondence between other ciphertexts and other voters. It is both
+  individually and universally verifiable.
+
+  The individual verifiability of \cite{neff} is based on each
+  voter's retention of their secret key. \emph{Coercion-resistant} electronic
+  voting protocols remain robust even if secret keys are compromised: In
+  \cite{juels_coercion-resistant_2005}, the voter uses their secret key only
+  to establish eligibility, at which point they are assigned a random element
+  of a well known set to use in their actual ballot. The ballots are
+  unlinkable to the secret keys, and there is no way for an outsider to
+  confirm whether a particular random element corresponds with a particular
+  voter. This protocol achieves strong resistance to multiple kinds of
+  coercion by deliberately weakening the eligibility verification property to
+  depend on trust in the ``registrar'' who validates credentials and assigns
+  the voting keys, preventing ``forced-abstention'' attacks (in which the
+  adversary demands a voter simply not participate) by making it impossible
+  for outsiders to verify the set of voters.
+
+  These protocols provide useful templates for how a distributed voting
+  protocol might accomplish similar security properties.
+
+  \subsection{Distributed Consensus}
+    Distributed consensus protocols allow groups of nodes to come to an
+    agreement on canonical values. For example, in a distributed database, if an
+    unreliable power supply causes some portion of servers to be offline for
+    each of several transactions, these protocols allow the
+    servers to reconcile their records so that all servers agree on the
+    transaction history. The problem was popularized by
+    \cite{paxos}, which proposed the framing and solution now
+    known as Paxos: A Paxos cluster that consists of 2$f+1$ nodes must have a
+    \emph{quorum} of $f + 1$ participating nodes at any given time.
+    Transactions occur in three phases: First, the single current designated
+    leader (Proposer) proposes the $n$th change. Next, if no other participants
+    (Acceptors) have received a proposal numbered higher than $n$, the Acceptors
+    promise to ignore future lower numbered requests.  Finally, upon receiving
+    $f+1$ Promises, the Proposer declares success to all Acceptors. This allows
+    the cluster to maintain a consistent record of transactions as long as a
+    quorum is present.
+
+
+\subsection{Anonymity Protocols}
+\label{subsection:ExistingAnonymity}
+\toadd{Set this up as problems with electronic voting schemes}
+  Every anonymity tool shares one basic goal: Given a set of assumptions about
+  an adversary's capabilities, an anonymity tool provides a way for a user to
+  broadcast a message without the adversary being able to discover the author
+  of the message.  To illustrate the general approach and some common
+  security assumptions, we first consider The Onion Router (Tor), the most
+  widely used anonymity tool today\cite{ford_hiding_2014}
+
+  \subsubsection{Onion Routing with Tor}
+  % \label{Subsubsection:Tor}
+    Tor aims to provide an anonymity service that, to the end user, behaves like
+    a one-hop proxy: If Alicia wants to send an HTTP request to Badru using Tor,
+    Alicia sends a request through Tor, Tor forwards the request to Badru, Badru
+    replies to Tor, and Tor forwards the response to Alice. Under the surface,
+    when Alicia's traffic enters the Tor network, it is encrypted and
+    transmitted among several "onion routers" before reaching an "exit relay",
+    which decrypts the request and passes it onto Badru. Each intermediate onion
+    router only knows the next hop in the path from Alicia to Badru - no single
+    node knows its traffic originated at Alicia or is en route to Badru - so no
+    one in the network knows the complete path.
+
+    Tor provides anonymity from an adversary who ``can observe some fraction of
+    the network traffic; who can generate, modify, delete, or delay traffic; who
+    can operate onion routers of [their] own; and who can compromise some
+    fraction of the onion routers''\cite{dingledine_tor:_2004}. If an adversary
+    can observe much more than a small fraction of traffic, or if the adversary
+    controls many colluding nodes, other attacks become possible, and the
+    anonymity guarantees no longer hold. We now know that the U.S. National
+    Security Agency actively uses such attacks, and so a new protocol is
+    necessary in order to remain anonymous from the N.S.A.
+
+    \subsubsection{Strong Anonymity with Dissent}
+  Dissent is an alternative to Tor that provides provable anonymity even if
+  only one server in the network is honest\cite{p2pd}.
+  In its present form, a Dissent cluster consists of $m$ servers and $n$
+  connected clients\cite{din}. Provable anonymity is
+  achieved through a modified version of the Dining Cryptographers
+  problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
+  with each server $j$. Communication proceeds in rounds, within which each
+  client has a designated $k$-bit slot.  Before any messages are sent, a
+  secure shuffle\cite{neff} assigns each client to a slot so
+  that the owner of a slot is the only node in the system which knows who owns
+  that slot.  In any client $s$'s slot, every client and every server
+  generates $k$ bits of random noise seeded with each of its shared secrets
+  $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
+  that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
+  with its noise to create its ciphertext. The combination (via xor) of all
+  clients' and servers' ciphertext includes the noise stream associated with
+  each shared secret twice, and so all noise cancels out and client $s$'
+  message is revealed. However, since deciphering this requires the
+  participation of all nodes in the system, it is impossible to tell which
+  client transmitted a message in a given slot. Dissent also incorporates an
+  accountability mechanism, allowing any node that disrupts the protocol to be
+  detected and removed from the cluster
+  \cite{verdict}.
+
+  The original Dissent was fully peer-to-peer
+  \cite{p2pd}. The shift to a client-server model
+  allows for significantly improved performance, but it introduces several new
+  concerns, particularly relating to misbehaving servers, a new class of DoS
+  attacks, and group formation.
+
 \section{Threat Models}
+  Newly available information about vulnerabilities and global-scale
+  surveillance in today's centralized internet infrastructure has brought new
+  security considerations and threat models to the foreground of networked
+  system research. It has rendered a swath of anonymity and voting tools
+  obsolete, and poses a significant threat to those that remain. Group
+  management protocols aimed at dissidents must take this into account.
+
   %TODO: move to non-goals?
   % \paragraph{Accountability:} In the context of Dissent, accountability refers
   % to the ability of a protocol to detect and exclude participants who disrupt
@@ -126,24 +218,13 @@ Decentralized: We don't trust anyone.
   % \cite{verdict}. Protocols that make use of quorums
   % rather than being fully peer-to-peer are able to provide stronger guarantees
   % of forward progress \cite{paxos}.
-  \subsubsection{Byzantine Fault Tolerance}
-  \toadd{intro}
-    Distributed consensus protocols allow groups of nodes to come to an
-    agreement on canonical values. For example, in a distributed database, if an
-    unreliable power supply causes some portion of servers to be offline for
-    each of several transactions, these protocols allow the
-    servers to reconcile their records so that all servers agree on the
-    transaction history. The problem was popularized by
-    \cite{paxos}, which proposed the framing and solution now
-    known as Paxos: A Paxos cluster that consists of 2$f+1$ nodes must have a
-    \emph{quorum} of $f + 1$ participating nodes at any given time.
-    Transactions occur in three phases: First, the single current designated
-    leader (Proposer) proposes the $n$th change. Next, if no other participants
-    (Acceptors) have received a proposal numbered higher than $n$, the Acceptors
-    promise to ignore future lower numbered requests.  Finally, upon receiving
-    $f+1$ Promises, the Proposer declares success to all Acceptors. This allows
-    the cluster to maintain a consistent record of transactions as long as a
-    quorum is present.
+  \subsection{Byzantine Fault Tolerance}
+    In shifting our focus from offline voting algorithms to networked protocols,
+    we must consider several types of disruptions not taken into account by
+    those algorithms. In particular, any member tasked with ``broadcasting'' a
+    message may equivocate, sending different values to different participants.
+    Existing work on distributed consensus provides various approaches to these
+    problems.
 
     Paxos and many similar protocols makes the simplifying assumption that all
     nodes in the system are honest --- the only faults considered are those
@@ -171,121 +252,44 @@ Decentralized: We don't trust anyone.
     not knowable a priori. If our leader election algorithm is modeled on other
     election protocols, it must be assumed that honest nodes may disagree on
     which servers they wish to elect.
+
   \subsection{Global Passive Adversary}
-\section{Evaluation of Existing Systems}
-\subsection{Electronic Voting} \label{Subsection:evoting}
-  \toadd{beef up this section.}
-  %evoting intro
-  Secure electronic voting systems have arisen largely out of a desire to
-  retain secret ballots (no one should learn how a particular voter voted)
-  while also guaranteeing accurate and fair counting of votes. Unlike
-  distributed consensus protocols, secure electronic voting systems generally
-  achieve their security properties through decentralization of trust rather
-  than computation. They normally depend on a single executor of the vote
-  aggregation protocol, using verifiability to ensure that each voter can be
-  confident their vote was tallied fairly.
+  To provide anonymity from an adversary like the N.S.A., a modern anonymity
+  protocol must protect against several forms of attacks. Feigenbaum et.
+  al.\cite{feigenbaum_seeking_2013} highlight several specific attacks to which
+  onion routing is vulnerable:\todoword{figure out if Tor should be moved}
+  \paragraph{Global traffic analysis:}
+  If the adversary can monitor most of the traffic on the internet globally,
+  the adversary can with high probability see the link from Alicia to the Tor
+  network and from the Tor exit relay to Badru. This means the adversary can
+  observe that the messages Alicia sends correspond to messages Badru receives
+  some short amount of time later. Even if the messages themselves are
+  encrypted, the adversary can analyze the lengths and other metadata about the
+  messages to correlate this traffic.
+  % TODO: Move to non-goals; possibly add self-ID
+  % \paragraph{Active attacks:}
+  % Global traffic analysis attacks only require the adversary to be able to
+  % monitor global traffic. If the adversary can also modify or generate
+  % traffic, several other attacks are possible. The adversary can launch
+  % \emph{man-in-the-middle} (MITM) attacks in which it impersonates Alicia,
+  % Badru, or one or more Tor nodes. The adversary can launch \emph{Sybil}
+  % attacks, in which many different Tor clients controlled by the same
+  % adversary join the network as individual clients. Either of these can be
+  % used to create \emph{Denial-of-Service} (DoS) attacks, which might either
+  % prevent users from connecting to Tor at all, or force Tor traffic to go
+  % through particular, potentially adversary-controlled, Tor nodes ---
+  % de-anonymizing the users.
+  \paragraph{Intersection attacks:}
+  In general, it is possible to tell when users are using an anonymity
+  service --- the anonymity comes from the difficulty of linking any particular
+  user to particular messages produced by the service. Over time, however, the
+  client set of an anonymity service is unlikely to remain fixed. A passive
+  adversary monitoring the outputs of an anonymity service as well as the set
+  of users connected can narrow the set of users who potentially, for example,
+  updated a particular blog with a static pseudonym, by excluding users  not
+  online during all updates to the blog.\todoword{reword}
 
-    One solution is presented in \cite{neff},
-    and the initial assignment of pseudonyms in Dissent already uses a variation
-    on this protocol. In the Neff shuffle, each voter encrypts their vote in
-    such a way that the aggregator must permute the vote ciphertexts before
-    being able to decrypt them. The result is a permutation which no one knows
-    --- a voter can verify that their ciphertext is present in the permutation,
-    but gains no information about the correspondence between other ciphertexts
-    and other voters. It is both individually and universally verifiable.
-
-    The individual verifiability of \cite{neff} is based on each
-    voter's retention of their secret key. \emph{Coercion-resistant} electronic
-    voting protocols remain robust even if secret keys are compromised: In
-    \cite{juels_coercion-resistant_2005}, the voter uses their secret key only
-    to establish eligibility, at which point they are assigned a random element
-    of a well known set to use in their actual ballot. The ballots are
-    unlinkable to the secret keys, and there is no way for an outsider to
-    confirm whether a particular random element corresponds with a particular
-    voter. This protocol achieves strong resistance to multiple kinds of
-    coercion by deliberately weakening the eligibility verification property to
-    depend on trust in the ``registrar'' who validates credentials and assigns
-    the voting keys, preventing ``forced-abstention'' attacks (in which the
-    adversary demands a voter simply not participate) by making it impossible
-    for outsiders to verify the set of voters.
-
-    These protocols provide useful templates for how a distributed voting
-    protocol might accomplish similar security properties.
-
-\subsection{Anonymity Protocols}
-\label{subsection:ExistingAnonymity}
-\toadd{Set this up as problems with electronic voting schemes}
-  Every anonymity tool shares one basic goal: Given a set of assumptions about
-  an adversary's capabilities, an anonymity tool provides a way for a user to
-  broadcast a message without the adversary being able to discover the author of
-  the message.
-  To illustrate the general approach and some common security assumptions, we
-  first consider The Onion Router (Tor), the most widely used anonymity tool
-  today\cite{ford_hiding_2014}
-
-  \subsection{Onion Routing with Tor}
-  \label{Subsubsection:Tor}
-  \toadd{this section is probably not needed}
-    Tor aims to provide an anonymity service that, to the end user, behaves like
-    a one-hop proxy: If Alicia wants to send an HTTP request to Badru using Tor,
-    Alicia sends a request through Tor, Tor forwards the request to Badru, Badru
-    replies to Tor, and Tor forwards the response to Alice. Under the surface,
-    when Alicia's traffic enters the Tor network, it is encrypted and
-    transmitted among several "onion routers" before reaching an "exit relay",
-    which decrypts the request and passes it onto Badru. Each intermediate onion
-    router only knows the next hop in the path from Alicia to Badru - no single
-    node knows its traffic originated at Alicia or is en route to Badru - so no
-    one in the network knows the complete path.
-
-    Tor provides anonymity from an adversary who ``can observe some fraction of
-    the network traffic; who can generate, modify, delete, or delay traffic; who
-    can operate onion routers of [their] own; and who can compromise some
-    fraction of the onion routers''\cite{dingledine_tor:_2004}. If an adversary
-    can observe much more than a small fraction of traffic, or if the adversary
-    controls many colluding nodes, other attacks become possible, and the
-    anonymity guarantees no longer hold. We now know that the U.S. National
-    Security Agency actively uses such attacks, and so a new protocol is
-    necessary in order to remain anonymous from the N.S.A.
-
-  \subsection{New Threat Models}
-  \label{Subsubsection:NewThreats} To
-    provide anonymity from an adversary like the N.S.A., a modern anonymity
-    protocol must protect against several forms of attacks. Feigenbaum et.
-    al.\cite{feigenbaum_seeking_2013} highlight five specific attacks to which
-    onion routing is vulnerable:
-    \paragraph{Global traffic analysis:} If the
-    adversary can monitor most of the traffic on the internet globally, the
-    adversary can with high probability see the link from Alicia to the Tor
-    network and from the Tor exit relay to Badru. This means the adversary can
-    observe that the messages Alicia sends correspond to messages Badru receives
-    some short amount of time later. Even if the messages themselves are
-    encrypted, the adversary can analyze the lengths and other metadata about
-    the messages to correlate this traffic.
-    \paragraph{Active attacks:}
-    Global traffic analysis attacks only require the adversary to be able to
-    monitor global traffic. If the adversary can also modify or generate
-    traffic, several other attacks are possible. The adversary can launch
-    \emph{man-in-the-middle} (MITM) attacks in which it impersonates Alicia,
-    Badru, or one or more Tor nodes. The adversary can launch \emph{Sybil}
-    attacks, in which many different Tor clients controlled by the same
-    adversary join the network as individual clients. Either of these can be
-    used to create \emph{Denial-of-Service} (DoS) attacks, which might either
-    prevent users from connecting to Tor at all, or force Tor traffic to go
-    through particular, potentially adversary-controlled, Tor nodes ---
-    de-anonymizing the users.
-    \paragraph{Intersection attacks:} In general,
-    it is possible to tell when users are using an anonymity service --- the
-    anonymity comes from the difficulty of linking any particular user to
-    particular messages produced by the service. Over time, however, the client
-    set of an anonymity service is unlikely to remain fixed. A passive
-    adversary monitoring the outputs of an anonymity service as well as
-    the set of users connected can narrow the set of users who
-    potentially, for example, updated a particular blog with a static
-    pseudonym, by excluding users  not online during all updates to the
-    blog.
-    \toadd{conclusion}
-
-  \subsubsection{The Trouble with Relays}
+  \subsection{The Trouble with Relays}
   \label{Subsection:Relays}
   \todoword{copy edit Tor vs. Dissent}
     One potential approach to making Dissent widely available would be to have
@@ -310,64 +314,72 @@ Decentralized: We don't trust anyone.
     non-trivial problem.  We consider several other areas of research relevant
     to solving it.
 
-\section{Conclusion}\todoword{better name}
-% \begin{tabular}{p{2.5cm}p{2cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
-%   \cline{3-12}
+
+% \section{Conclusion}\todoword{better name}
+% \begin{table}
+%   \begin{adjustbox}{width=1.7\textwidth,center}
+%     \begin{tabularx}{1.7\textwidth}{XXXXX|XXX|XX|X}
+%     % \begin{tabularx}{width=1.4\textwidth,center}{p{2.5cm}p{2cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
+%   \cline{3-11}
 %   & & \multicolumn{3}{c|}{Voting Protocols}     &
 %                               \multicolumn{3}{|c|}{Consensus Protocols} &
-%                                                           \multicolumn{3}{|c|}{Anonymity Protocols} & This Protocol\\
-%   \cline{3-12}
+%                                                           \multicolumn{2}{|c|}{Anonymity Protocols} & This Protocol\\
+%   % \cline{3-10}
 %   & &                     Neff & Kremer & Juels & Paxos & Byzantine
-%                                                           Paxos & King & Tor & Dissent & Dissent
-%                                                                                          in
-%                                                                                          Numbers    &   \\
-%   \cline{1-12}
-%   \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Verifiability} } &
-%   \multicolumn{1}{|p{2cm}|}{Individual}        & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{2-12}
-%   \multicolumn{1}{|c}{} &
-%   \multicolumn{1}{|p{2cm}|}{Universal}         & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{1-12}
-%   \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Anonymity} } &
-%   \multicolumn{1}{|p{2cm}|}{Secret Ballots}    & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{2-12}
-%   \multicolumn{1}{|c}{} &
-%   \multicolumn{1}{|p{2cm}|}{Secret Initiators} & yes &      &      & no & no?    &        & n/a & yes? & & \\ \cline{1-12}
-%   \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Decentralized Trust/Netowrk} }&
-%   \multicolumn{1}{|p{2cm}|}{Byzantine}         & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{2-12}
-%   \multicolumn{1}{|c}{} &
-%   \multicolumn{1}{|p{2cm}|}{Global Passive}    & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{1-12}
-% \end{tabular}
-
-\begin{table}
-  \begin{adjustbox}{width=1.4\textwidth,center}
-    \begin{tabularx}{1.4\textwidth}{>{\centering}XX|XX|XX|XX}
-  \cline{3-8}
-  & & \multicolumn{2}{X|}{Verifiability} & \multicolumn{2}{X|}{Anonymity} &
-  \multicolumn{2}{X}{Decentralized Trust/Network} \\ \cline{3-8}
-& & Individual & Universal & Secret Ballots & Secret Initiators & Byzantine &
-Global Passive \\
-\cline{1-8}
-\multicolumn{1}{X|}{\multirow{3}{2cm}{Voting Protocols} } &
-\multicolumn{1}{X}{Neff} & & & & &\\ \cline{2-8}
-\multicolumn{1}{X|}{} &
-\multicolumn{1}{X}{Kremer} & & & & &\\ \cline{2-8}
-\multicolumn{1}{X|}{} &
-\multicolumn{1}{X}{Juels} & & & & &\\ \cline{1-8}
-\multicolumn{1}{X|}{\multirow{3}{2cm}{Consensus Protocols} } &
-\multicolumn{1}{X}{Neff} & & & & &\\ \cline{2-8}
-\multicolumn{1}{X|}{} &
-\multicolumn{1}{X}{Kremer} & & & & &\\ \cline{2-8}
-\multicolumn{1}{X|}{} &
-\multicolumn{1}{X}{Juels} & & & & &\\ \cline{1-8}
-\multicolumn{1}{X|}{\multirow{3}{2cm}{Anonymity Protocols} } &
-\multicolumn{1}{X}{Neff} & & & & &\\ \cline{2-8}
-\multicolumn{1}{X|}{} &
-\multicolumn{1}{X}{Kremer} & & & & &\\ \cline{2-8}
-\multicolumn{1}{X|}{} &
-\multicolumn{1}{X}{Juels} & & & & &\\ \cline{1-8}
-\multicolumn{1}{X}{This Protocol} & & & & & & \\ \cline{1-8}
-% \multicolumn{1}{|p{2cm}}{\multirow{3}{*}{This Protocol} } &
-% \multicolumn{1}{|p{2cm}}{} &
-% \multicolumn{1}{|p{2cm}}{} &
-% \multicolumn{1}{|p{2cm}}{} \\ \cline{1-8}
-\end{tabularx}
-\end{adjustbox}
-\end{table}
+%                                                           Paxos & King & Tor & Dissent &        \\
+%   \cline{1-11}
+%   \multicolumn{1}{X}{\multirow{2}{*}{Verifiability} } &
+%   \multicolumn{1}{|X|}{Individual}        & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{2-11}
+%   \multicolumn{1}{X}{} &
+%   \multicolumn{1}{|X|}{Universal}         & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{1-11}
+%   \multicolumn{1}{X}{\multirow{2}{*}{Anonymity} } &
+%   \multicolumn{1}{|X|}{Secret Ballots}    & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{2-11}
+%   \multicolumn{1}{X}{} &
+%   \multicolumn{1}{|X|}{Secret Initiators} & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{1-11}
+%   % \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Decentralized Trust/Netowrk} }&
+%   % \multicolumn{1}{|p{2cm}|}{Byzantine}         & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{2-11}
+%   % \multicolumn{1}{|c}{} &
+%   % \multicolumn{1}{|p{2cm}|}{Global Passive}    & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{1-11}
+% \end{tabularx}
+% \end{adjustbox}
+% \end{table}
+% \newcolumntype{R}{>{\raggedleft\arraybackslash }X}
+%
+% \begin{table}
+%   \begin{adjustbox}{width=1.4\textwidth,center}
+%     \begin{tabularx}{1.4\textwidth}{XXXX|XX}
+%   \cline{3-6}
+%         & & \multicolumn{2}{X|}{Verifiability} & \multicolumn{2}{X}{Anonymity}
+%         % \multicolumn{2}{X}{Decentralized Trust/Network}
+%         \\ \cline{3-6}
+%         & &            Individual  & Universal & Secret Ballots & Instigators \\
+% % & Byzantine & Global Passive \\
+% \cline{1-6}
+% \multicolumn{1}{R|}{\multirow{3}{2cm}{\raggedleft Voting Protocols} } &
+% \multicolumn{1}{X}{Neff}& yes      & yes       &                & \\ %\cline{2-6}
+% \multicolumn{1}{X|}{} &
+% \multicolumn{1}{X}{Kremer}         &           &                & \\ %\cline{2-6}
+% \multicolumn{1}{X|}{} &
+% \multicolumn{1}{X}{Juels}          &           &                & \\ \cline{1-6}
+% \multicolumn{1}{R|}{\multirow{3}{2cm}{\raggedleft Consensus Protocols} } &
+% \multicolumn{1}{X}{Paxos}          &           &                & \\ %\cline{2-6}
+% \multicolumn{1}{X|}{} &
+% \multicolumn{1}{X}{Byzantine Paxos}&           &                & \\ %\cline{2-6}
+% \multicolumn{1}{X|}{} &
+% \multicolumn{1}{X}{\cite{king_load_2011}}&     &                & \\ \cline{1-6}
+% \multicolumn{1}{R|}{\multirow{3}{2cm}{\raggedleft Anonymity Protocols} } &
+% \multicolumn{1}{X}{Tor}            &           &                & \\ %\cline{2-6}
+% \multicolumn{1}{X|}{} &
+% \multicolumn{1}{X}{Dissent}        &           &                & \\ %\cline{2-6}
+% \multicolumn{1}{X|}{} &
+% \multicolumn{1}{>{\raggedright}X}{Dissent in Numbers}&        &                & \\ \cline{1-6}
+% % \multicolumn{1}{X|}{} &
+% % \multicolumn{1}{X}{Juels} & & & & &\\ \cline{1-6}
+% \multicolumn{1}{R}{\raggedleft This Protocol} & & & & \\ \cline{1-6}
+% % \multicolumn{1}{|p{2cm}}{\multirow{3}{*}{This Protocol} } &
+% % \multicolumn{1}{|p{2cm}}{} &
+% % \multicolumn{1}{|p{2cm}}{} &
+% % \multicolumn{1}{|p{2cm}}{} \\ \cline{1-6}
+% \end{tabularx}
+% \end{adjustbox}
+% \end{table}
