@@ -12,6 +12,12 @@ members organize themselves into a Peer-to-Peer Dissent
 cluster \cite{p2pd} using some consensus protocol such
 as Byzantine Paxos, as discussed in \cite{sec}.
 
+The Dissent configuration file specifies the size and ordering of clients'
+message slots\todogrunt{Need to define client and slot somewhere}. which will
+consist of, for each of the $n$ clients: space for a \texttt{Ballot}, and space
+for up to $n$ signatures so the client can sign whatever other proposals are in
+play.  We only allow any given client to have one proposal at any given time.
+
 \section{Peer-to-Peer Layer}
 Every \texttt{Member} maintains a TCP connection to every other \texttt{Member},
 and uses this to execute the peer to peer version of Dissent \cite{sec}. The
@@ -52,21 +58,18 @@ describe the functionality here} Since all clients receive each client's
 messages in a deterministic order, there is a well-defined sequence of rounds
 which we can associate with a monotonically increasing \emph{round ID}.
 
-The DIN configuration file specifies the size and ordering of clients' message
-slots\todogrunt{Need to define client and slot somewhere}.
-
 \missingfigure{Illustrate the round message format, which will consist of, for
   each of the $n$ clients: space for a \texttt{Ballot}, and space for up to
   $n$ signatures so the client can sign whatever other proposals are in play.
 We only allow any given client to have one proposal at any given time.}
 
 Within a round, each \texttt{Member} may \todosubst{Jamming by proposing
-ballots??? Infinite timeouts???} transmit a \texttt{Ballot}. A \texttt{Ballot}
-consists of:
+ballots??? Infinite timeouts???} transmit a \texttt{Petition}. A
+\texttt{Petition} consists of:
 \begin{itemize}
   \item A proposed \emph{Manifest}, as described above,
   \item A \emph{Link Scope}\todogrunt{Explain}
-  \item A collection of \texttt{Signatures}\todogrunt{Explain}
+  % \item A collection of \texttt{Signatures}\todogrunt{Explain}
   \item A \emph{Round ID} when the ballot will expire.
 \end{itemize}
 
