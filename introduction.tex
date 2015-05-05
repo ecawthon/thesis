@@ -39,23 +39,27 @@ however, extend beyond the voting process itself. Noam Chomsky writes that
 spectrum of acceptable opinion, but allow very lively debate within that
 spectrum'' \cite{chomsky1998common}. To have truly free elections, the means for
 calling an election and for drafting the ballot must also be decentralized. For
-example, in \tocite many systems, there is a mechanism for claling a vote of no
+example, in \tocite many systems, there is a mechanism for calling a vote of no
 confidence\todoword{capitalize or hyphenate?} to potentially remove elected
 leaders in the middle of a term. Existing electronic voting protocols do not
 provide a way of protecting the identity of the voter who decides such a
-referrendum should take place.
+referrendum should take place. Further, voting over the internet poses
+additional trust problems beyond those inherent to electronic voting in general.
+A dissident group organizing in defiance of a powerful entity with control over
+the network must protect its members' anonyity not only from other group
+members, but from a global passive adversary who can analyze all message
+transmissions and traffic patterns among all nodes in the system.
 
 We present a protocol for egalitarian groups to determine their leadership in a
-fashion that is anonymous, verifiable, and reversible.  By combining the Dissent
-in Numbers protocol for anonymous communication with decentralized trust, with a
-simple voting protocol utilizing linkable ring signatures, we show how a group
-might attain accountable scalability: where the scalable protocol is used most
-of the time, but where the peer-to-peer consensus can always rescind the power
-it has delegated.\todogrunt{rewrite this to be in terms of the above desired
-properties}
-
-\toadd{Add the other misc. contributions this provides along the way, like group
-management in Dissent}
+fashion that is anonymous, verifiable, and fully decentralized.  By combining
+the Dissent protocol for anonymous communication with decentralized
+trust\cite{p2pd}, with a simple voting protocol utilizing linkable ring
+signatures\cite{lrs}, we show how a group might attain verifiable and anonymous
+elections with Byzantine trust assumptions, secure against a global passive
+adversary.  As a specific example, we show how this might be used as a server
+selection and group management mechanism in scalable Dissent \cite{din}, so that
+the scalable protocol is used most of the time, but where the peer-to-peer
+consensus can always rescind the power it has delegated.
 
 Chapter~\ref{Chapter:Background} provides an overview of existing work on
 decentralized decisionmaking, with particular attention to anonymity and
@@ -65,4 +69,5 @@ functionality and security properties our protocol sets out to provide.
 Chapter~\ref{Chapter:Protocol} describes our protocol specification.
 Chapter~\ref{Chapter:Proofs} formalizes the properties set out in
 Chapter~\ref{Chapter:Goals} and includes proofs that our protocol
-satisfies them. Chapter~\ref{Chapter:Conclusion} concludes.\todoword{conclude}
+satisfies them. Chapter~\ref{Chapter:Conclusion} concludes.\todoword{update for
+actual org}
