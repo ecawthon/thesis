@@ -3,6 +3,5 @@ Current pdf without notes: https://github.com/ecawthon/thesis/raw/master/clean.p
 
 Still working on:
 1. protocol description
-2. proof sketches
-3. making conclusion and abstract coherent
-4. future work
+2. appendix
+3. making things coherent
