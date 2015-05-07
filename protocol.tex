@@ -3,8 +3,11 @@
 % \end{itemize}
 We now sketch an implementation of the specification from
 Chapter~\ref{Chapter:Spec}: a simple voting protocol based on linkable ring
-signatures \cite{lrs}, on top of a Dissent instance that provides instigator
-anonymity, along with acccountability to handle byzantine faults.
+signatures \cite{lrs}, on top of a Hardened Dissent \cite{sec} instance that
+provides instigator anonymity, along with acccountability to handle byzantine
+faults. Our protocol uses this to elect servers for an instance of Dissent in
+Numbers \cite{din}, which can then be used for latency-sensitive applications
+without sacrificing the superior security properties of Hardened Dissent.
 \section{Building Blocks}
 We combine several existing cryptosystems and distributed systems to construct
 our protocol.
@@ -18,6 +21,12 @@ protocol providing the following properties:
   \begin{theorem} For any round $i$, all participants know the results of round
     $i$ before any know the results of round
     $i+1$.\end{theorem}\label{theorem:rounds}
+  \begin{theorem}[Anonymity] When Hardened Dissent is executed and completes in a
+    cluster of $n$ participants, of which $k$ are honest, none of the avenues of
+    attack descibed in our thread models in Section~\ref{Section:threats}
+    provide non-negligable advantage over uniform guessing in determining which
+    of the $k$ honest participants sent any particular message.
+  \end{theorem}\label{theorem:anon}
   All properties are rigorously proven in \cite{sec}.
 
 \subsection{Linkable Ring Signatures}
@@ -78,15 +87,16 @@ or not they produced a signature of interest.''
 \cite{golrs}
 \todo{TODO: explain in own words instead of having a page and a half long quote}
 \subsection{Dissent in Numbers}
-An instance of DIN consists of $n$ clients and $m$ servers. Communication takes
-place in \emph{rounds}, wherein each client has an opportunity to broadcast a
-message to the entire client set. Assuming $k$ of the $n$ clients are honest,
-each client is guaranteed that, at the protocol level, its message will be
-anonymous among the $k$ honest clients unless all servers collude with each
-other.\todoword{Move the security properties to the goals section and only
-describe the functionality here} Since all clients receive each client's
-messages in a deterministic order, there is a well-defined sequence of rounds
-which we can associate with a monotonically increasing \emph{round ID}.
+An instance of Dissent in Numbers consists of $n$ clients and $m$ servers.
+Communication takes place in \emph{rounds}, wherein each client has an
+opportunity to broadcast a message to the entire client set. Assuming $k$ of the
+$n$ clients are honest, each client is guaranteed that, at the protocol level,
+its message will be anonymous among the $k$ honest clients unless all servers
+collude with each other.\todoword{Move the security properties to the goals
+  section and only describe the functionality here} Since all clients receive
+  each client's messages in a deterministic order, there is a well-defined
+  sequence of rounds which we can associate with a monotonically increasing
+  \emph{round ID}.
 
 \section{Algorithms}
 \subsection{Initial formation}
@@ -105,12 +115,11 @@ play.  We only allow any given client to have one proposal at any given time.
 
 \subsection{Peer-to-Peer Layer}
 Every \texttt{Member} maintains a TCP connection to every other \texttt{Member},
-and uses this to execute the peer to peer version of Dissent \cite{sec}. The
-primary limitation of this version is performance --- there is a detailed
-security analysis demonstrating the anonymity preserving properties of this
-layer, and so we use it as a fallback layer for reconfiguring if servers
-misbehave by dropping out, and for initial setup of the Dissent in Numbers (DIN)
-layer.
+and uses this to execute Hardened Dissent. The primary limitation of this
+version is performance --- there is a detailed security analysis demonstrating
+the anonymity preserving properties of this layer, and so we use it as a
+fallback layer for reconfiguring if servers misbehave by dropping out, and for
+initial setup of the Dissent in Numbers (DIN) layer.
 
 For any instance of the DIN layer, there is a canonical \texttt{Manifest}
 maintained at the P2P layer describing its parameters. The \texttt{Manifest}
@@ -137,12 +146,18 @@ client instances.
 it.}
 
 \subsection{Dissent-in-Numbers Layer}
-The communication involved in establishing the \texttt{Manifest} takes place
-over an instance of Dissent in Numbers \cite{din}. We sketch a
-black box model of Dissent in Numbers as it relates to our protocol.
+\todo[inline]{TODO: Describe uses of DIN}
+In its current form, Dissent in Numbers lacks the ability to handle server
+faults, and it depends on a pre-existing well-known set of servers. However, it
+also provides dramatically superior performance as compared with Hardened
+Dissent. Our protocol adds group management, fault tolerance, and some forms of
+censorship resistance to Dissent in Numbers, providing a framework for a more
+versatile system.
+
+\missingfigure{TODO: Draw the topology and a flow chart showing pseudonyms/public
+keys}
 
 \subsection{Voting with Linkable Ring Signatures}
-
 By associating a unique link scope with each petition, we allow \texttt{Member}s
 to vote by producing a signature with the current member set and the proposer's
 link scope. Each \texttt{Member} that wishes to vote for the petition broadcasts
@@ -153,10 +168,10 @@ associated with the petition. At the specified round, each member should verify
 all signatures received. If the function $t$ applied to the set of unique, valid
 signatures results in \textsc{True}, then the petition passes.
 
-\missingfigure{Illustrate the round message format, which will consist of, for
-  each of the $n$ clients: space for a \texttt{Ballot}, and space for up to
-  $n$ signatures so the client can sign whatever other proposals are in play.
-We only allow any given client to have one proposal at any given time.}
+\missingfigure{TODO: Illustrate the round message format, which will consist of,
+  for each of the $n$ clients: space for a \texttt{Ballot}, and space for up to
+$n$ signatures so the client can sign whatever other proposals are in play.  We
+only allow any given client to have one proposal at any given time.}
 % \begin{table}
 %   \begin{adjustbox}{width=1.4\textwidth,center}
 %     \begin{tabularx}{1.4\textwidth}{XXXX|XX}
@@ -276,7 +291,28 @@ Section~\ref{Subsection:verif}.
     % By properties of linkable ring signatures,
     %
 \subsection{Anonymity}
+Although the voting protocols discussed in Section~\ref{Subsection:evoting}
+provide voter anonymity (secret ballots) within an election, they do not on
+their own provide instigator anonymity. This protocol provides both.
 
+\begin{lemma} Votes are $k$-anonymous among the $k$ honest users of the system
+\end{lemma}
+\begin{proof} This follows directly from Theorem~\ref{theorem:anon}.\end{proof}
+
+Using this, we can show:
+
+\begin{theorem} This protocol provides Secret Ballots \end{theorem}
+\begin{proof} Anyone monitoring traffic can trivially link a vote to its Dissent
+  pseudonym, but since this changes every round \cite{sec}, this provides no
+  information beyond the scope of a single petition.
+\end{proof}
+
+\begin{theorem} This protocol provides Secret Instigators \end{theorem}
+\begin{proof} Similarly, since the Hardened Dissent layer runs at all times,
+  every participant is essentially actively submitting an anonymous petition or
+  non-petition every round, and so neither intersection attacks nor traffic
+  analysis can determine the identity of the instigator of any petition.
+\end{proof}
 
 \section{Limitations and Non-Goals}
   \paragraph{Intersection Attacks:} The \texttt{Peer} and \texttt{Member} sets
