@@ -102,23 +102,41 @@ provide a way of protecting the identity of the voter who decides such a
 referrendum should take place. Further, voting over the internet poses
 additional trust problems beyond those inherent to electronic voting in general.
 A dissident group organizing in defiance of a powerful entity with control over
-the network must protect its members' anonyity not only from other group
+the network must protect its members' anonymity not only from other group
 members, but from a global passive adversary who can analyze all message
 transmissions and traffic patterns among all nodes in the system.
 
-We present a protocol for egalitarian groups to determine their leadership in a
-fashion that is anonymous, verifiable, and fully decentralized.  By combining
-the Dissent protocol for anonymous communication with decentralized
-trust\cite{p2pd}, with a simple voting protocol utilizing linkable ring
-signatures\cite{lrs}, we show how a group might attain verifiable and anonymous
-elections with Byzantine trust assumptions, secure against a global passive
-adversary.  As a specific example, we show how this might be used as a server
-selection and group management mechanism in scalable Dissent \cite{din}, so that
-the scalable protocol is used most of the time, but where the peer-to-peer
-consensus can always rescind the power it has delegated.
+We present a survey and analysis of secure, decentralized, consensus-based
+decision making in untrusted networks.
 
-\chapter{Background}\label{Chapter:Background}
+We begin with an overview of existing tools dealing with various aspects of this
+problem (Chapter~\ref{Chapter:Existing}).  We then outline important properties
+for voting protocols operating in this trust model, and introduce several
+important threat models to consider (Chapter~\ref{Chapter:Goals}).  In
+Chapter~\ref{Chapter:Spec}, we provide a detailed specification for a protocol
+providing the properties laid out in Chapter~\ref{Chapter:Goals}. In
+Chapter~\ref{Chapter:Protocol}, we outline one potential implementation of this
+specification.\todo{TODO: proofs section?}. Finally, we conclude and discuss
+directions for future work (Chapter~\ref{Chapter:Conclusion}).
+
+% TODO: Make this the intro for the protocol section.
+% We present a protocol for egalitarian
+% groups to determine their leadership in a fashion that is anonymous, verifiable,
+% and fully decentralized.  By combining the Dissent protocol for anonymous
+% communication with decentralized trust\cite{p2pd}, with a simple voting protocol
+% utilizing linkable ring signatures\cite{lrs}, we show how a group might attain
+% verifiable and anonymous elections with Byzantine trust assumptions, secure
+% against a global passive adversary.  As a specific example, we show how this
+% might be used as a server selection and group management mechanism in scalable
+% Dissent \cite{din}, so that the scalable protocol is used most of the time, but
+% where the peer-to-peer consensus can always rescind the power it has delegated.
+%
+
+\chapter{Related Work}\label{Chapter:Existing}
 \input litreview.tex
+
+\chapter{Properties and Threat Models}\label{Chapter:Goals}
+\input goals.tex
 
 % \chapter{Dissent}\label{Chapter:Dissent}
 % \input dissent.tex
@@ -126,11 +144,14 @@ consensus can always rescind the power it has delegated.
 % \chapter{Goals and Non-Goals}\label{Chapter:Goals}
 % \input goals.tex
 %
+\chapter{General Specification}\label{Chapter:Spec}
+\input spec.tex
+
 \chapter{Protocol Description}\label{Chapter:Protocol}
 \input protocol.tex
 
-\chapter{Security Properties and Correctness}\label{Chapter:Proofs}
-\input proofs.tex
+% \chapter{Security Properties and Correctness}\label{Chapter:Proofs}
+% \input proofs.tex
 
 \chapter{Conclusion}\label{Chapter:Conclusion}
 As networked communication becomes increasingly integral to the communications

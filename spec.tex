@@ -1,0 +1,151 @@
+\section{Terminology}
+\subsection{Data Structures}
+\begin{itemize}
+\item A \texttt{Manifest} consists of
+\begin{itemize}
+  \item A \texttt{Roster} $R$, mapping public keys to IP addresses for all
+    \texttt{Client}s,
+  \item A \texttt{Servers} list $S$, which is a subset of $R$,
+  \item A function $t : G \to \{\textsc{True, False}\}$ mapping a set of
+    signatures to an election result. So, if $t(g) = \textsc{True}$ for some
+    outcome $g$\todo[inline]{TODO: clarify $G$}, then the proposal corresponding
+    to $g$ should be adopted at the specified expiration round. A plausible
+    example is the function which specifies what proportion of \texttt{Member}s
+    must agree to a change in the composition of $R$ or $S$ in order for the
+    change to take effect
+\end{itemize}
+  \item A \texttt{Petition} is a tuple $(L, M', rid)$, where $L$ is a unique
+    bytestring selected arbitrarily by the instigator, $M$ is the current
+    manifest of the cluster, $M'$ is a proposed new manifest, and $rid$ is a Dissent round number at least $|M.R|$ rounds in
+    the future.\todo{future is undefined wrt non-stateful petition}
+
+\end{itemize}
+
+\subsection{States}
+\begin{itemize}
+  \item A \emph{State} is a tuple $(M, r)$ defining the behavior of
+    the current DIN instance, where $M$ is a \texttt{Manifest} and $r$ is the
+    current round.
+
+  % \item A \emph{Proposal} is a stateful \texttt{Petition}, that is, a tuple $(S,
+  %   P)$, where $S$ is the current state and $P$ is a petition.
+  %   \todo[color=orange,inline,caption={}]{TODO: What if config changes during
+  %   election?}
+  %
+  \item An \emph{Election} encompasses the operation of the protocol between
+    when a \texttt{Petition} $P$ is first proposed and the round
+    $P$.\texttt{rid} --- that is, the portion of the protocol where members are
+    aware that that \texttt{P} is being considered, but in which no member knows
+    the outcome of the election.
+
+    The election state can be described by a tuple
+    $(S, P, G)$, where $S$ is the current \emph{State}, $P$ is a
+    \texttt{Petition}, and $G$ is a collection of linkable ring signatures from
+    members of $S.M$ according to link scope
+    $P.L$.\todo[inline,color=orange]{this isn't a state\ldots}
+
+  % \item A \emph{result} is a tuple $(M, G, rid)$ defining a manifest $M$ and a
+  %   set of signatures $G$.
+  %
+  % \item An \emph{instigator} is a member who initiates an election.
+  %
+\end{itemize}
+
+\subsection{Functions}
+\begin{itemize}
+  \item The \textsc{Sign} function, provided by \cite{golrs}, takes in a set of
+    public keys $S$\todo{TODO:  Don't overload $S$}, a link scope $L$, a
+    private key $k$ corresponding to an element of $S$, and a petition $P$ to be
+    signed.
+  \item A \emph{Verify} function
+  \item An \emph{Evaluate} function takes
+\end{itemize}
+\begin{algorithm}
+  % \Kwin{
+  ohai
+  % \SetAlgoLined
+  % \KwIn{this text}
+  % \KwOut{how to}
+  %
+  % initialization\;
+  % \While{hello}{
+  %   face\;
+  %   \eIf{udners}{
+  %     sauce\;
+  %   }{
+  %     parse\;
+  %   }
+  % }
+  \caption{Evaluate}
+\end{algorithm}
+
+
+\section{Formal Properties and Correctness Arguments}
+\toadd{clean up embedded results defs etc.}
+\paragraph{Proposition 1:}
+\begin{theorem}The \emph{Election state} of any \emph{Election} at
+any time is well defined. \end{theorem}
+\begin{proof}This follows from properties of peer-to-peer Dissent \cite{sec}.
+  The \emph{Election State} can only be updated by transmission of messages
+  (votes) over Dissent. Recall that communication proceeds in serialized
+  \emph{rounds}, so by Theorem~\ref{theorem:rounds},\todo{TODO finish}
+\end{proof}
+
+  \subsection{Verifiability}
+    \subsubsection{Individual}
+    A group management protocol provides \emph{individual verifiability} if, in
+    any Election State $(S, P, G)$, any member $u$
+    either knows its own vote is correctly represented in $G$ (that is, either
+    $u$ voted and $u$'s
+    signature for $P.L$\todo{TODO: more params; define lrs} is contained in $G$,
+    or $u$ did not vote and $u$'s signature is absent from $G$), or can produce
+    a zero-knowledge proof that the Election State is invalid.\todo{TODO: define
+    invalid}
+
+    Our protocol provides individual verifiability.
+
+    --- this follows from the
+    properties of Dissent in Numbers and of linkable ring signatures.%: Since every
+    \paragraph{Lemma 1:} There is a well-defined state.
+
+    \paragraph{Lemma 1:} Given accurate knowledge of the current election state
+    $(S, P, G)$, a \texttt{Member} $m$ can call
+    $m$.\textsc{Sign}($S.M.\texttt{Roster}.keys$,$P.\texttt{LinkScope}$,$m$.$k$,
+    $P$) to produce a signature $s$, then examine $G$ to see if it contains $s$.
+    By properties of linkable ring signatures,
+
+
+    \subsubsection{Universal}
+    A group management protocol provides \emph{universal verifiability} if, in
+    any result $r = (M, B, G, rid)$, anybody can verify that $G$ is a valid
+    signing of $B$ or else produce a proof that it is not. Consequently, any
+    auditor (member or otherwise) can verify the canonical value of $M.t(G)$.
+
+    Our protocol provides universal verifiability.%:
+
+    \subsubsection{Eligibility}
+  \subsection{Anonymity}
+  \todo[color=orange,inline,caption={}]{TODO: formalize in terms of games}
+    \subsubsection{For Instigators}
+    A group management protocol provides \emph{instigator anonymity} if, during
+    and after any election, no member and no outside observer can determine
+    which member proposed the ballot in question.
+
+    Our protocol provides this through Dissent in Numbers.
+    \subsubsection{Of Ballots}
+    A group management protocol provides \emph{secret ballots} if, during and
+    after any election, either no outside observer can reconstruct which member
+    submitted which vote, or no outside observer can reconstruct how any
+    member voted. The same restrictions apply to knowledge gained by other
+    participants, except that each member can trivially reconstruct its own vote.
+
+    Our protocol provides this --- it follows directly from the properties of
+    linkable ring signatures.
+\subsection{Performance Notes}
+Any changes to the arrangement of servers in Dissent in Numbers requires an
+expensive, serial shuffle. Our protocol provides a way to change the topology
+without having to redo the shuffle, so long as the client set remains the same.
+
+This allows us to retain many of the stronger security properties of Hardened
+Dissent\cite{sec} while also achieving the performance benefits
+of Dissent in Numbers and Verdict in typical usage.

@@ -1,138 +1,141 @@
-\section{Goals}
-\subsection{Verifiability:}
-We provide individual and universal verifiability of votes, as defined in
-Section~\ref{Subsection:evoting}. More precisely, we provide the following:
-\paragraph{Authentication:} At the end of an election, all members either know
-that all votes were cast by group members, or they know which ones were not
-valid.\todogrunt{and can kick out, potentially? For another time\ldots}
-\paragraph{Individual Verifiability:} Each member can verify that its vote has
-been included in the canonical result\todosubst{double check how DIN handles
-equivocation --- i.e. that it can be detected and not just that it doesn't
-de-anonymize}
-\paragraph{Universal Verifiability:} At the end of an election, all members
-either know the result of the vote, or know that the result is
-invalid\todoword{formalize}
-\subsection{Anonymity:}
-We provide anonymity in two important domains:
-\paragraph{Ballot Secrecy:} The adversary should gain no information about which
-member cast which vote in a given election.\todogrunt{Formalize/define
-``member'', ``vote'', and ``election''}
-\paragraph{Instigator Secrecy:} The adversary should gain no information about
-which member proposed any given proposal.\todogrunt{flesh out}
-\todo[caption={},color=orange,inline]{
-  \begin{spacing}{1.0}TODO: There is apparent redundancy because
-  DIN already has shuffled slots, so why would we need LRS instead of just
-  plaintext writing the vote? I should write/think through at least one of:
-  \begin{itemize}
-  \item A special case for before DIN is set up where the LRS anonymity is
-    necessary, and/or
-  \item Efficiency advantage to not having to re-do the Neff shuffle every time
-    there's an election --- would we have to reshuffle anyway to switch servers?
-    (potentially not!)
-\end{itemize}\end{spacing}}
-\subsection{Reversibility:}
+\toadd{intro}
+\section{Desired Properties}
+  \subsection{Verifiability}\label{Subsection:verif}
+  A protocol is verifiable if its output can be inspected to confirm that the
+  protocol was carried out correctly. A simple example of this is signing a
+  message with the private key associated with a well-known public key: Anyone
+  who knows the public key can verify the validity of the signature.
 
-% In transforming Dissent in Numbers\cite{din} to a fully
-% decentralized context, some differential terminology is necessary. We define
-% several components of our protocol before moving on to discuss desired security
-% properties.
-%
-% \section{Terminology}
-% The protocol consists of two logical layers: A Dissent in Numbers layer, where
-% most communication takes place, and an underlying peer-to-peer layer where
-% management of the Dissent configuration occurs. We refer to the entire protocol
-% as Dissent, and refer to the Dissent in Numbers layer as \textit{DIN}.
-%
-% We refer to any single running instance of our protocol on a single machine as a
-% \texttt{Peer}. When a \texttt{Peer} is part of a Dissent cluster, it is a
-% \texttt{Member} of that cluster.
-%
-% Within the DIN layer, each \texttt{Member} takes on the role of a
-% \texttt{Client} as described in \cite{din}. In addition, a
-% collectively-chosen subset of these \texttt{Member}s also runs a \texttt{Server}
-% process (as described in \cite{din}).
-%
-% \toadd{Probably not relevant to mention Low
-% Latency Dissent, but may be worth reworking this paragraph to refer to the
-% possibility of generalizing}
-% Based on membership operations, \texttt{Member}s may take on additional roles.
-% In Dissent in Numbers a subset of \texttt{Member}s would also be
-% \texttt{Server}s. In Low-Latency Dissent one \texttt{Member}s would
-% also be (a) \texttt{Relay}(s). These roles are subject to change with future
-% membership proposals.
-%
-%
-% \section{Goals}
-% \subsection{Desired Properties}
-% \paragraph{Progress:}
-% \begin{itemize}
-%   \item If a valid \texttt{Member} wants to propose a \texttt{Ballot}, it can
-%     do so within a finite number of rounds
-%   \item If a \texttt{Ballot} is proposed, every \texttt{Member} should have
-%     the opportunity to vote on it
-%   \item If $t$ of $n$ clients vote for a \texttt{Ballot}, that \texttt{Ballot}
-%     should take effect within a finite number of rounds.
-% \end{itemize}
-% \paragraph{Decentralization:}
-% \begin{itemize}
-%   \item No changes to the manifest occur without $t$ of the $n$ clients'
-%     approval of the new manifest.
-%   \item From any possible state, a cadre of $t$ of $n$ clients can cause the
-%     manifest (and corresponding configuration) to change to any other valid
-%     manifest.\todoword{Define state better}
-% \end{itemize}
-% \paragraph{Security:}
-% \begin{itemize}
-%   \item \texttt{Member}s who disrupt the protocol can be detected and removed,
-%     without deanonymizing participants\todo[color=yellow]{TODO: Cite
-%       \cite{verdict}; this is solved}
-%   \item  Votes should be
-%   \begin{itemize}
-%     \item Anonymous --- No member can learn which member voted which way.
-%     \item Verifiable --- Once a vote is complete, any member can, given
-%       a canonical \texttt{Ballot} containing $s$ signatures, verify how many
-%       of the $s$ correspond to distinct, valid members' votes, and also that
-%       their own vote is included.
-%   \end{itemize}
-%   \item While there are at least $t$ honest \texttt{Member}s, no changes to the
-%     topology should occur without $t$ of the $n$ clients' approval
-%   \item If there are fewer than $t$ honest \texttt{Member}s, those
-%     \texttt{Member}s should still retain strong anonymity among the honest
-%     clients, even if they no longer control the topology\todogrunt{This is
-%     fuzzy, explain better}
-% \end{itemize}
-% \subsection{Adversary Model}
-% We assume the adversary can
-% \begin{itemize}
-%   \item Monitor all network traffic
-%   \item Control some fraction of the \texttt{Peers}, which may send arbitrary
-%     messages to each other through secret channels and to the group through
-%     ordinary channels
-%   \item Inject traffic\todosubst{Do we? Specify this}
-% \end{itemize}
-\section{Assumptions/Non-Goals}
-\toadd{formalize in distributed systems verification terms
-(initially, next, etc.)}
-We present the assumptions and goals of our model in informal terms here,
-before formalizing the definitions as part of proving the properties are
-satisfied in Chapter~\ref{Chapter:Proofs}.
-\subsection{Assumptions}
-\begin{itemize}
-  \item There is an initial \texttt{Manifest} describing a Dissent-in-Numbers
-    setup, known to all \texttt{Members} it describes.
-  \item While the \texttt{Member} set may change according to votes, the
-    \texttt{Peer} set is fixed.
-\end{itemize}
-\subsection{Limitations}
-\begin{itemize}
-  \item The \texttt{Peer} and \texttt{Member} sets are known. In Dissent in
-    Numbers, clients need not know the IP addresses of any other clients.
-  \item In order to use anonymous ring signatures for voting, it is necessary
-    for each signature within a scope to correspond to a specific member. An
-    adversary with the power to coerce \texttt{Member}s into revealing their
-    private keys after the fact may prove that a particular member voted a
-    particular way.\todogrunt{Need some kind of analysis of why this is still
-    useful despite that}
-  \item Further, intermediate vote counts are necessarily public. We prove
-    generally in Appendix~\ref{Appendix:SecretProof} that we cannot do better.
-\end{itemize}
+  %the actual properties
+  Voting protocols can be evaluated in their provision of three different
+  kinds of verifiability \cite{kremer_election_2010}: \emph{individual}
+  verifiability ensures that a voter can verify their vote was included
+  correctly. \emph{Universal} verifiability requires that anybody can verify
+  the election result correctly represents the collection of ballots cast.
+  Finally, \emph{Eligibility} verifiability allows anybody to verify that
+  only eligible voters voted, and that each voter voted only once.
+
+  % Dissent \cite{verdict}
+  % and the Neff shuffle \cite{neff} both use zero-knowledge
+  % proofs to achieve verifiability.
+
+  \subsection{Anonymity}\label{Subsection:anon}
+  Members of any group often face reprocussions if they participate in group
+  governance in ways that run contrary to the interests of other members of
+  the group. For this reason, election protocols often incorporate some notion
+  of anonymity. A protocol guarantees \emph{anonymity} in some operation a
+  client can complete if the output of that operation is unlinkable (or, more
+  precisely, cryptographically very difficult to link) to the participant who
+  completed it\cite{ford_hiding_2014}.
+
+  We are interested in two types of anonymity: First, within an election,
+  each voter's confidentiality should be preserved. Second, the instigator of an
+  election, who may also be the author of the proposed petition, should be
+  anonymous.
+
+\section{Threat Models}
+  Newly available information about vulnerabilities and global-scale
+  surveillance in today's centralized internet infrastructure has brought new
+  security considerations and threat models to the foreground of networked
+  system research. It has rendered a swath of anonymity and voting tools
+  obsolete, and poses a significant threat to those that remain. Group
+  management protocols aimed at dissidents must take this into account.
+
+  \subsection{Byzantine Fault Tolerance}
+    In shifting our focus from offline voting algorithms to networked protocols,
+    we must consider several types of disruptions not taken into account by
+    those algorithms. In particular, any member tasked with ``broadcasting'' a
+    message may equivocate, sending different values to different participants.
+    Existing work on distributed consensus provides various approaches to these
+    problems.
+
+    Paxos and many similar protocols makes the simplifying assumption that all
+    nodes in the system are honest --- the only faults considered are those
+    triggered by nodes suddenly going offline. If nodes may be malicious, they
+    may ``fail'' not just by disappearing, but by forging messages in an effort
+    to influence the consensus value. \emph{Byzantine} consensus protocols allow
+    the honest nodes in a system to arrive at a canonical value, so long as some
+    minimum portion of nodes are honest. The original Paxos can
+    accommodate Byzantine failures if an additional verification stage, in which
+    all Acceptors communicate with all other Acceptors in order to detect
+    equivocation, is added before the final step \cite{castro_practical_1999}.
+    Additional optimizations to regular and Byzantine Paxos have also been
+    developed \cite{lamport_fast_2006}. If the adversary can not only send
+    arbitrary messages but also monitor messages exchanged among other nodes,
+    additional attacks are possible. One approach to this divides the nodes into
+    small quorums in an effort to contain malicious nodes \cite{king_load_2011}
+    while also providing better scalability than solutions that require
+    all-to-all communication to thwart equivocators.
+
+    In both its standard and Byzantine formulations, the distributed consensus
+    problem assumes discrepancies in the record will only be due to faults ---
+    that is, each assumes all honest participants either agree on what the value
+    should be or agree to accept the value reported by the nodes who do know the
+    value.  In the election of rotating leaders or servers, the correct value is
+    not knowable a priori. If our leader election algorithm is modeled on other
+    election protocols, it must be assumed that honest nodes may disagree on
+    which servers they wish to elect.
+
+  \subsection{Global Passive Adversary}
+    To provide anonymity from an adversary like the N.S.A., a modern anonymity
+    protocol must protect against several forms of attacks. Feigenbaum et.
+    al.\cite{feigenbaum_seeking_2013} highlight several specific attacks to
+    which onion routing is vulnerable:\todoword{figure out if Tor should be
+    moved}
+    \paragraph{Global traffic analysis:}
+    If the adversary can monitor most of the traffic on the internet globally,
+    the adversary can with high probability see the link from Alicia to the Tor
+    network and from the Tor exit relay to Badru. This means the adversary can
+    observe that the messages Alicia sends correspond to messages Badru receives
+    some short amount of time later. Even if the messages themselves are
+    encrypted, the adversary can analyze the lengths and other metadata about
+    the messages to correlate this traffic.
+    % TODO: Move to non-goals; possibly add self-ID
+    % \paragraph{Active attacks:}
+    % Global traffic analysis attacks only require the adversary to be able to
+    % monitor global traffic. If the adversary can also modify or generate
+    % traffic, several other attacks are possible. The adversary can launch
+    % \emph{man-in-the-middle} (MITM) attacks in which it impersonates Alicia,
+    % Badru, or one or more Tor nodes. The adversary can launch \emph{Sybil}
+    % attacks, in which many different Tor clients controlled by the same
+    % adversary join the network as individual clients. Either of these can be
+    % used to create \emph{Denial-of-Service} (DoS) attacks, which might either
+    % prevent users from connecting to Tor at all, or force Tor traffic to go
+    % through particular, potentially adversary-controlled, Tor nodes ---
+    % de-anonymizing the users.
+    \paragraph{Intersection attacks:}
+    In general, it is possible to tell when users are using an anonymity service
+    --- the anonymity comes from the difficulty of linking any particular user
+    to particular messages produced by the service. Over time, however, the
+    client set of an anonymity service is unlikely to remain fixed. A passive
+    adversary monitoring the outputs of an anonymity service as well as the set
+    of users connected can narrow the set of users who potentially, for example,
+    updated a particular blog with a static pseudonym, by excluding users  not
+    online during all updates to the blog.\todoword{reword}
+
+  \subsection{The Trouble with Relays}
+  \label{Subsection:Relays}
+  \todoword{copy edit Tor vs. Dissent}
+    One potential approach to making Dissent widely available would be to have
+    well-known, globally dispersed Dissent servers available for clients to
+    connect to, similar to the current state of Tor. Any such well-known server
+    list, however, is susceptible to blocking by internet service providers. It
+    would therefore be preferable to have servers be short-lived, or at least
+    not well known. Since Dissent takes place over regular TCP connections,
+    detecting that the protocol is being executed without knowledge of the
+    addresses of servers would be difficult to accomplish without a great number
+    of false positives \cite{houmansadr_parrot_2013}, so this may be enough to
+    realistically preclude most attempts to block access to the protocol
+    entirely.  Additionally, while the current version of Dissent guarantees
+    that malicious servers cannot deanonymize a client without the cooperation
+    of all servers, and guarantees that disrupting servers can be exposed, it
+    provides no way to remove a disrupting or malicious server form the system.
+
+    One way to resolve these problems would be to have clusters of Dissent
+    clients elect temporary servers among themselves, allowing servers to either
+    step down (e.g., by going offline) or be impeached by some portion of the
+    clients.  Doing so in a truly decentralized and fair fashion is a
+    non-trivial problem.  We consider several other areas of research relevant
+    to solving it.
+
+
