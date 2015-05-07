@@ -1,31 +1,89 @@
-\section{Terminology}
-\subsection{Data Structures}
+In this chapter, we outline a general specification for verifiable, anonymous,
+and fully decentralized election protocols. For simplicity, we assume all votes
+have only two options (ratify or not), but not that it can be proven that any
+other multiple choice ballots can be constructed from these components and thus
+our analysis is fully generalizable.
+% \section{Terminology}
+\section{Terminology and Data Structures}
 \begin{itemize}
-\item A \texttt{Manifest} consists of
-\begin{itemize}
-  \item A \texttt{Roster} $R$, mapping public keys to IP addresses for all
-    \texttt{Client}s,
-  \item A \texttt{Servers} list $S$, which is a subset of $R$,
-  \item A function $t : G \to \{\textsc{True, False}\}$ mapping a set of
-    signatures to an election result. So, if $t(g) = \textsc{True}$ for some
-    outcome $g$\todo[inline]{TODO: clarify $G$}, then the proposal corresponding
-    to $g$ should be adopted at the specified expiration round. A plausible
-    example is the function which specifies what proportion of \texttt{Member}s
-    must agree to a change in the composition of $R$ or $S$ in order for the
-    change to take effect
-\end{itemize}
-  \item A \texttt{Petition} is a tuple $(L, M', rid)$, where $L$ is a unique
-    bytestring selected arbitrarily by the instigator, $M$ is the current
-    manifest of the cluster, $M'$ is a proposed new manifest, and $rid$ is a Dissent round number at least $|M.R|$ rounds in
-    the future.\todo{future is undefined wrt non-stateful petition}
+  \item This protocol operates at the level of a \texttt{Cluster} of
+    \texttt{Node}s.  A \texttt{Peer} is a \texttt{Node} that is a member of a
+    particular \texttt{Cluster}. It may be voted out of a cluster. New nodes
+    become \texttt{Peer}s if their joining is approved by the existing cluster.
 
+  \item A \texttt{Manifest} defines the group configuration and consists of
+  \begin{itemize}
+    \item A \texttt{Roster}, representing the set of eligible voters
+      % mapping public keys to IP addresses for all \texttt{Client}s,
+    \item A map \texttt{Committees} mapping names of elected statuses to sets of
+      elements of the \texttt{Roster}. For example, \texttt{Committees} might
+      consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$, where
+      $A, B,$ and $C$ are the participants listed in $R$ which have been elected
+      to act as \texttt{servers} in an instance of Dissent in Numbers.
+    \item A function $t : E \to (\{\textsc{True, False, Invalid}\}, P)$
+      where $E$ is the set of all \emph{Election State}s, and $P$ is the set
+      of all possible proofs of correctness of the result. That is, if $t(g) =
+      \textsc{True}$ for some outcome $g$, then the proposal corresponding to
+      $g$\todo{TODO: clarify, or define after election} passes.
+      % should be adopted at the specified expiration round.
+      A plausible example is the function which
+      specifies what proportion of \texttt{Peer}s must agree to a change in the
+      composition of the \texttt{Roster} in order for the change to take effect.
+  \end{itemize}
+  \item A \texttt{Petition} is a proposal to change the \texttt{Manifest}. It
+    consists of
+    \begin{itemize}
+      \item An \emph{Instigator}, the \texttt{Peer} who proposed the
+        \texttt{Petition}. This information is not publicly associated with
+        the \texttt{Petition}.
+      \item A unique identifier $L$, which is public
+      \item A proposed new \texttt{Manifest},
+      \item An expiration condition, defining when the vote on the petition
+        should end.
+    \end{itemize}
+  \item A \texttt{Ballot} encodes information about the eligibility of the voter,
+    and information about the voter's preference. To determine the results of
+    the elction while providing the verifiability properties discussed in
+    Section~\ref{Subsection:verif}, there must be a public record of some
+    aggregate information about each: An auditor must be able to tell that every
+    voter was eligible, and also what the outcome of the election was. To
+    provide voter confidentiality, we must provide a way for each voter to
+    provide both bits of information without exposing the correlation between
+    the two. In other words, if Badru wants to vote for Alicia to be president,
+    Badru must convey that Badru (or someone with Badru's credentials) voted,
+    and that a vote has been cast for Alicia, without revealing that Badru cast
+    a vote for Alicia. We can represent the information Badru provides as a
+    \emph{Vote} tuple $(sig, vote)$, where $sig$ encodes Badru's credentials and
+    $vote$ encodes his candidate choice.
+
+    To provide the necessary information while preserving his
+    confidentiality, Badru must encrypt part or all of his ballot.
+    We show
+    in Appendix~\ref{Appendix:SecretProof}\todosubst{I think this is actually
+    only true if people vote at different times} that it is impossible to design
+    a Byzantine Fault Tolerant protocol where both are kept secret. This leaves
+    two possibilities:
+    Either Badru can encode his credentials in a $sig$ that is anonymous
+    (c.f. \cite{lrs})
+    % \todogrunt{talk about LRS/refer to it here},
+    or he can encrypt $vote$ so that Badru's choice of candidates can only be
+    decyphered in aggregate, once the connection to Badru's public signature has
+    been lost.
+
+
+    % is a tuple $(L, M', rid)$, where $L$ is a unique
+    % bytestring selected arbitrarily by the instigator, $M$ is the current
+    % manifest of the cluster, $M'$ is a proposed new manifest, and $rid$ is a
+    % Dissent round number at least $|M.R|$ rounds in the future.\todo{future is
+    % undefined wrt non-stateful petition}
+    %
 \end{itemize}
 
-\subsection{States}
+\section{States}
 \begin{itemize}
-  \item A \emph{State} is a tuple $(M, r)$ defining the behavior of
-    the current DIN instance, where $M$ is a \texttt{Manifest} and $r$ is the
-    current round.
+  \item A \emph{State} is a tuple $(M, r)$ defining the current cluster, where
+    $M$ is a \texttt{Manifest}, and $r$ is a monotonically increasing unique
+    state identifier (i.e., a logical clock)\tocite.
 
   % \item A \emph{Proposal} is a stateful \texttt{Petition}, that is, a tuple $(S,
   %   P)$, where $S$ is the current state and $P$ is a petition.
@@ -38,11 +96,14 @@
     aware that that \texttt{P} is being considered, but in which no member knows
     the outcome of the election.
 
-    The election state can be described by a tuple
-    $(S, P, G)$, where $S$ is the current \emph{State}, $P$ is a
-    \texttt{Petition}, and $G$ is a collection of linkable ring signatures from
-    members of $S.M$ according to link scope
-    $P.L$.\todo[inline,color=orange]{this isn't a state\ldots}
+  \item The \emph{Election State} can be described by a tuple
+    $((M, r), P, V)$, where $(M, r)$ is the current \emph{State}, $P$ is the
+    \texttt{Petition} being voted on, and $V$ is a collection of \texttt{Votes}
+    that have been cast thus far.
+
+    %  linkable ring signatures from
+    % members of $S.M$ according to link scope
+    % $P.L$.\todo[inline,color=orange]{this isn't a state\ldots}
 
   % \item A \emph{result} is a tuple $(M, G, rid)$ defining a manifest $M$ and a
   %   set of signatures $G$.
@@ -51,18 +112,35 @@
   %
 \end{itemize}
 
-\subsection{Functions}
+\section{Functions}
+Each \texttt{Peer} should implement the following functions:
+Within finite time and in a way that is fair, every \texttt{Peer} should be able
+to call each of the following functions:
 \begin{itemize}
-  \item The \textsc{Sign} function, provided by \cite{golrs}, takes in a set of
-    public keys $S$\todo{TODO:  Don't overload $S$}, a link scope $L$, a
-    private key $k$ corresponding to an element of $S$, and a petition $P$ to be
-    signed.
-  \item A \emph{Verify} function
-  \item An \emph{Evaluate} function takes
+  % \item The \textsc{Sign} function, provided by \cite{golrs}, takes in a set of
+  %   public keys $S$\todo{TODO:  Don't overload $S$}, a link scope $L$, a
+  %   private key $k$ corresponding to an element of $S$, and a petition $P$ to be
+  %   signed.
+  \item \textsc{Propose}(\texttt{Petition} $P$): broadcasts $P$ to the cluster
+    and initiates an \emph{Election}
+  \item \textsc{Vote}$_{\texttt{State} (M, r)}$(\texttt{Petition} $P$), which
+    constructs a ballot ($sig$, $vote$) and broadcasts it to the cluster in
+    conjunction with $P$
+  \item \textsc{Evaluate}$_{\texttt{State} (M,r)}$(\texttt{Petition} $P$,
+    \texttt{Vote}s $V$) $\to (\{\textsc{Unfinished}, \textsc{Valid},
+    \textsc{Invalid}\}, proof$: Given an election state, every peer
+    should be able to determine whether the election has ended, and if it has,
+    what the result was. If it cannot, or if any part of the election state is
+    invalid, it should be able to provide a $proof$ of misbehavior.
+  \item \textsc{Evaluate}$_{\texttt{State} (M,r)}$(\texttt{Petition}
+    $P$, \texttt{Vote} $v$) $\to$ (\{\textsc{True, False}\}, $proof$) should
+    return (\textsc{True}, $proof$) if $v$ was produced by a valid \texttt{Peer}
+    according to $(M,r)$, and is a vote on $P$. Otherwise, \textsc{True} and a
+    proof of misbehavior should be produced.
 \end{itemize}
-\begin{algorithm}
+% \begin{algorithm}
   % \Kwin{
-  ohai
+  % ohai
   % \SetAlgoLined
   % \KwIn{this text}
   % \KwOut{how to}
@@ -76,54 +154,58 @@
   %     parse\;
   %   }
   % }
-  \caption{Evaluate}
-\end{algorithm}
+%   \caption{Evaluate}
+% \end{algorithm}
 
 
-\section{Formal Properties and Correctness Arguments}
-\toadd{clean up embedded results defs etc.}
-\paragraph{Proposition 1:}
-\begin{theorem}The \emph{Election state} of any \emph{Election} at
-any time is well defined. \end{theorem}
-\begin{proof}This follows from properties of peer-to-peer Dissent \cite{sec}.
-  The \emph{Election State} can only be updated by transmission of messages
-  (votes) over Dissent. Recall that communication proceeds in serialized
-  \emph{rounds}, so by Theorem~\ref{theorem:rounds},\todo{TODO finish}
-\end{proof}
-
+\section{Formal Properties}
+% \toadd{clean up embedded results defs etc.}
+% \paragraph{Proposition 1:}
+% \begin{theorem}The \emph{Election state} of any \emph{Election} at
+% any time is well defined. \end{theorem}
+% \begin{proof}This follows from properties of peer-to-peer Dissent \cite{sec}.
+%   The \emph{Election State} can only be updated by transmission of messages
+%   (votes) over Dissent. Recall that communication proceeds in serialized
+%   \emph{rounds}, so by Theorem~\ref{theorem:rounds},\todo{TODO finish}
+% \end{proof}
+%
   \subsection{Verifiability}
     \subsubsection{Individual}
     A group management protocol provides \emph{individual verifiability} if, in
-    any Election State $(S, P, G)$, any member $u$
-    either knows its own vote is correctly represented in $G$ (that is, either
+    any Election State $((M,r), P, V)$, any member $u$
+    either knows its own vote is correctly represented in $V$ (that is, either
     $u$ voted and $u$'s
     signature for $P.L$\todo{TODO: more params; define lrs} is contained in $G$,
     or $u$ did not vote and $u$'s signature is absent from $G$), or can produce
     a zero-knowledge proof that the Election State is invalid.\todo{TODO: define
     invalid}
 
-    Our protocol provides individual verifiability.
-
-    --- this follows from the
-    properties of Dissent in Numbers and of linkable ring signatures.%: Since every
-    \paragraph{Lemma 1:} There is a well-defined state.
-
-    \paragraph{Lemma 1:} Given accurate knowledge of the current election state
-    $(S, P, G)$, a \texttt{Member} $m$ can call
-    $m$.\textsc{Sign}($S.M.\texttt{Roster}.keys$,$P.\texttt{LinkScope}$,$m$.$k$,
-    $P$) to produce a signature $s$, then examine $G$ to see if it contains $s$.
-    By properties of linkable ring signatures,
-
+    % Our protocol provides individual verifiability.
+    %
+    % --- this follows from the
+    % properties of Dissent in Numbers and of linkable ring signatures.%: Since every
+    % \paragraph{Lemma 1:} There is a well-defined state.
+    %
+    % \paragraph{Lemma 1:} Given accurate knowledge of the current election state
+    % $(S, P, G)$, a \texttt{Member} $m$ can call
+    % $m$.\textsc{Sign}($S.M.\texttt{Roster}.keys$,$P.\texttt{LinkScope}$,$m$.$k$,
+    % $P$) to produce a signature $s$, then examine $G$ to see if it contains $s$.
+    % By properties of linkable ring signatures,
+    %
 
     \subsubsection{Universal}
     A group management protocol provides \emph{universal verifiability} if, in
-    any result $r = (M, B, G, rid)$, anybody can verify that $G$ is a valid
-    signing of $B$ or else produce a proof that it is not. Consequently, any
-    auditor (member or otherwise) can verify the canonical value of $M.t(G)$.
+    any finished election state, $((M,r), P, V)$%result $r = (M, B, G, rid)$,
+    anybody can verify that $V$ is a valid signing of $P$ or else produce a
+    proof that it is not. Consequently, any auditor (member or otherwise) can
+    verify the canonical value of $M.t(G)$.
 
-    Our protocol provides universal verifiability.%:
+    % Our protocol provides universal verifiability.%:
 
     \subsubsection{Eligibility}
+    A group management protocol provides \emph{eligibility verifiability} if, in
+    any finished election state, anybody can verify that all elements of $V$
+    were cast by \texttt{Member}s of the current cluster.
   \subsection{Anonymity}
   \todo[color=orange,inline,caption={}]{TODO: formalize in terms of games}
     \subsubsection{For Instigators}
@@ -131,7 +213,7 @@ any time is well defined. \end{theorem}
     and after any election, no member and no outside observer can determine
     which member proposed the ballot in question.
 
-    Our protocol provides this through Dissent in Numbers.
+    % Our protocol provides this through Dissent in Numbers.
     \subsubsection{Of Ballots}
     A group management protocol provides \emph{secret ballots} if, during and
     after any election, either no outside observer can reconstruct which member
@@ -139,13 +221,13 @@ any time is well defined. \end{theorem}
     member voted. The same restrictions apply to knowledge gained by other
     participants, except that each member can trivially reconstruct its own vote.
 
-    Our protocol provides this --- it follows directly from the properties of
-    linkable ring signatures.
-\subsection{Performance Notes}
-Any changes to the arrangement of servers in Dissent in Numbers requires an
-expensive, serial shuffle. Our protocol provides a way to change the topology
-without having to redo the shuffle, so long as the client set remains the same.
-
-This allows us to retain many of the stronger security properties of Hardened
-Dissent\cite{sec} while also achieving the performance benefits
-of Dissent in Numbers and Verdict in typical usage.
+    % Our protocol provides this --- it follows directly from the properties of
+    % linkable ring signatures.
+% \subsection{Performance Notes}
+% Any changes to the arrangement of servers in Dissent in Numbers requires an
+% expensive, serial shuffle. Our protocol provides a way to change the topology
+% without having to redo the shuffle, so long as the client set remains the same.
+%
+% This allows us to retain many of the stronger security properties of Hardened
+% Dissent\cite{sec} while also achieving the performance benefits
+% of Dissent in Numbers and Verdict in typical usage.
