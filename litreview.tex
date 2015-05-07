@@ -35,8 +35,8 @@ finally in the anonymity protocols Tor and Dissent.
   % accountability layer from the layer in which messages are revealed. Group
   % membership voting could conceivably take place at either.
   %
-\section{Existing Systems}
-  \subsection{Electronic Voting} \label{Subsection:evoting}
+% \section{Existing Systems}
+  \section{Electronic Voting} \label{Subsection:evoting}
     % \toadd{beef up this section.}
     %evoting intro
     Secure electronic voting systems have arisen largely out of a desire to
@@ -75,7 +75,7 @@ finally in the anonymity protocols Tor and Dissent.
     These protocols provide useful templates for how a distributed voting
     protocol might accomplish similar security properties.
 
-  \subsection{Distributed Consensus}
+  \section{Distributed Consensus}
     Distributed consensus protocols allow groups of nodes to come to an
     agreement on canonical values. For example, in a distributed database, if an
     unreliable power supply causes some portion of servers to be offline for
@@ -94,7 +94,7 @@ finally in the anonymity protocols Tor and Dissent.
     quorum is present.
 
 
-\subsection{Anonymity Protocols}
+\section{Anonymity Protocols}
 \label{subsection:ExistingAnonymity}
 % \toadd{Set this up as problems with electronic voting schemes}
   Every anonymity tool shares one basic goal: Given a set of assumptions about
@@ -104,7 +104,7 @@ finally in the anonymity protocols Tor and Dissent.
   security assumptions, we first consider The Onion Router (Tor), the most
   widely used anonymity tool today\cite{ford_hiding_2014}
 
-  \subsubsection{Onion Routing with Tor}
+  \subsection{Onion Routing with Tor}
   % \label{Subsubsection:Tor}
     Tor aims to provide an anonymity service that, to the end user, behaves like
     a one-hop proxy: If Alicia wants to send an HTTP request to Badru using Tor,
@@ -127,7 +127,7 @@ finally in the anonymity protocols Tor and Dissent.
     Security Agency actively uses such attacks, and so a new protocol is
     necessary in order to remain anonymous from the N.S.A.
 
-  \subsubsection{Strong Anonymity with Dissent}
+  \subsection{Strong Anonymity with Dissent}
     Dissent is an alternative to Tor that provides provable anonymity even if
     only one server in the network is honest\cite{p2pd}.
     In its present form, a Dissent cluster consists of $m$ servers and $n$

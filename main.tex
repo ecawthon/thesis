@@ -34,9 +34,31 @@
 \date{April 25, 2015}
 \advisor{Professors Bryan Ford and Tzu-Yi Chen, advisors}
 \abstract{Decentralized approaches to private communication exhibit tradeoffs
-between decentralization and scalability. We present a protocol for achieving
-the best of both worlds.\note{added to make it compile, this abstract is not a
-draft}
+between decentralization and scalability. Further, recent revalations about the
+feasibility of adversary models involving substantial control over network
+infrastructure necessitate more robust security analysis of existing voting
+protocols.
+
+We present a survey and analysis of secure, decentralized, consensus-based
+decision making in untrusted networks. We provide what we believe to be a novel
+examination of anonymity in the context of electronic voting, and propose a
+general specification for verifiable, anonymous, and decentralized group
+management.
+
+% TODO: Make this the intro for the protocol section.
+We go on to present a protocol for egalitarian
+groups to determine their leadership in a fashion that is anonymous, verifiable,
+and fully decentralized.  By combining the Dissent protocol for anonymous
+communication with decentralized trust\cite{p2pd}, with a simple voting protocol
+utilizing linkable ring signatures\cite{lrs}, we show how a group might attain
+verifiable and anonymous elections with Byzantine trust assumptions, secure
+against a global passive adversary.  As a specific example, we show how this
+might be used as a server selection and group management mechanism in scalable
+Dissent \cite{din}, so that the scalable protocol is used most of the time, but
+where the peer-to-peer consensus can always rescind the power it has delegated.
+
+
+
 }
 % \abstract{In any sufficiently large group of cooperating actors, it is
 % frequently useful to elect a subset of the group to perform particular
@@ -121,19 +143,6 @@ providing the properties laid out in Chapter~\ref{Chapter:Goals}. In
 Chapter~\ref{Chapter:Protocol}, we outline one potential implementation of this
 specification.\todo{TODO: proofs section?}. Finally, we conclude and discuss
 directions for future work (Chapter~\ref{Chapter:Conclusion}).
-
-% TODO: Make this the intro for the protocol section.
-% We present a protocol for egalitarian
-% groups to determine their leadership in a fashion that is anonymous, verifiable,
-% and fully decentralized.  By combining the Dissent protocol for anonymous
-% communication with decentralized trust\cite{p2pd}, with a simple voting protocol
-% utilizing linkable ring signatures\cite{lrs}, we show how a group might attain
-% verifiable and anonymous elections with Byzantine trust assumptions, secure
-% against a global passive adversary.  As a specific example, we show how this
-% might be used as a server selection and group management mechanism in scalable
-% Dissent \cite{din}, so that the scalable protocol is used most of the time, but
-% where the peer-to-peer consensus can always rescind the power it has delegated.
-%
 
 \chapter{Related Work}\label{Chapter:Existing}
 \input litreview.tex
