@@ -9,7 +9,12 @@ anonymity, along with acccountability to handle byzantine faults.
 We combine several existing cryptosystems and distributed systems to construct
 our protocol.
 \subsection{Hardened Dissent}
-  \begin{theorem} At the end of round $i$, \ldots \todo{semicomputability}\end{theorem}
+A security analysis of the original peer-to-peer Dissent resulted in a modified
+protocol providing the following properties:
+  \begin{theorem} At the end of round $i$, either all participants see the same
+    value of all messages, any peers disrupting the protocol are detected and
+    eliminated, or the round does not terminate.\todo{TODO: explain}%\ldots \todo{semicomputability}
+  \end{theorem}
   \begin{theorem} For any round $i$, all participants know the results of round
     $i$ before any know the results of round
     $i+1$.\end{theorem}\label{theorem:rounds}
@@ -270,6 +275,7 @@ Section~\ref{Subsection:verif}.
     % $P$) to produce a signature $s$, then examine $G$ to see if it contains $s$.
     % By properties of linkable ring signatures,
     %
+\subsection{Anonymity}
 
 
 \section{Limitations and Non-Goals}
