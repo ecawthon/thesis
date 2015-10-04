@@ -7,8 +7,8 @@
 
 % \documentclass[draftcopy,short]{srpaper}
 \documentclass[finalcopy,nolof,nolot]{srpaper}
-% \usepackage[colorinlistoftodos, color=blue!20]{todonotes}
-\usepackage[disable]{todonotes}
+\usepackage[colorinlistoftodos, color=blue!20]{todonotes}
+% \usepackage[disable]{todonotes}
 \usepackage[pdftex,pdfusetitle]{hyperref}
 \usepackage{setspace}
 \usepackage{multirow}
@@ -29,6 +29,25 @@
   {\begin{spacing}{1.0}TODO: #1\end{spacing}}}
 \newcommand{\note}[1]{\todo[inline,color=red!20,caption={#1}]
   {\begin{spacing}{1.0}#1\end{spacing}}}
+
+  %macros
+\newcommand{\HistContext}{Italy in 1922}
+\newcommand{\Tyrant}{Benito Mussolini}
+\newcommand{\Office}{Prime Minister}
+\newcommand{\Congress}{the Italian Parliament}
+\newcommand{\Axis}{the Fascists}
+\newcommand{\MartialLaw}{martial law}
+\newcommand{\War}{years of war and millions of casualties}
+\newcommand{\Domain}{Italy}
+\newcommand{\Platform}{security and order in a time of lawlessness}
+
+\newcommand{\GrassContext}{a unionization campaign}
+\newcommand{\Org}{the Student/Worker Alliance}
+\newcommand{\Marginalized}{worker}
+\newcommand{\Dominant}{student}
+\newcommand{\BadGuys}{management}
+\newcommand{\Disappeared}{fired}
+
 \setcounter{tocdepth}{2}
 
 % theorem environments
@@ -37,7 +56,7 @@
 
 \title{Decentralized Group Management in Dissent}
 \author{Eleanor Cawthon}
-\date{\today}
+\date{\today, 2015}
 \advisor{Professors Bryan Ford and Tzu-Yi Chen, advisors}
 \abstract{
 Among both humans and computers, decentralized approaches to group
@@ -83,47 +102,55 @@ where the peer-to-peer consensus can always rescind the power it has delegated.
 \frontmatter
 
 \chapter{Introduction}\label{Chapter:Intro}
-A classic problem in human group interaction is how to make decisions in a way
-so that everyone is represented, but progress is still made. In very small
-groups, action can proceed by consensus - all members have the opportunity to be
-heard, and only actions that have the support of the entire group proceed. In
-any moderately sized group, however, this peer-to-peer approach to consensus
-becomes unweildly. Most governance structures implement some sort of delegation
-of power \tocite, whether by way of an elected legislature or a military
-dictator.
+\toadd{In \GrassContext, \Org~was established as an equalizing
+  force: \Marginalized s and \Dominant s alike could share in governance, with
+  one vote per person. The \BadGuys, however, could see the transcripts of all
+  meetings of \Org. If a \Marginalized~made a proposal unpopular with \BadGuys,
+  the \Marginalized~would be \Disappeared; if a \Dominant~made the same
+proposal, \BadGuys~could do nothing.}
+Or,
+\toadd{
+  In \HistContext, \Tyrant~legally became \Office. Over the next several years,
+\Congress~passed a series of electoral reforms that ultimately allowed for
+\Axis~ control of \Congress~and granted \Tyrant~complete, authoritarian control
+of \Domain.  \Tyrant~established \MartialLaw, and it took \War~to reverse this.
+Of course, \Tyrant~did have a great deal of popular support, at least initially.
+He promised \Platform. As the saying goes, Mussolini made the trains run on
+time. But whether or not a majority of the people of \Domain~ever supported
+\Axis, by the time \Congress~had given them control, the people could not revoke
+his power without \War.
+}
 
-Although this has traditionally been characterized as a problem of communication
-at scale, we can also conceptualize it as a problem of trust. Participants in a
-democratic group place some amount of trust in the will of the consensus, but
-wish to avoid trusting any individual or small group with enough power for them
-to usurp the democratic process.
+This is one example of a more general problem in group decision-making:
+% In very
+% small groups, action can proceed by consensus - all members have the opportunity
+% to be heard, and only actions that have the support of the entire group proceed.
+% In any moderately sized group, however, this peer-to-peer approach to consensus
+% becomes unweildly. Most governance structures implement some sort of delegation
+% of power \tocite, whether by way of an elected legislature or a military
+% dictator.
+%
+In order to maintain the advantages of democracy and decentralized
+trust, while also allowing efficient governance at scale, it must be possible to
+delegate power to individuals or small groups, and it must be possible to revoke
+that power.
 
-How, then, might such a group minimize the risk of assigning enough power to a
-small group for that group to misbehave, while maximizing the economies of scale
-arising from delegating power?
-
-\todosubst{Not sure we need this paragraph, because this isn't the tradeoff
-  we're solving.}
-The electoral process itself is a particularly interesting example of this
-phenomenon. Elections frequently utilize secret ballots in order to prevent
-voters from being coerced into voting a particular way\tocite, but these schemes
-traditionally involve trusting a centralized entity to honestly count the votes.
-In contrast, election mechanisms that allow voters to verify their votes have
-been counted correctly, such as a vote by role call or raise of hand, typically
-sacrifice ballot secrecy\tocite.
-
-Various computational approaches exist to addressing these limitations of
-traditional elections. The trust considerations decentralized groups face,
-however, extend beyond the voting process itself. Noam Chomsky writes that
+Various computational approaches exist to providing secure and trustworthy
+democratic elections, where each individual's vote is anonymous and where the
+result is verifiable. As the case of \Tyrant shows, however, securing the
+election process itself is not enough when a central power determines whether
+and what elections should be held \todosubst{maybe communist elections are a
+better example here}.
+Noam Chomsky writes that
 ``[t]he smart way to keep people passive and obedient is to strictly limit the
 spectrum of acceptable opinion, but allow very lively debate within that
 spectrum'' \cite{chomsky1998common}. To have truly free elections, the means for
-calling an election and for drafting the ballot must also be decentralized. For
-example, in \tocite many systems, there is a mechanism for calling a vote of no
-confidence\todoword{capitalize or hyphenate?} to potentially remove elected
-leaders in the middle of a term. Existing electronic voting protocols do not
-provide a way of protecting the identity of the voter who decides such a
-referendum should take place.
+calling for a vote and drafting the ballot must also be decentralized and secure
+against coercion. We shall henceforth refer to this process of initiating a vote
+as a \emph{petition}. If \Congress had a mechanism for anonymously petitioning
+for a vote of no confidence, for example, it might have been possible to
+determine support for removing \Tyrant without endangering the instigator of
+that vote and without resorting to \War.
 % \note{I don't think this matters right now}
 % Further, voting over the internet poses additional trust problems beyond those
 % inherent to electronic voting in general.  A dissident group organizing in
@@ -132,23 +159,26 @@ referendum should take place.
 % adversary who can analyze all message transmissions and traffic patterns among
 % all nodes in the system.
 %
+
 \todogrunt{Probably could be better/fix the rest of this section for real
 outline}
-We present a survey and analysis of secure, decentralized, consensus-based
-decision making in untrusted networks. We provide what we believe to be a novel
-examination of anonymity in the context of electronic voting, and propose a
-general specification for verifiable, anonymous, and decentralized group
-management.
+This paper makes three contributions. First, we we provide what we believe to be
+a novel examination of anonymity in the context of electronic voting. Next, we
+propose a specification and implementation sketch for a verifiable, anonymous,
+and decentralized petition protocol. Finally, we show how this can be applied to
+provide group management in the Dissent in Numbers\tocite anonymity protocol,
+with applications for scalable anonymous web browsing.
 
 We begin with an overview of existing tools dealing with various aspects of this
-problem (Chapter~\ref{Chapter:Existing}).  We then outline important properties
-for voting protocols operating in this trust model, and introduce several
-important threat models to consider (Chapter~\ref{Chapter:Goals}).  In
+problem (Chapter~\ref{Chapter:Existing}).  We then outline the properties
+provided by our protocol (Chapter~\ref{Chapter:Goals}), and specify the threat
+model against which it is secure (Chapter~\ref{Chapter:Threats}).  In
 Chapter~\ref{Chapter:Spec}, we provide a detailed specification for a protocol
 providing the properties laid out in Chapter~\ref{Chapter:Goals}. In
 Chapter~\ref{Chapter:Protocol}, we outline one potential implementation of this
-specification.\todo{TODO: proofs section?}. Finally, we conclude and discuss
-directions for future work (Chapter~\ref{Chapter:Conclusion}).
+specification\todo{TODO: proofs section?}. Finally, we conclude and discuss
+directions for future work (Chapter~\ref{Chapter:Conclusion}).\todoword{fewer
+``outline''}
 
 \chapter{Related Work}\label{Chapter:Existing}
 \input litreview.tex
