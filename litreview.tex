@@ -140,3 +140,29 @@ finally in the anonymity protocols Tor and Dissent.
     allows for significantly improved performance, but it introduces several new
     concerns, particularly relating to misbehaving servers, a new class of DoS
     attacks, and group formation.
+
+  \subsection{The Trouble with Relays}
+  \label{Subsection:Relays}
+  \todoword{copy edit Tor vs. Dissent}
+    One potential approach to making Dissent widely available would be to have
+    well-known, globally dispersed Dissent servers available for clients to
+    connect to, similar to the current state of Tor. Any such well-known server
+    list, however, is susceptible to blocking by internet service providers. It
+    would therefore be preferable to have servers be short-lived, or at least
+    not well known. Since Dissent takes place over regular TCP connections,
+    detecting that the protocol is being executed without knowledge of the
+    addresses of servers would be difficult to accomplish without a great number
+    of false positives \cite{houmansadr_parrot_2013}, so this may be enough to
+    realistically preclude most attempts to block access to the protocol
+    entirely.  Additionally, while the current version of Dissent guarantees
+    that malicious servers cannot deanonymize a client without the cooperation
+    of all servers, and guarantees that disrupting servers can be exposed, it
+    provides no way to remove a disrupting or malicious server form the system.
+
+    One way to resolve these problems would be to have clusters of Dissent
+    clients elect temporary servers among themselves, allowing servers to either
+    step down (e.g., by going offline) or be impeached by some portion of the
+    clients.  Doing so in a truly decentralized and fair fashion is a
+    non-trivial problem.  We consider several other areas of research relevant
+    to solving it.
+

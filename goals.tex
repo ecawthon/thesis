@@ -1,139 +1,64 @@
 \toadd{intro}
-\section{Desired Properties}
-  \subsection{Verifiability}\label{Subsection:verif}
-  A protocol is verifiable if its output can be inspected to confirm that the
-  protocol was carried out correctly. A simple example of this is signing a
-  message with the private key associated with a well-known public key: Anyone
-  who knows the public key can verify the validity of the signature.
+\todoword{Copy edit for redundancy}
+\section{Verifiability}\label{Subsection:verif}
+A protocol is verifiable if its output can be inspected to confirm that the
+protocol was carried out correctly. A simple example of this is signing a
+message with the private key associated with a well-known public key: Anyone
+who knows the public key can verify the validity of the signature.
 
-  Voting protocols can be evaluated in their provision of three different
-  kinds of verifiability \cite{kremer_election_2010}: \emph{individual}
-  verifiability ensures that a voter can verify their vote was included
-  correctly. \emph{Universal} verifiability requires that anybody can verify
-  the election result correctly represents the collection of ballots cast.
-  Finally, \emph{Eligibility} verifiability allows anybody to verify that
-  only eligible voters voted, and that each voter voted only once.
+Voting protocols can be evaluated in their provision of three different
+kinds of verifiability \cite{kremer_election_2010}: \emph{individual}
+verifiability ensures that a voter can verify their vote was included
+correctly. \emph{Universal} verifiability requires that anybody can verify
+the election result correctly represents the collection of ballots cast.
+Finally, \emph{Eligibility} verifiability allows anybody to verify that
+only eligible voters voted, and that each voter voted only once.
 
-  % Dissent \cite{verdict}
-  % and the Neff shuffle \cite{neff} both use zero-knowledge
-  % proofs to achieve verifiability.
+  \subsection{Individual}
+  A group management protocol provides \emph{individual verifiability} if, in
+  any Election State $((M,r), P, V)$, any member $u$
+  either knows its own vote is correctly represented in $V$ (that is, either
+  $u$ voted and $u$'s
+  signature for $P.L$\todo{TODO: more params; define lrs} is contained in $G$,
+  or $u$ did not vote and $u$'s signature is absent from $G$), or can produce
+  a zero-knowledge proof that the Election State is invalid.\todo{TODO: define
+  invalid}
 
-  \subsection{Anonymity}\label{Subsection:anon}
-  Members of any group often face reprocussions if they participate in group
-  governance in ways that run contrary to the interests of other members of
-  the group. For this reason, election protocols often incorporate some notion
-  of anonymity. A protocol guarantees \emph{anonymity} in some operation a
-  client can complete if the output of that operation is unlinkable (or, more
-  precisely, cryptographically very difficult to link) to the participant who
-  completed it\cite{ford_hiding_2014}.
+  \subsection{Universal}
+  A group management protocol provides \emph{universal verifiability} if, in
+  any finished election state, $((M,r), P, V)$%result $r = (M, B, G, rid)$,
+  anybody can verify that $V$ is a valid signing of $P$ or else produce a
+  proof that it is not. Consequently, any auditor (member or otherwise) can
+  verify the canonical value of $M.t(G)$.
 
-  We are interested in two types of anonymity: First, within an election,
-  each voter's confidentiality should be preserved. Second, the instigator of an
-  election, who may also be the author of the proposed petition, should be
-  anonymous.
+  \subsection{Eligibility}
+  A group management protocol provides \emph{eligibility verifiability} if, in
+  any finished election state, anybody can verify that all elements of $V$
+  were cast by \texttt{Member}s of the current cluster.
 
-  \section{Threat Models}\label{Section:threats}
-  Newly available information about vulnerabilities and global-scale
-  surveillance in today's centralized internet infrastructure has brought new
-  security considerations and threat models to the foreground of networked
-  system research. It has rendered a swath of anonymity and voting tools
-  obsolete, and poses a significant threat to those that remain. Group
-  management protocols aimed at dissidents must take this into account.
+\section{Anonymity}
+Members of any group often face reprocussions if they participate in group
+governance in ways that run contrary to the interests of other members of
+the group. For this reason, election protocols often incorporate some notion
+of anonymity. A protocol guarantees \emph{anonymity} in some operation a
+client can complete if the output of that operation is unlinkable (or, more
+precisely, cryptographically very difficult to link) to the participant who
+completed it\cite{ford_hiding_2014}.
 
-  \subsection{Byzantine Fault Tolerance}
-    In shifting our focus from offline voting algorithms to networked protocols,
-    we must consider several types of disruptions not taken into account by
-    those algorithms. In particular, any member tasked with ``broadcasting'' a
-    message may equivocate, sending different values to different participants.
-    Existing work on distributed consensus provides various approaches to these
-    problems.
+We are interested in two types of anonymity: First, within an election,
+each voter's confidentiality should be preserved. Second, the instigator of an
+election, who may also be the author of the proposed petition, should be
+anonymous.
 
-    Paxos and many similar protocols makes the simplifying assumption that all
-    nodes in the system are honest --- the only faults considered are those
-    triggered by nodes suddenly going offline. If nodes may be malicious, they
-    may ``fail'' not just by disappearing, but by forging messages in an effort
-    to influence the consensus value. \emph{Byzantine} consensus protocols allow
-    the honest nodes in a system to arrive at a canonical value, so long as some
-    minimum portion of nodes are honest. The original Paxos can
-    accommodate Byzantine failures if an additional verification stage, in which
-    all Acceptors communicate with all other Acceptors in order to detect
-    equivocation, is added before the final step \cite{castro_practical_1999}.
-    Additional optimizations to regular and Byzantine Paxos have also been
-    developed \cite{lamport_fast_2006}. If the adversary can not only send
-    arbitrary messages but also monitor messages exchanged among other nodes,
-    additional attacks are possible. One approach to this divides the nodes into
-    small quorums in an effort to contain malicious nodes \cite{king_load_2011}
-    while also providing better scalability than solutions that require
-    all-to-all communication to thwart equivocators.
+  \subsection{For Instigators}
+  A group management protocol provides \emph{instigator anonymity} if, during
+  and after any election, no member and no outside observer can determine
+  which member proposed the ballot in question.
 
-    In both its standard and Byzantine formulations, the distributed consensus
-    problem assumes discrepancies in the record will only be due to faults ---
-    that is, each assumes all honest participants either agree on what the value
-    should be or agree to accept the value reported by the nodes who do know the
-    value.  In the election of rotating leaders or servers, the correct value is
-    not knowable a priori. If our leader election algorithm is modeled on other
-    election protocols, it must be assumed that honest nodes may disagree on
-    which servers they wish to elect.
-
-  \subsection{Global Passive Adversary}
-    To provide anonymity from an adversary like the N.S.A., a modern anonymity
-    protocol must protect against several forms of attacks. Feigenbaum et.
-    al.\cite{feigenbaum_seeking_2013} highlight several specific attacks to
-    which onion routing is vulnerable:
-    \paragraph{Global traffic analysis:}
-    If the adversary can monitor most of the traffic on the internet globally,
-    the adversary can with high probability see the link from Alicia to the Tor
-    network and from the Tor exit relay to Badru. This means the adversary can
-    observe that the messages Alicia sends correspond to messages Badru receives
-    some short amount of time later. Even if the messages themselves are
-    encrypted, the adversary can analyze the lengths and other metadata about
-    the messages to correlate this traffic.
-    % TODO: Move to non-goals; possibly add self-ID
-    % \paragraph{Active attacks:}
-    % Global traffic analysis attacks only require the adversary to be able to
-    % monitor global traffic. If the adversary can also modify or generate
-    % traffic, several other attacks are possible. The adversary can launch
-    % \emph{man-in-the-middle} (MITM) attacks in which it impersonates Alicia,
-    % Badru, or one or more Tor nodes. The adversary can launch \emph{Sybil}
-    % attacks, in which many different Tor clients controlled by the same
-    % adversary join the network as individual clients. Either of these can be
-    % used to create \emph{Denial-of-Service} (DoS) attacks, which might either
-    % prevent users from connecting to Tor at all, or force Tor traffic to go
-    % through particular, potentially adversary-controlled, Tor nodes ---
-    % de-anonymizing the users.
-    \paragraph{Intersection attacks:}
-    In general, it is possible to tell when users are using an anonymity service
-    --- the anonymity comes from the difficulty of linking any particular user
-    to particular messages produced by the service. Over time, however, the
-    client set of an anonymity service is unlikely to remain fixed. A passive
-    adversary monitoring the outputs of an anonymity service as well as the set
-    of users connected can narrow the set of users who potentially, for example,
-    updated a particular blog with a static pseudonym, by excluding users  not
-    online during all updates to the blog.
-
-  \subsection{The Trouble with Relays}
-  \label{Subsection:Relays}
-  \todoword{copy edit Tor vs. Dissent}
-    One potential approach to making Dissent widely available would be to have
-    well-known, globally dispersed Dissent servers available for clients to
-    connect to, similar to the current state of Tor. Any such well-known server
-    list, however, is susceptible to blocking by internet service providers. It
-    would therefore be preferable to have servers be short-lived, or at least
-    not well known. Since Dissent takes place over regular TCP connections,
-    detecting that the protocol is being executed without knowledge of the
-    addresses of servers would be difficult to accomplish without a great number
-    of false positives \cite{houmansadr_parrot_2013}, so this may be enough to
-    realistically preclude most attempts to block access to the protocol
-    entirely.  Additionally, while the current version of Dissent guarantees
-    that malicious servers cannot deanonymize a client without the cooperation
-    of all servers, and guarantees that disrupting servers can be exposed, it
-    provides no way to remove a disrupting or malicious server form the system.
-
-    One way to resolve these problems would be to have clusters of Dissent
-    clients elect temporary servers among themselves, allowing servers to either
-    step down (e.g., by going offline) or be impeached by some portion of the
-    clients.  Doing so in a truly decentralized and fair fashion is a
-    non-trivial problem.  We consider several other areas of research relevant
-    to solving it.
-
+  \subsection{Of Ballots}
+  A group management protocol provides \emph{secret ballots} if, during and
+  after any election, either no outside observer can reconstruct which member
+  submitted which vote, or no outside observer can reconstruct how any
+  member voted. The same restrictions apply to knowledge gained by other
+  participants, except that each member can trivially reconstruct its own vote.
 

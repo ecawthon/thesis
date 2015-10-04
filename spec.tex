@@ -3,7 +3,9 @@ and fully decentralized election protocols. For simplicity, we assume all votes
 have only two options (ratify or not), but note that it can be proven that any
 other multiple choice ballots can be constructed from these components and thus
 our analysis is fully generalizable.
-\section{Terminology and Data Structures}
+\section{Anonymous Broadcast Protocol}
+\section{Anonymous Petition Protocol}
+\subsection{Data Structures}
 \begin{itemize}
   \item This protocol operates at the level of a \texttt{Cluster} of
     \texttt{Node}s.  A \texttt{Peer} is a \texttt{Node} that is a member of a
@@ -69,7 +71,7 @@ our analysis is fully generalizable.
 
 \end{itemize}
 
-\section{States}
+\subsection{States}
 \begin{itemize}
   \item A \emph{State} is a tuple $(M, r)$ defining the current cluster, where
     $M$ is a \texttt{Manifest}, and $r$ is a monotonically increasing unique
@@ -88,7 +90,7 @@ our analysis is fully generalizable.
 
 \end{itemize}
 
-\section{Functions}
+\subsection{Functions}
 Each \texttt{Peer} should implement the following functions:
 Within finite time and in a way that is fair, every \texttt{Peer} should be able
 to call each of the following functions:
@@ -110,41 +112,4 @@ to call each of the following functions:
     according to $(M,r)$, and is a vote on $P$. Otherwise, \textsc{True} and a
     proof of misbehavior should be produced.
 \end{itemize}
-
-\section{Formal Properties}
-  \subsection{Verifiability}\label{Subsection:verif}
-    \subsubsection{Individual}
-    A group management protocol provides \emph{individual verifiability} if, in
-    any Election State $((M,r), P, V)$, any member $u$
-    either knows its own vote is correctly represented in $V$ (that is, either
-    $u$ voted and $u$'s
-    signature for $P.L$\todo{TODO: more params; define lrs} is contained in $G$,
-    or $u$ did not vote and $u$'s signature is absent from $G$), or can produce
-    a zero-knowledge proof that the Election State is invalid.\todo{TODO: define
-    invalid}
-
-    \subsubsection{Universal}
-    A group management protocol provides \emph{universal verifiability} if, in
-    any finished election state, $((M,r), P, V)$%result $r = (M, B, G, rid)$,
-    anybody can verify that $V$ is a valid signing of $P$ or else produce a
-    proof that it is not. Consequently, any auditor (member or otherwise) can
-    verify the canonical value of $M.t(G)$.
-
-    \subsubsection{Eligibility}
-    A group management protocol provides \emph{eligibility verifiability} if, in
-    any finished election state, anybody can verify that all elements of $V$
-    were cast by \texttt{Member}s of the current cluster.
-  \subsection{Anonymity}
-  \todo[color=orange,inline,caption={}]{TODO: formalize in terms of games}
-    \subsubsection{For Instigators}
-    A group management protocol provides \emph{instigator anonymity} if, during
-    and after any election, no member and no outside observer can determine
-    which member proposed the ballot in question.
-
-    \subsubsection{Of Ballots}
-    A group management protocol provides \emph{secret ballots} if, during and
-    after any election, either no outside observer can reconstruct which member
-    submitted which vote, or no outside observer can reconstruct how any
-    member voted. The same restrictions apply to knowledge gained by other
-    participants, except that each member can trivially reconstruct its own vote.
 
