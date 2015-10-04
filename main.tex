@@ -7,14 +7,17 @@
 
 % \documentclass[draftcopy,short]{srpaper}
 \documentclass[finalcopy,nolof,nolot]{srpaper}
-\usepackage[colorinlistoftodos, color=blue!20]{todonotes}
-% \usepackage[disable]{todonotes}
+% \usepackage[colorinlistoftodos, color=blue!20]{todonotes}
+\usepackage[disable]{todonotes}
 \usepackage[pdftex,pdfusetitle]{hyperref}
 \usepackage{setspace}
 \usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{adjustbox}
+\usepackage{amsthm}
 \setlength{\marginparwidth}{2.5cm}
+
+% Custom todos
 \newcommand{\todogrunt}[1]{\todo[caption={#1}]
   {\begin{spacing}{1.0}TODO: #1\end{spacing}}}
 \newcommand{\todoword}[1]{\todo[color=green!40,caption={#1}]
@@ -28,22 +31,24 @@
   {\begin{spacing}{1.0}#1\end{spacing}}}
 \setcounter{tocdepth}{2}
 
+% theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+
 \title{Decentralized Group Management in Dissent}
 \author{Eleanor Cawthon}
-% \date{\today}
-\date{April 25, 2015}
+\date{\today}
 \advisor{Professors Bryan Ford and Tzu-Yi Chen, advisors}
-\abstract{Decentralized approaches to private communication exhibit tradeoffs
-between decentralization and scalability. Further, recent revalations about the
-feasibility of adversary models involving substantial control over network
-infrastructure necessitate more robust security analysis of existing voting
-protocols.
+\abstract{
+Among both humans and computers, decentralized approaches to group
+decision-making exhibit trade-offs between decentralization and scalability.
 
-We present a survey and analysis of secure, decentralized, consensus-based
-decision making in untrusted networks. We provide what we believe to be a novel
-examination of anonymity in the context of electronic voting, and propose a
-general specification for verifiable, anonymous, and decentralized group
-management.
+We provide two contributions: First, we outline a general specification for
+election protocols providing instigator anonymity. Next, we sketch how this can
+be applied to provide bootstrapping and group management for the Dissent
+anonymity protocol.
+
+% \todogrunt{finish rewriting}
 
 % TODO: Make this the intro for the protocol section.
 We go on to present a protocol for egalitarian
@@ -57,12 +62,7 @@ might be used as a server selection and group management mechanism in scalable
 Dissent \cite{din}, so that the scalable protocol is used most of the time, but
 where the peer-to-peer consensus can always rescind the power it has delegated.
 
-
-
 }
-% \abstract{In any sufficiently large group of cooperating actors, it is
-% frequently useful to elect a subset of the group to perform particular
-% responsibilities.\todoword{this is clunky}  }
 \acknowledgment{}
 
 % hyperref setup, from template
@@ -102,13 +102,15 @@ How, then, might such a group minimize the risk of assigning enough power to a
 small group for that group to misbehave, while maximizing the economies of scale
 arising from delegating power?
 
+\todosubst{Not sure we need this paragraph, because this isn't the tradeoff
+  we're solving.}
 The electoral process itself is a particularly interesting example of this
 phenomenon. Elections frequently utilize secret ballots in order to prevent
 voters from being coerced into voting a particular way\tocite, but these schemes
 traditionally involve trusting a centralized entity to honestly count the votes.
 In contrast, election mechanisms that allow voters to verify their votes have
 been counted correctly, such as a vote by role call or raise of hand, typically
-sacrifice ballot secrecy\tocite. \todoword{transition sentence?}
+sacrifice ballot secrecy\tocite.
 
 Various computational approaches exist to addressing these limitations of
 traditional elections. The trust considerations decentralized groups face,
@@ -121,13 +123,17 @@ example, in \tocite many systems, there is a mechanism for calling a vote of no
 confidence\todoword{capitalize or hyphenate?} to potentially remove elected
 leaders in the middle of a term. Existing electronic voting protocols do not
 provide a way of protecting the identity of the voter who decides such a
-referrendum should take place. Further, voting over the internet poses
-additional trust problems beyond those inherent to electronic voting in general.
-A dissident group organizing in defiance of a powerful entity with control over
-the network must protect its members' anonymity not only from other group
-members, but from a global passive adversary who can analyze all message
-transmissions and traffic patterns among all nodes in the system.
-
+referendum should take place.
+% \note{I don't think this matters right now}
+% Further, voting over the internet poses additional trust problems beyond those
+% inherent to electronic voting in general.  A dissident group organizing in
+% defiance of a powerful entity with control over the network must protect its
+% members' anonymity not only from other group members, but from a global passive
+% adversary who can analyze all message transmissions and traffic patterns among
+% all nodes in the system.
+%
+\todogrunt{Probably could be better/fix the rest of this section for real
+outline}
 We present a survey and analysis of secure, decentralized, consensus-based
 decision making in untrusted networks. We provide what we believe to be a novel
 examination of anonymity in the context of electronic voting, and propose a
@@ -150,20 +156,11 @@ directions for future work (Chapter~\ref{Chapter:Conclusion}).
 \chapter{Properties and Threat Models}\label{Chapter:Goals}
 \input goals.tex
 
-% \chapter{Dissent}\label{Chapter:Dissent}
-% \input dissent.tex
-%
-% \chapter{Goals and Non-Goals}\label{Chapter:Goals}
-% \input goals.tex
-%
 \chapter{General Specification}\label{Chapter:Spec}
 \input spec.tex
 
 \chapter{Protocol Description}\label{Chapter:Protocol}
 \input protocol.tex
-
-% \chapter{Security Properties and Correctness}\label{Chapter:Proofs}
-% \input proofs.tex
 
 \chapter{Conclusion}\label{Chapter:Conclusion}
 We have argued that verifiability is not enough for a
@@ -192,6 +189,7 @@ use by activists and governments alike as these infrastructures develop.
 \listoftodos
 
 % \chapter{Annotated Bibliography}\annotatedbibliography{annotated}
+\bibliographystyle{alpha}
 \bibliography{annotated}
 % \appendix
 % \chapter{Why Intermediate Vote Counts Can't Be

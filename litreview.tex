@@ -23,22 +23,7 @@ This project brings together several disparate but related areas of computer
 science research. We examine existing work on decentralized decisionmaking,
 first in offline electronic voting protocols, then in fault tolerance, and
 finally in the anonymity protocols Tor and Dissent.
-% We begin with an overview of the properties group management
-% protocols might provide. We then examine existing systems, before exploring
-% security considerations that pose unresolved  challenges for them.
-% We consider work on distributed decision-making in the offline
-% model employed by most electronic voting research,
-%
-  % \todosubst{discussion of trust models here?}
-  % Dissent makes use of
-  % pseudonyms to provide this, separating the protocol correctness and
-  % accountability layer from the layer in which messages are revealed. Group
-  % membership voting could conceivably take place at either.
-  %
-% \section{Existing Systems}
-  \section{Electronic Voting} \label{Subsection:evoting}
-    % \toadd{beef up this section.}
-    %evoting intro
+  \section{Electronic Voting} \label{Section:evoting}
     Secure electronic voting systems have arisen largely out of a desire to
     retain secret ballots (no one should learn how a particular voter voted)
     while also guaranteeing accurate and fair counting of votes. Unlike
@@ -96,7 +81,6 @@ finally in the anonymity protocols Tor and Dissent.
 
 \section{Anonymity Protocols}
 \label{subsection:ExistingAnonymity}
-% \toadd{Set this up as problems with electronic voting schemes}
   Every anonymity tool shares one basic goal: Given a set of assumptions about
   an adversary's capabilities, an anonymity tool provides a way for a user to
   broadcast a message without the adversary being able to discover the author
@@ -105,7 +89,6 @@ finally in the anonymity protocols Tor and Dissent.
   widely used anonymity tool today\cite{ford_hiding_2014}
 
   \subsection{Onion Routing with Tor}
-  % \label{Subsubsection:Tor}
     Tor aims to provide an anonymity service that, to the end user, behaves like
     a one-hop proxy: If Alicia wants to send an HTTP request to Badru using Tor,
     Alicia sends a request through Tor, Tor forwards the request to Badru, Badru
@@ -156,73 +139,4 @@ finally in the anonymity protocols Tor and Dissent.
     \cite{p2pd}. The shift to a client-server model
     allows for significantly improved performance, but it introduces several new
     concerns, particularly relating to misbehaving servers, a new class of DoS
-    attacks, and group formation.\todoword{Rewrite to include Hardened version}
-
-% \section{Conclusion}\todoword{better name}
-% \begin{table}
-%   \begin{adjustbox}{width=1.7\textwidth,center}
-%     \begin{tabularx}{1.7\textwidth}{XXXXX|XXX|XX|X}
-%     % \begin{tabularx}{width=1.4\textwidth,center}{p{2.5cm}p{2cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|}
-%   \cline{3-11}
-%   & & \multicolumn{3}{c|}{Voting Protocols}     &
-%                               \multicolumn{3}{|c|}{Consensus Protocols} &
-%                                                           \multicolumn{2}{|c|}{Anonymity Protocols} & This Protocol\\
-%   % \cline{3-10}
-%   & &                     Neff & Kremer & Juels & Paxos & Byzantine
-%                                                           Paxos & King & Tor & Dissent &        \\
-%   \cline{1-11}
-%   \multicolumn{1}{X}{\multirow{2}{*}{Verifiability} } &
-%   \multicolumn{1}{|X|}{Individual}        & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{2-11}
-%   \multicolumn{1}{X}{} &
-%   \multicolumn{1}{|X|}{Universal}         & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{1-11}
-%   \multicolumn{1}{X}{\multirow{2}{*}{Anonymity} } &
-%   \multicolumn{1}{|X|}{Secret Ballots}    & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{2-11}
-%   \multicolumn{1}{X}{} &
-%   \multicolumn{1}{|X|}{Secret Initiators} & yes &      &      & no & no?    &        & n/a & yes? & \\ \cline{1-11}
-%   % \multicolumn{1}{|p{2.5cm}}{\multirow{2}{*}{Decentralized Trust/Netowrk} }&
-%   % \multicolumn{1}{|p{2cm}|}{Byzantine}         & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{2-11}
-%   % \multicolumn{1}{|c}{} &
-%   % \multicolumn{1}{|p{2cm}|}{Global Passive}    & yes  &     &      & no & no?    &        & n/a & yes? & & \\ \cline{1-11}
-% \end{tabularx}
-% \end{adjustbox}
-% \end{table}
-% \newcolumntype{R}{>{\raggedleft\arraybackslash }X}
-%
-% \begin{table}
-%   \begin{adjustbox}{width=1.4\textwidth,center}
-%     \begin{tabularx}{1.4\textwidth}{XXXX|XX}
-%   \cline{3-6}
-%         & & \multicolumn{2}{X|}{Verifiability} & \multicolumn{2}{X}{Anonymity}
-%         % \multicolumn{2}{X}{Decentralized Trust/Network}
-%         \\ \cline{3-6}
-%         & &            Individual  & Universal & Secret Ballots & Instigators \\
-% % & Byzantine & Global Passive \\
-% \cline{1-6}
-% \multicolumn{1}{R|}{\multirow{3}{2cm}{\raggedleft Voting Protocols} } &
-% \multicolumn{1}{X}{Neff}& yes      & yes       &                & \\ %\cline{2-6}
-% \multicolumn{1}{X|}{} &
-% \multicolumn{1}{X}{Kremer}         &           &                & \\ %\cline{2-6}
-% \multicolumn{1}{X|}{} &
-% \multicolumn{1}{X}{Juels}          &           &                & \\ \cline{1-6}
-% \multicolumn{1}{R|}{\multirow{3}{2cm}{\raggedleft Consensus Protocols} } &
-% \multicolumn{1}{X}{Paxos}          &           &                & \\ %\cline{2-6}
-% \multicolumn{1}{X|}{} &
-% \multicolumn{1}{X}{Byzantine Paxos}&           &                & \\ %\cline{2-6}
-% \multicolumn{1}{X|}{} &
-% \multicolumn{1}{X}{\cite{king_load_2011}}&     &                & \\ \cline{1-6}
-% \multicolumn{1}{R|}{\multirow{3}{2cm}{\raggedleft Anonymity Protocols} } &
-% \multicolumn{1}{X}{Tor}            &           &                & \\ %\cline{2-6}
-% \multicolumn{1}{X|}{} &
-% \multicolumn{1}{X}{Dissent}        &           &                & \\ %\cline{2-6}
-% \multicolumn{1}{X|}{} &
-% \multicolumn{1}{>{\raggedright}X}{Dissent in Numbers}&        &                & \\ \cline{1-6}
-% % \multicolumn{1}{X|}{} &
-% % \multicolumn{1}{X}{Juels} & & & & &\\ \cline{1-6}
-% \multicolumn{1}{R}{\raggedleft This Protocol} & & & & \\ \cline{1-6}
-% % \multicolumn{1}{|p{2cm}}{\multirow{3}{*}{This Protocol} } &
-% % \multicolumn{1}{|p{2cm}}{} &
-% % \multicolumn{1}{|p{2cm}}{} &
-% % \multicolumn{1}{|p{2cm}}{} \\ \cline{1-6}
-% \end{tabularx}
-% \end{adjustbox}
-% \end{table}
+    attacks, and group formation.

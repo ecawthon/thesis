@@ -1,9 +1,8 @@
 In this chapter, we outline a general specification for verifiable, anonymous,
 and fully decentralized election protocols. For simplicity, we assume all votes
-have only two options (ratify or not), but not that it can be proven that any
+have only two options (ratify or not), but note that it can be proven that any
 other multiple choice ballots can be constructed from these components and thus
 our analysis is fully generalizable.
-% \section{Terminology}
 \section{Terminology and Data Structures}
 \begin{itemize}
   \item This protocol operates at the level of a \texttt{Cluster} of
@@ -14,7 +13,6 @@ our analysis is fully generalizable.
   \item A \texttt{Manifest} defines the group configuration and consists of
   \begin{itemize}
     \item A \texttt{Roster}, representing the set of eligible voters
-      % mapping public keys to IP addresses for all \texttt{Client}s,
     \item A map \texttt{Committees} mapping names of elected statuses to sets of
       elements of the \texttt{Roster}. For example, \texttt{Committees} might
       consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$, where
@@ -25,7 +23,6 @@ our analysis is fully generalizable.
       of all possible proofs of correctness of the result. That is, if $t(g) =
       \textsc{True}$ for some outcome $g$, then the proposal corresponding to
       $g$\todo{TODO: clarify, or define after election} passes.
-      % should be adopted at the specified expiration round.
       A plausible example is the function which
       specifies what proportion of \texttt{Peer}s must agree to a change in the
       composition of the \texttt{Roster} in order for the change to take effect.
@@ -56,6 +53,7 @@ our analysis is fully generalizable.
     \emph{Vote} tuple $(sig, vote)$, where $sig$ encodes Badru's credentials and
     $vote$ encodes his candidate choice.
 
+    \note{this is kindof out of no where. maybe move?}
     To provide the necessary information while preserving his
     confidentiality, Badru must encrypt part or all of his ballot.
     We show
@@ -65,18 +63,10 @@ our analysis is fully generalizable.
     two possibilities:
     Either Badru can encode his credentials in a $sig$ that is anonymous
     (c.f. \cite{lrs})
-    % \todogrunt{talk about LRS/refer to it here},
     or he can encrypt $vote$ so that Badru's choice of candidates can only be
     decyphered in aggregate, once the connection to Badru's public signature has
     been lost.
 
-
-    % is a tuple $(L, M', rid)$, where $L$ is a unique
-    % bytestring selected arbitrarily by the instigator, $M$ is the current
-    % manifest of the cluster, $M'$ is a proposed new manifest, and $rid$ is a
-    % Dissent round number at least $|M.R|$ rounds in the future.\todo{future is
-    % undefined wrt non-stateful petition}
-    %
 \end{itemize}
 
 \section{States}
@@ -85,11 +75,6 @@ our analysis is fully generalizable.
     $M$ is a \texttt{Manifest}, and $r$ is a monotonically increasing unique
     state identifier (i.e., a logical clock)\tocite.
 
-  % \item A \emph{Proposal} is a stateful \texttt{Petition}, that is, a tuple $(S,
-  %   P)$, where $S$ is the current state and $P$ is a petition.
-  %   \todo[color=orange,inline,caption={}]{TODO: What if config changes during
-  %   election?}
-  %
   \item An \emph{Election} encompasses the operation of the protocol between
     when a \texttt{Petition} $P$ is first proposed and the round
     $P$.\texttt{rid} --- that is, the portion of the protocol where members are
@@ -101,15 +86,6 @@ our analysis is fully generalizable.
     \texttt{Petition} being voted on, and $V$ is a collection of \texttt{Votes}
     that have been cast thus far.
 
-    %  linkable ring signatures from
-    % members of $S.M$ according to link scope
-    % $P.L$.\todo[inline,color=orange]{this isn't a state\ldots}
-
-  % \item A \emph{result} is a tuple $(M, G, rid)$ defining a manifest $M$ and a
-  %   set of signatures $G$.
-  %
-  % \item An \emph{instigator} is a member who initiates an election.
-  %
 \end{itemize}
 
 \section{Functions}
@@ -117,10 +93,6 @@ Each \texttt{Peer} should implement the following functions:
 Within finite time and in a way that is fair, every \texttt{Peer} should be able
 to call each of the following functions:
 \begin{itemize}
-  % \item The \textsc{Sign} function, provided by \cite{golrs}, takes in a set of
-  %   public keys $S$\todo{TODO:  Don't overload $S$}, a link scope $L$, a
-  %   private key $k$ corresponding to an element of $S$, and a petition $P$ to be
-  %   signed.
   \item \textsc{Propose}(\texttt{Petition} $P$): broadcasts $P$ to the cluster
     and initiates an \emph{Election}
   \item \textsc{Vote}$_{\texttt{State} (M, r)}$(\texttt{Petition} $P$), which
@@ -138,37 +110,8 @@ to call each of the following functions:
     according to $(M,r)$, and is a vote on $P$. Otherwise, \textsc{True} and a
     proof of misbehavior should be produced.
 \end{itemize}
-% \begin{algorithm}
-  % \Kwin{
-  % ohai
-  % \SetAlgoLined
-  % \KwIn{this text}
-  % \KwOut{how to}
-  %
-  % initialization\;
-  % \While{hello}{
-  %   face\;
-  %   \eIf{udners}{
-  %     sauce\;
-  %   }{
-  %     parse\;
-  %   }
-  % }
-%   \caption{Evaluate}
-% \end{algorithm}
-
 
 \section{Formal Properties}
-% \toadd{clean up embedded results defs etc.}
-% \paragraph{Proposition 1:}
-% \begin{theorem}The \emph{Election state} of any \emph{Election} at
-% any time is well defined. \end{theorem}
-% \begin{proof}This follows from properties of peer-to-peer Dissent \cite{sec}.
-%   The \emph{Election State} can only be updated by transmission of messages
-%   (votes) over Dissent. Recall that communication proceeds in serialized
-%   \emph{rounds}, so by Theorem~\ref{theorem:rounds},\todo{TODO finish}
-% \end{proof}
-%
   \subsection{Verifiability}\label{Subsection:verif}
     \subsubsection{Individual}
     A group management protocol provides \emph{individual verifiability} if, in
@@ -180,27 +123,12 @@ to call each of the following functions:
     a zero-knowledge proof that the Election State is invalid.\todo{TODO: define
     invalid}
 
-    % Our protocol provides individual verifiability.
-    %
-    % --- this follows from the
-    % properties of Dissent in Numbers and of linkable ring signatures.%: Since every
-    % \paragraph{Lemma 1:} There is a well-defined state.
-    %
-    % \paragraph{Lemma 1:} Given accurate knowledge of the current election state
-    % $(S, P, G)$, a \texttt{Member} $m$ can call
-    % $m$.\textsc{Sign}($S.M.\texttt{Roster}.keys$,$P.\texttt{LinkScope}$,$m$.$k$,
-    % $P$) to produce a signature $s$, then examine $G$ to see if it contains $s$.
-    % By properties of linkable ring signatures,
-    %
-
     \subsubsection{Universal}
     A group management protocol provides \emph{universal verifiability} if, in
     any finished election state, $((M,r), P, V)$%result $r = (M, B, G, rid)$,
     anybody can verify that $V$ is a valid signing of $P$ or else produce a
     proof that it is not. Consequently, any auditor (member or otherwise) can
     verify the canonical value of $M.t(G)$.
-
-    % Our protocol provides universal verifiability.%:
 
     \subsubsection{Eligibility}
     A group management protocol provides \emph{eligibility verifiability} if, in
@@ -213,7 +141,6 @@ to call each of the following functions:
     and after any election, no member and no outside observer can determine
     which member proposed the ballot in question.
 
-    % Our protocol provides this through Dissent in Numbers.
     \subsubsection{Of Ballots}
     A group management protocol provides \emph{secret ballots} if, during and
     after any election, either no outside observer can reconstruct which member
@@ -221,13 +148,3 @@ to call each of the following functions:
     member voted. The same restrictions apply to knowledge gained by other
     participants, except that each member can trivially reconstruct its own vote.
 
-    % Our protocol provides this --- it follows directly from the properties of
-    % linkable ring signatures.
-% \subsection{Performance Notes}
-% Any changes to the arrangement of servers in Dissent in Numbers requires an
-% expensive, serial shuffle. Our protocol provides a way to change the topology
-% without having to redo the shuffle, so long as the client set remains the same.
-%
-% This allows us to retain many of the stronger security properties of Hardened
-% Dissent\cite{sec} while also achieving the performance benefits
-% of Dissent in Numbers and Verdict in typical usage.
