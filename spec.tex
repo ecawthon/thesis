@@ -1,46 +1,82 @@
 In this chapter, we outline a general specification for verifiable, anonymous,
-and fully decentralized election protocols. For simplicity, we assume all votes
+and fully decentralized petition protocols. For simplicity, we assume all votes
 have only two options (ratify or not), but note that it can be proven that any
 other multiple choice ballots can be constructed from these components and thus
 our analysis is fully generalizable.
+
+The protocol involves two layers: An anonymous broadcast channel whereby
+participants can pass arbitrary messages, and the petition protocol which
+utilizes this to construct petitions.
 \section{Anonymous Broadcast Protocol}
+We assume an anonymous communication layer that provides the following
+functionality:
+
+\subsection{Definitions}
+\begin{itemize}
+\item An instance of the anonymous communication layer consists of:
+
+\begin{itemize}
+\item A fixed peer set
+  $\SetPeers:=\peer_{1},\peer_{2},...,\peer_{\NumClients}.$
+\item A pseudonym scheme $\FunNym:\SetPeers\longleftrightarrow\SetNymDomain$,
+  where $\SetNymDomain$ is a set of pseudonyms and $\FunNym$ is a bijection
+\item A monotonically increasing turn number $\turn$, associated with a
+  (possibly blank) message $\msg_{\turn}$ in the broadcast channel signed by
+  pseudonym $\FunNym(\peer_{i})\in \SetNymDomain$.
+\item A \KwSchedule~function $\FunSched:\mathbb{N}\to \SetNymDomain$ mapping
+  rounds to pseudonyms, establishing whose turn it is.
+\end{itemize}
+\end{itemize}
+
+\subsection{Interface}
+
+Peers have the following functions available to them:
+\begin{itemize}
+\item At any round $\turn$, Any peer $\peer_{i}$can pseudononymously broadcast
+a message $\msg_{\NumClients(\peer_{i})}$ to $\SetPeers$ at round $\turn+j$
+for some $j\le \NumClients$
+\item At the end of round $\turn$, all $\peer\in \SetPeers$ learn the contents
+  of $\msg_{\turn}$
+\end{itemize}
+
 \section{Anonymous Petition Protocol}
 \subsection{Data Structures}
 \begin{itemize}
-  \item This protocol operates at the level of a \texttt{Cluster} of
-    \texttt{Node}s.  A \texttt{Peer} is a \texttt{Node} that is a member of a
-    particular \texttt{Cluster}. It may be voted out of a cluster. New nodes
-    become \texttt{Peer}s if their joining is approved by the existing cluster.
+  \item This protocol operates at the level of a \KwCluster~of
+    \KwNode s.  A \KwPeer~is a \KwNode~that is a member of a
+    particular \KwCluster. It may be voted out of a cluster. New nodes
+    become \KwPeer s if their joining is approved by the existing cluster.
 
-  \item A \texttt{Manifest} defines the group configuration and consists of
+  \item A \KwManifest~defines the group configuration and consists of
   \begin{itemize}
-    \item A \texttt{Roster}, representing the set of eligible voters
+    \item A \KwRoster, representing the set of eligible voters
     \item A map \texttt{Committees} mapping names of elected statuses to sets of
-      elements of the \texttt{Roster}. For example, \texttt{Committees} might
-      consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$, where
-      $A, B,$ and $C$ are the participants listed in $R$ which have been elected
-      to act as \texttt{servers} in an instance of Dissent in Numbers.
-    \item A function $t : E \to (\{\textsc{True, False, Invalid}\}, P)$
-      where $E$ is the set of all \emph{Election State}s, and $P$ is the set
-      of all possible proofs of correctness of the result. That is, if $t(g) =
-      \textsc{True}$ for some outcome $g$, then the proposal corresponding to
-      $g$\todo{TODO: clarify, or define after election} passes.
-      A plausible example is the function which
-      specifies what proportion of \texttt{Peer}s must agree to a change in the
-      composition of the \texttt{Roster} in order for the change to take effect.
+      elements of the \KwRoster. For example, \texttt{Committees} might
+      consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$,
+      where $A, B,$ and $C$ are the participants listed in $R$ which have been
+      elected to act as \texttt{servers} in an instance of Dissent in
+      Numbers.\todosubst{Obsolete. Make generic.}
+    \item A function $\FunEval : \SetElectionStates \to (\SetResult, \SetZKPs)$
+      where $\SetElectionStates$ is the set of all \emph{Election State}s, and
+      $\SetZKPs$ is the set of all possible proofs of correctness of the result.
+      That is, if $\FunEval(\ElectionState) = \AtomTrue$ for some outcome
+      $\ElectionState$, then the proposal corresponding to $\ElectionState$
+      passes.  A plausible example is the function which specifies what
+      proportion of \KwPeer s must agree to a change in the composition of the
+      \KwRoster~in order for the change to take effect.
   \end{itemize}
-  \item A \texttt{Petition} is a proposal to change the \texttt{Manifest}. It
+  \item A \StructPetition~is a proposal to change the \KwManifest. It
     consists of
     \begin{itemize}
-      \item An \emph{Instigator}, the \texttt{Peer} who proposed the
-        \texttt{Petition}. This information is not publicly associated with
-        the \texttt{Petition}.
+      \item An \StructInstigator, the \KwPeer~who proposed the
+        Petition. This information is not publicly associated with
+        the Petition.
       \item A unique identifier $L$, which is public
-      \item A proposed new \texttt{Manifest},
+      \item A proposed new \KwManifest,
       \item An expiration condition, defining when the vote on the petition
         should end.
     \end{itemize}
-  \item A \texttt{Ballot} encodes information about the eligibility of the voter,
+  \item A \StructBallot~encodes information about the eligibility of the voter,
     and information about the voter's preference. To determine the results of
     the elction while providing the verifiability properties discussed in
     Section~\ref{Subsection:verif}, there must be a public record of some
@@ -52,8 +88,8 @@ our analysis is fully generalizable.
     Badru must convey that Badru (or someone with Badru's credentials) voted,
     and that a vote has been cast for Alicia, without revealing that Badru cast
     a vote for Alicia. We can represent the information Badru provides as a
-    \emph{Vote} tuple $(sig, vote)$, where $sig$ encodes Badru's credentials and
-    $vote$ encodes his candidate choice.
+    \StructBallot~tuple $(\sig, \vote)$, where $\sig$ encodes Badru's
+    credentials and $\vote$ encodes his candidate choice.
 
     \note{this is kindof out of no where. maybe move?}
     To provide the necessary information while preserving his
@@ -63,9 +99,9 @@ our analysis is fully generalizable.
     only true if people vote at different times} that it is impossible to design
     a Byzantine Fault Tolerant protocol where both are kept secret. This leaves
     two possibilities:
-    Either Badru can encode his credentials in a $sig$ that is anonymous
+    Either Badru can encode his credentials in a $\sig$ that is anonymous
     (c.f. \cite{lrs})
-    or he can encrypt $vote$ so that Badru's choice of candidates can only be
+    or he can encrypt $\vote$ so that Badru's choice of candidates can only be
     decyphered in aggregate, once the connection to Badru's public signature has
     been lost.
 
@@ -73,43 +109,44 @@ our analysis is fully generalizable.
 
 \subsection{States}
 \begin{itemize}
-  \item A \emph{State} is a tuple $(M, r)$ defining the current cluster, where
-    $M$ is a \texttt{Manifest}, and $r$ is a monotonically increasing unique
-    state identifier (i.e., a logical clock)\tocite.
+  \item A \StructState~is a tuple $(\VarManifest, \round)$ defining the current
+    cluster, where $\VarManifest$ is a \KwManifest, and $\round$ is a
+    monotonically increasing unique state identifier (i.e., a logical
+    clock)\tocite.
 
-  \item An \emph{Election} encompasses the operation of the protocol between
-    when a \texttt{Petition} $P$ is first proposed and the round
-    $P$.\texttt{rid} --- that is, the portion of the protocol where members are
-    aware that that \texttt{P} is being considered, but in which no member knows
-    the outcome of the election.
+  \item An \StructElection~encompasses the operation of the protocol between
+    when a Petition $\VarPetition$ is first proposed and the round
+    $\VarPetition$.\round~--- that is, the portion of the protocol where
+    members are aware that that $\VarPetition$ is being considered, but in which
+    no member knows the outcome of the election.
 
-  \item The \emph{Election State} can be described by a tuple
-    $((M, r), P, V)$, where $(M, r)$ is the current \emph{State}, $P$ is the
-    \texttt{Petition} being voted on, and $V$ is a collection of \texttt{Votes}
-    that have been cast thus far.
+  \item The \StructElectionState~can be described by a tuple $(\State,
+    \VarPetition, \SetVotes)$, where $\State$ is the current \StructState,
+    $\VarPetition$ is the Petition being voted on, and $\SetVotes$ is a
+    collection of \StructBallot s that have been cast thus far.
 
 \end{itemize}
 
 \subsection{Functions}
-Each \texttt{Peer} should implement the following functions:
-Within finite time and in a way that is fair, every \texttt{Peer} should be able
+Each \KwPeer should implement the following functions:
+Within finite time and in a way that is fair, every \KwPeer should be able
 to call each of the following functions:
 \begin{itemize}
-  \item \textsc{Propose}(\texttt{Petition} $P$): broadcasts $P$ to the cluster
-    and initiates an \emph{Election}
-  \item \textsc{Vote}$_{\texttt{State} (M, r)}$(\texttt{Petition} $P$), which
-    constructs a ballot ($sig$, $vote$) and broadcasts it to the cluster in
-    conjunction with $P$
-  \item \textsc{Evaluate}$_{\texttt{State} (M,r)}$(\texttt{Petition} $P$,
-    \texttt{Vote}s $V$) $\to (\{\textsc{Unfinished}, \textsc{Valid},
-    \textsc{Invalid}\}, proof$: Given an election state, every peer
-    should be able to determine whether the election has ended, and if it has,
-    what the result was. If it cannot, or if any part of the election state is
-    invalid, it should be able to provide a $proof$ of misbehavior.
-  \item \textsc{Evaluate}$_{\texttt{State} (M,r)}$(\texttt{Petition}
-    $P$, \texttt{Vote} $v$) $\to$ (\{\textsc{True, False}\}, $proof$) should
-    return (\textsc{True}, $proof$) if $v$ was produced by a valid \texttt{Peer}
-    according to $(M,r)$, and is a vote on $P$. Otherwise, \textsc{True} and a
-    proof of misbehavior should be produced.
+  \item \NamePropose(\StructPetition $\VarPetition$): broadcasts $\VarPetition$
+    to the cluster and initiates an \StructElection
+  \item \NameVote$_{\StructState \State}$(\StructPetition $\VarPetition$), which
+    constructs a \StructBallot $\Ballot$ and broadcasts it to the cluster in
+    conjunction with $\VarPetition$
+  \item \NameEvaluate$_{\StructState \State}$(\StructPetition $\VarPetition$,
+    \StructBallot $\Ballot$) $\to (\{\AtomUnfinished, \AtomValid,
+    \AtomInvalid\}, \VarZKP$: Given an election state, every peer should be able
+    to determine whether the election has ended, and if it has, what the result
+    was. If it cannot, or if any part of the election state is invalid, it
+    should be able to provide a $\VarZKP$ of misbehavior.
+  \item \NameEvaluate$_{\StructState \State}$(\StructPetition $\VarPetition$,
+    \StructBallot $\Ballot$) $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should
+    return (\AtomTrue, $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer
+    according to $\State$, and is a vote on $\VarPetition$. Otherwise, \AtomTrue
+    and a proof of misbehavior should be produced.
 \end{itemize}
 

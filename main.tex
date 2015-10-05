@@ -15,6 +15,7 @@
 \usepackage{tabularx}
 \usepackage{adjustbox}
 \usepackage{amsthm}
+\usepackage{amsfonts}
 \setlength{\marginparwidth}{2.5cm}
 
 % Custom todos
@@ -30,23 +31,7 @@
 \newcommand{\note}[1]{\todo[inline,color=red!20,caption={#1}]
   {\begin{spacing}{1.0}#1\end{spacing}}}
 
-  %macros
-\newcommand{\HistContext}{Italy in 1922}
-\newcommand{\Tyrant}{Benito Mussolini}
-\newcommand{\Office}{Prime Minister}
-\newcommand{\Congress}{the Italian Parliament}
-\newcommand{\Axis}{the Fascists}
-\newcommand{\MartialLaw}{martial law}
-\newcommand{\War}{years of war and millions of casualties}
-\newcommand{\Domain}{Italy}
-\newcommand{\Platform}{security and order in a time of lawlessness}
-
-\newcommand{\GrassContext}{a unionization campaign}
-\newcommand{\Org}{the Student/Worker Alliance}
-\newcommand{\Marginalized}{worker}
-\newcommand{\Dominant}{student}
-\newcommand{\BadGuys}{management}
-\newcommand{\Disappeared}{fired}
+\input macros.tex
 
 \setcounter{tocdepth}{2}
 
