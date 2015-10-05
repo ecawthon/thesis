@@ -20,10 +20,13 @@
 % intro}
 %
 This project brings together several disparate but related areas of computer
-science research. We examine existing work on decentralized decisionmaking,
-first in offline electronic voting protocols, then in fault tolerance, and
-finally in the anonymity protocols Tor and Dissent.
-  \section{Electronic Voting} \label{Section:evoting}
+science research.  Three existing bodies of work are particularly useful here:
+For verifiability, we turn to offline electronic voting protocols (which
+centralize computation but not trust). For decentralization, we look to work on
+fault tolerance and distributed consensus.\todo{Idea: centralization of truth?}
+Finally, we review existing work on anonymous group communication.
+\todoword{Make sure this order matches the order in \ref{Section:goals}}
+\section{Electronic Voting} \label{Section:evoting}
     Secure electronic voting systems have arisen largely out of a desire to
     retain secret ballots (no one should learn how a particular voter voted)
     while also guaranteeing accurate and fair counting of votes. Unlike
@@ -60,7 +63,14 @@ finally in the anonymity protocols Tor and Dissent.
     These protocols provide useful templates for how a distributed voting
     protocol might accomplish similar security properties.
 
-  \section{Distributed Consensus}
+  \section{Byzantine Fault Tolerance}
+    In shifting our focus from offline voting algorithms to networked protocols,
+    we must consider several types of disruptions not taken into account by
+    those algorithms. In particular, any member tasked with ``broadcasting'' a
+    message may equivocate, sending different values to different participants.
+    Existing work on distributed consensus provides various approaches to these
+    problems.
+
     Distributed consensus protocols allow groups of nodes to come to an
     agreement on canonical values. For example, in a distributed database, if an
     unreliable power supply causes some portion of servers to be offline for
@@ -78,12 +88,38 @@ finally in the anonymity protocols Tor and Dissent.
     the cluster to maintain a consistent record of transactions as long as a
     quorum is present.
 
+    Paxos and many similar protocols makes the simplifying assumption that all
+    nodes in the system are honest --- the only faults considered are those
+    triggered by nodes suddenly going offline. If nodes may be malicious, they
+    may ``fail'' not just by disappearing, but by forging messages in an effort
+    to influence the consensus value. \emph{Byzantine} consensus protocols allow
+    the honest nodes in a system to arrive at a canonical value, so long as some
+    minimum portion of nodes are honest. The original Paxos can
+    accommodate Byzantine failures if an additional verification stage, in which
+    all Acceptors communicate with all other Acceptors in order to detect
+    equivocation, is added before the final step \cite{castro_practical_1999}.
+    Additional optimizations to regular and Byzantine Paxos have also been
+    developed \cite{lamport_fast_2006}. If the adversary can not only send
+    arbitrary messages but also monitor messages exchanged among other nodes,
+    additional attacks are possible. One approach to this divides the nodes into
+    small quorums in an effort to contain malicious nodes \cite{king_load_2011}
+    while also providing better scalability than solutions that require
+    all-to-all communication to thwart equivocators.
+
+    In both its standard and Byzantine formulations, the distributed consensus
+    problem assumes discrepancies in the record will only be due to faults ---
+    that is, each assumes all honest participants either agree on what the value
+    should be or agree to accept the value reported by the nodes who do know the
+    value.  In the election of rotating leaders or servers, the correct value is
+    not knowable a priori. If our leader election algorithm is modeled on other
+    election protocols, it must be assumed that honest nodes may disagree on
+    which servers they wish to elect.
 
 \section{Anonymity Protocols}
 \label{subsection:ExistingAnonymity}
   Every anonymity tool shares one basic goal: Given a set of assumptions about
   an adversary's capabilities, an anonymity tool provides a way for a user to
-  broadcast a message without the adversary being able to discover the author
+  transmit a message without the adversary being able to discover the author
   of the message.  To illustrate the general approach and some common
   security assumptions, we first consider The Onion Router (Tor), the most
   widely used anonymity tool today\cite{ford_hiding_2014}

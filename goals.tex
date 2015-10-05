@@ -1,5 +1,30 @@
-\toadd{intro}
+We identify three crucial properties for a group decisionmaking protocol that
+keeps power decentralized.
+
+First, the protocol's computation must be distributed. If the adversary has
+control of the network infrastructure, it can easily block access to any central
+component of a protocol (such as a Tor relay \tocite or voting
+registrar\todoword{use the literature terminology}). If blocking one or a small
+subset of nodes in the group is sufficient to break the protocol, this again
+weakens our decentralization guarantees and renders the protocol less useful. A
+fault tolerant, distributed protocol, however, can easily recover from arbitrary
+changes in the network topology.
+
+Next, the protocol must be verifiable --- any particiapnt or external auditor
+should be able to examine a transcript of the protocol and determine whether or
+not it was performed honestly. Without this property, it would be necessary to
+trust that some portion of the group acted honestly without verification ---
+this constitutes centralized trust, and is therefore inadequate.
+
+Finally, the protocol must be anonymous --- it should be computationally hard to
+attribute any vote or any petition to any specific participant. This is
+essential to preserve the safety of members suggesting or voting for unpopular
+proposals.
+
+We now formalize these notions:
 \todoword{Copy edit for redundancy}
+\section{Distributed Computation}\label{Subsection:distr}
+\toadd{Some questionable notion of this that we meet}
 \section{Verifiability}\label{Subsection:verif}
 A protocol is verifiable if its output can be inspected to confirm that the
 protocol was carried out correctly. A simple example of this is signing a
@@ -16,25 +41,25 @@ only eligible voters voted, and that each voter voted only once.
 
   \subsection{Individual}
   A group management protocol provides \emph{individual verifiability} if, in
-  any Election State $((M,r), P, V)$, any member $u$
-  either knows its own vote is correctly represented in $V$ (that is, either
-  $u$ voted and $u$'s
-  signature for $P.L$\todo{TODO: more params; define lrs} is contained in $G$,
-  or $u$ did not vote and $u$'s signature is absent from $G$), or can produce
-  a zero-knowledge proof that the Election State is invalid.\todo{TODO: define
-  invalid}
+  any Election State $(\State, \VarPetition, \SetVotes)$, any member
+  $\VarMember$ either knows its own vote is correctly represented in $V$ (that
+  is, either $\VarMember$ voted and $\VarMember$'s signature for
+  $\VarPetition.\VarLinkScope$\todo{TODO: more params; define lrs} is contained
+  in $\SetVotes$, or $\VarMember$ did not vote and $\VarMember$'s signature is
+  absent from $\SetVotes$), or can produce a zero-knowledge proof that the
+  Election State is invalid.\todo{TODO: define invalid}
 
   \subsection{Universal}
-  A group management protocol provides \emph{universal verifiability} if, in
-  any finished election state, $((M,r), P, V)$%result $r = (M, B, G, rid)$,
-  anybody can verify that $V$ is a valid signing of $P$ or else produce a
+  A group management protocol provides \emph{universal verifiability} if, in any
+  finished election state, $(\State, \VarPetition, \SetVotes)$ , anybody can
+  verify that $\SetVotes$ is a valid signing of $\VarPetition$ or else produce a
   proof that it is not. Consequently, any auditor (member or otherwise) can
-  verify the canonical value of $M.t(G)$.
+  verify the canonical value of $\VarManifest.\FunEval(\ElectionState)$.
 
   \subsection{Eligibility}
   A group management protocol provides \emph{eligibility verifiability} if, in
-  any finished election state, anybody can verify that all elements of $V$
-  were cast by \texttt{Member}s of the current cluster.
+  any finished election state, anybody can verify that all elements of
+  $\SetVotes$ were cast by \KwMember s of the current cluster.
 
 \section{Anonymity}
 Members of any group often face reprocussions if they participate in group
