@@ -11,18 +11,20 @@ our protocol.
 \subsection{Hardened Dissent}
 A security analysis of the original peer-to-peer Dissent resulted in a modified
 protocol providing the following properties:
-  \begin{theorem} At the end of round $i$, either all participants see the same
-    value of all messages, any peers disrupting the protocol are detected and
-    eliminated, or the round does not terminate.\todo{TODO: explain}%\ldots \todo{semicomputability}
+  \begin{theorem} At the end of turn $\turn$, either all participants see the
+    same value of all messages, any peers disrupting the protocol are detected
+    and eliminated, or the round does not terminate.\todo{TODO: explain}%\ldots
+    \todo{semicomputability}
   \end{theorem}
-  \begin{theorem} For any round $i$, all participants know the results of round
-    $i$ before any know the results of round
-    $i+1$.\end{theorem}\label{theorem:rounds}
-  \begin{theorem}[Anonymity] When Hardened Dissent is executed and completes in a
-    cluster of $n$ participants, of which $k$ are honest, none of the avenues of
-    attack descibed in our thread models in Section~\ref{Section:threats}
-    provide non-negligable advantage over uniform guessing in determining which
-    of the $k$ honest participants sent any particular message.
+  \begin{theorem} For any turn $\turn$, all participants know the results of
+    round $\turn$ before any know the results of round
+    $\turn+1$.\end{theorem}\label{theorem:rounds}
+  \begin{theorem}[Anonymity] When Hardened Dissent is executed and completes in
+    a cluster of $\NumClients$ participants, of which $\NumHonest$ are honest,
+    none of the avenues of attack descibed in our thread models in
+    Section~\ref{Section:threats} provide non-negligable advantage over uniform
+    guessing in determining which of the $\NumHonest$ honest participants sent
+    any particular message.
   \end{theorem}\label{theorem:anon}
   All properties are rigorously proven in \cite{sec}.
 
@@ -84,16 +86,16 @@ or not they produced a signature of interest.''
 \cite{golrs}
 \toadd{TODO: explain in own words instead of having a page and a half long quote}
 \subsection{Dissent in Numbers}
-An instance of Dissent in Numbers consists of $n$ clients and $m$ servers.
-Communication takes place in \emph{rounds}, wherein each client has an
-opportunity to broadcast a message to the entire client set. Assuming $k$ of the
-$n$ clients are honest, each client is guaranteed that, at the protocol level,
-its message will be anonymous among the $k$ honest clients unless all servers
-collude with each other.\toadd{Move the security properties to the goals
-  section and only describe the functionality here} Since all clients receive
-  each client's messages in a deterministic order, there is a well-defined
-  sequence of rounds which we can associate with a monotonically increasing
-  \emph{round ID}.
+An instance of Dissent in Numbers consists of $\NumClients$ clients and
+$\NumServers$ servers.  Communication takes place in \emph{rounds}, wherein each
+client has an opportunity to broadcast a message to the entire client set.
+Assuming $\NumHonest$ of the $\NumClients$ clients are honest, each client is
+guaranteed that, at the protocol level, its message will be anonymous among the
+$\NumHonest$ honest clients unless all servers collude with each
+other.\toadd{Move the security properties to the goals section and only describe
+the functionality here} Since all clients receive each client's messages in a
+deterministic order, there is a well-defined sequence of rounds which we can
+associate with a monotonically increasing \emph{round ID}.
 
 \section{Algorithms}
 \subsection{Initial formation}
@@ -106,12 +108,12 @@ as Byzantine Paxos, as discussed in \cite{sec}.
 
 The Dissent configuration file specifies the size and ordering of clients'
 message slots\todogrunt{Need to define client and slot somewhere}. which will
-consist of, for each of the $n$ clients: space for a \texttt{Ballot}, and space
-for up to $n$ signatures so the client can sign whatever other proposals are in
+consist of, for each of the $\NumClients$ clients: space for a \StructBallot, and space
+for up to $\NumClients$ signatures so the client can sign whatever other proposals are in
 play.  We only allow any given client to have one proposal at any given time.
 
 \subsection{Peer-to-Peer Layer}
-Every \texttt{Member} maintains a TCP connection to every other \texttt{Member},
+Every \KwMember maintains a TCP connection to every other \KwMember,
 and uses this to execute Hardened Dissent. The primary limitation of this
 version is performance --- there is a detailed security analysis demonstrating
 the anonymity preserving properties of this layer, and so we use it as a
@@ -122,21 +124,22 @@ For any instance of the DIN layer, there is a canonical \texttt{Manifest}
 maintained at the P2P layer describing its parameters. The \texttt{Manifest}
 consists of
 \begin{itemize}
-  \item A \texttt{Roster} $R$, mapping public keys to IP addresses for all
-    \texttt{Client}s,
-  \item A \texttt{Servers} list $S$, which is a subset of $R$,
-  \item A function $t : G \to \{\textsc{True, False}\}$ mapping a set of
-    signatures to an election result. So, if $t(g) = \textsc{True}$ for some
-    outcome $g$\todo{clarify $G$}, then the proposal corresponding to $g$ should
-    be adopted at the specified expiration round. A plausible example is the
-    function which specifies what proportion of \texttt{Member}s must agree to a
-    change in the composition of $R$ or $S$ in order for the change to take
+  \item A \KwRoster~$\VarRoster$, mapping public keys to IP addresses for all
+    \KwClient s,
+  \item A \KwServer~list $\SetServers$, which is a subset of $\VarRoster$,
+  \item A function $\FunEval : \SetElectionStates \to \{\AtomTrue, \AtomFalse\}$
+    mapping a set of signatures to an election result. So, if
+    $\FunEval(\ElectionState) = \AtomTrue$ for some outcome $\ElectionState$,
+    then the proposal corresponding to $\ElectionState$ should be adopted at the
+    specified expiration round. A plausible example is the function which
+    specifies what proportion of \KwMember s must agree to a change in the
+    composition of $\VarRoster$ or $\SetServers$ in order for the change to take
     effect
 \end{itemize}
 
-When a vote to change the \texttt{Manifest} passes, the \texttt{Member}s newly
+When a vote to change the \KwManifest~passes, the \KwMember s newly
 designated as servers begin running server instances of Dissent in Numbers, and
-all \texttt{Member}s (including the ones now running servers) begin running
+all \KwMember s (including the ones now running servers) begin running
 client instances.
 \toadd{Describe how to
   start a Dissent instance. This is a solved problem, I just need to summarize
@@ -157,41 +160,41 @@ keys}
 \subsection{Voting with Linkable Ring Signatures}
 By associating a unique link scope with each petition, we allow \texttt{Member}s
 to vote by producing a signature with the current member set and the proposer's
-link scope. Each \texttt{Member} that wishes to vote for the petition broadcasts
+link scope. Each \KwMember~that wishes to vote for the petition broadcasts
 the petition along with its signature. Dissent provides acccountable, veriiable
 broadcasting of anonymous messages, and so given our reliability assumptions,
-every \texttt{Member} will eventually end up with a list of anonymous signatures
+every \KwMember~will eventually end up with a list of anonymous signatures
 associated with the petition. At the specified round, each member should verify
-all signatures received. If the function $t$ applied to the set of unique, valid
-signatures results in \textsc{True}, then the petition passes.
+all signatures received. If the function $\FunEval$ applied to the set of unique, valid
+signatures results in \AtomTrue, then the petition passes.
 
 \missingfigure{TODO: Illustrate the round message format, which will consist of,
-  for each of the $n$ clients: space for a \texttt{Ballot}, and space for up to
-$n$ signatures so the client can sign whatever other proposals are in play.  We
+  for each of the $\NumClients$ clients: space for a \texttt{Ballot}, and space for up to
+$\NumClients$ signatures so the client can sign whatever other proposals are in play.  We
 only allow any given client to have one proposal at any given time.}
-Within a round, each \texttt{Member} may \todosubst{Jamming by proposing
-ballots??? Infinite timeouts???} transmit a \texttt{Petition}. A
-\texttt{Petition} consists of:
+Within a round, each \KwMember may \todosubst{Jamming by proposing
+ballots??? Infinite timeouts???} transmit a \KwPetition. A
+\KwPetition~consists of:
 \begin{itemize}
-  \item A proposed \emph{Manifest}, as described above,
-  \item A \emph{Link Scope}\todogrunt{Explain}
+  \item A proposed \KwManifest, as described above,
+  \item A \KwLinkScope\todogrunt{Explain}
   % \item A collection of \texttt{Signatures}\todogrunt{Explain}
-  \item A \emph{Round ID} when the ballot will expire.
+  \item A \KwRound~when the ballot will expire.
 \end{itemize}
 
-Once a \emph{Petition} has been proposed, the other \texttt{Member}s have the
-opportunity to \emph{vote}. A \texttt{Member} votes by transmitting the most
-recent version of the \texttt{Ballot}, but with the \texttt{Signatures} field
-modified to include the proposed \texttt{Manifest} signed with the voting
-\texttt{Member}'s private key for this link scope.\toadd{I think this is
+Once a \KwPetition~has been proposed, the other \KwMember s have the
+opportunity to \NameVote. A \KwMember~votes by transmitting the most
+recent version of the \SetVotes, but with the \texttt{Signatures} field
+modified to include the proposed \KwManifest~signed with the voting
+\KwMember's private key for this link scope.\toadd{I think this is
 wrong}
 
-By the designated expiration round, all \texttt{Member}s have enough
-information to determine whether or not the \texttt{Petition} \emph{passes}:
-Each \texttt{Member} should verify all signatures on the most recent
+By the designated expiration round, all \KwMember s have enough
+information to determine whether or not the \KwPetition~\emph{passes}:
+Each \KwMember should verify all signatures on the most recent
 version\todosubst{What if there are conflicting versions?}
-and compare the total number of valid signatures to the threshold $t$. If the
-\texttt{Ballot} passes, the new server set should immediately set up the
+and compare the total number of valid signatures to the threshold $\FunEval$. If the
+\KwPetition passes, the new server set should immediately set up the
 next iteration of the DIN layer.\toadd{finish describing new setup}
 
 \section{Arguments for Correctness}
@@ -203,33 +206,32 @@ Section~\ref{Section:verif}.
 
 \begin{proof}
 
-  \begin{lemma}The \emph{Election state} of any \emph{Election} at
+  \begin{lemma}The \StructElectionState~of any \StructElection at
   any time is well defined. \end{lemma}
   \begin{proof}This follows from properties of peer-to-peer Dissent \cite{sec}.
-    The \emph{Election State} can only be updated by transmission of messages
+    The \StructElectionState~can only be updated by transmission of messages
     (votes) over Dissent. Recall that communication proceeds in serialized
     \emph{rounds}, so by Theorem~\ref{theorem:rounds}, it is impossible for two
-    \texttt{Peer}s to have conflicting versions of the election state at any
+    \KwPeer s to have conflicting versions of the election state at any
     given round.
   \end{proof}
 
-  Given this, we know that every \texttt{Peer} has accurate knowledge of the
+  Given this, we know that every \KwPeer~has accurate knowledge of the
   election state if it has any knowledge of the election state. From here, the
   verifiability properties follow directly from the properties of linkable ring
   signatures.
 
   \todo[inline, caption={TODO: More proof detail}]{TODO: Here's more proof detail:
 
-  \begin{lemma} Given accurate knowledge of the current election state $( (M,
-    r), P, V)$, a \texttt{Peer} can verify that its vote has been included or
-    excluded correctly.
+  \begin{lemma} Given accurate knowledge of the current election state $(\State,
+    \VarPetition, \SetVotes)$, a \KwPeer can verify that its vote has been
+    included or excluded correctly.
   \end{lemma}
-  \begin{proof}a \texttt{Peer} $p$ can call
-    \texttt{Sign}($M.\texttt{Roster}.keys, P.\texttt{LinkScope}, m.k,
-    P$)
-    % \todo{TODO:Make this notation consistent}
-    to produce a signature $s$,
-    then examine $V$ to see if it contains $s$.
+  \begin{proof}a \KwPeer $\peer$ can call
+    \NameSign($\VarManifest.\KwRoster.keys, \VarPetition.\KwLinkScope, \msg.k,
+    \VarPetition$) %\todo{TODO:What's $k$?}
+    to produce a
+    signature $\sig$, then examine $\SetVotes$ to see if it contains $\sig$.
   \end{proof}
 }
 
@@ -251,8 +253,8 @@ Although the voting protocols discussed in Section~\ref{Section:evoting}
 provide voter anonymity (secret ballots) within an election, they do not on
 their own provide instigator anonymity. This protocol provides both.
 
-\begin{lemma} Votes are $k$-anonymous among the $k$ honest users of the system
-\end{lemma}
+\begin{lemma} Votes are $\NumHonest$-anonymous among the $\NumHonest$ honest
+  users of the system \end{lemma}
 \begin{proof} This follows directly from Theorem~\ref{theorem:anon}.\end{proof}
 
 Using this, we can show:
