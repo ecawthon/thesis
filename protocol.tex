@@ -74,6 +74,12 @@ and uses this to execute Hardened Dissent.
 For any instance of the DIN layer, there is a canonical \texttt{Manifest}
 maintained at the P2P layer describing its parameters. The \texttt{Manifest}
 consists of
+
+  This protocol operates at the level of a \KwCluster~of
+    \KwNode s.  A \KwPeer~is a \KwNode~that is a member of a
+    particular \KwCluster. It may be voted out of a cluster. New nodes
+    become \KwPeer s if their joining is approved by the existing cluster.
+
 \begin{itemize}
   \item A \KwRoster~$\VarRoster$, mapping public keys to IP addresses for all
     \KwClient s,

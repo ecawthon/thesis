@@ -10,6 +10,13 @@ the anonymity preserving properties of this layer, and so we use it as a
 fallback layer for reconfiguring if servers misbehave by dropping out, and for
 initial setup of the Dissent in Numbers (DIN) layer.
 
+    A map \texttt{Committees} mapping names of elected statuses to sets of
+      elements of the \KwRoster. For example, \texttt{Committees} might
+      consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$,
+      where $A, B,$ and $C$ are the participants listed in $R$ which have been
+      elected to act as \texttt{servers} in an instance of Dissent in
+      Numbers.\todosubst{Obsolete. Make generic.}
+
   Dissent is an alternative to Tor that provides provable anonymity even if
   only one server in the network is honest\cite{p2pd}.
   \section{Protocol Explanation}

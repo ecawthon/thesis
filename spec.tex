@@ -41,43 +41,38 @@ for some $j\le \NumClients$
 
 \section{Anonymous Petition Protocol}
 \subsection{Data Structures}
-\begin{itemize}
-  \item This protocol operates at the level of a \KwCluster~of
-    \KwNode s.  A \KwPeer~is a \KwNode~that is a member of a
-    particular \KwCluster. It may be voted out of a cluster. New nodes
-    become \KwPeer s if their joining is approved by the existing cluster.
-
-  \item A \KwManifest~defines the group configuration and consists of
+  A \KwManifest~defines the group configuration and consists of
   \begin{itemize}
     \item A \KwRoster, representing the set of eligible voters
-    \item A map \texttt{Committees} mapping names of elected statuses to sets of
-      elements of the \KwRoster. For example, \texttt{Committees} might
-      consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$,
-      where $A, B,$ and $C$ are the participants listed in $R$ which have been
-      elected to act as \texttt{servers} in an instance of Dissent in
-      Numbers.\todosubst{Obsolete. Make generic.}
     \item A function $\FunEval : \SetElectionStates \to (\SetResult, \SetZKPs)$
       where $\SetElectionStates$ is the set of all \emph{Election State}s, and
       $\SetZKPs$ is the set of all possible proofs of correctness of the result.
-      That is, if $\FunEval(\ElectionState) = \AtomTrue$ for some outcome
-      $\ElectionState$, then the proposal corresponding to $\ElectionState$
-      passes.  A plausible example is the function which specifies what
-      proportion of \KwPeer s must agree to a change in the composition of the
-      \KwRoster~in order for the change to take effect.
+      That is, if for some outcome $\ElectionState$, we
+      have$\FunEval(\ElectionState) = (\Choice, \VarZKP)$, then the ballot
+      choice $\Choice \in \ElectionState.\VarPetition.\SetChoices$ passes.  A
+      plausible example of such a $\FunEval$ is the function which specifies
+      what proportion of \KwPeer s must agree to a change in the composition of
+      the \KwRoster~in order for the change to take effect.
+    \item Any other group configuration information the group should be able to
+      vote on.
   \end{itemize}
-  \item A \StructPetition~is a proposal to change the \KwManifest. It
-    consists of
+
+  A \StructPetition~is a proposal for the \KwCluster to vote on. It consists of
     \begin{itemize}
       \item An \StructInstigator, the \KwPeer~who proposed the
         Petition. This information is not publicly associated with
-        the Petition.
-      \item A unique identifier $L$, which is public
-      \item A proposed new \KwManifest,
-      \item An expiration condition, defining when the vote on the petition
-        should end.
+        the Petition,
+      % \item A unique identifier $\VarLinkScope$, which is public
+      % \item A proposed new \KwManifest,
+      \item A proposal text $\msg$,
+      \item A set of ballot choices $\SetChoices$, and
+      \item An expiration condition\todogrunt{express in terms of states?},
+        defining when the vote on the petition should end.
     \end{itemize}
-  \item A \StructBallot~encodes information about the eligibility of the voter,
-    and information about the voter's preference. To determine the results of
+
+  A \StructBallot~encodes information about the eligibility of the voter,
+    and information about the voter's preference.
+    \footnote{To determine the results of
     the elction while providing the verifiability properties discussed in
     Section~\ref{Section:verif}, there must be a public record of some
     aggregate information about each: An auditor must be able to tell that every
@@ -91,34 +86,30 @@ for some $j\le \NumClients$
     \StructBallot~tuple $(\sig, \vote)$, where $\sig$ encodes Badru's
     credentials and $\vote$ encodes his candidate choice.
 
-    \note{this is kindof out of no where. maybe move?}
     To provide the necessary information while preserving his
-    confidentiality, Badru must encrypt part or all of his ballot.
-    We show
-    in Appendix~\ref{Appendix:SecretProof}\todosubst{I think this is actually
-    only true if people vote at different times} that it is impossible to design
-    a Byzantine Fault Tolerant protocol where both are kept secret. This leaves
-    two possibilities:
-    Either Badru can encode his credentials in a $\sig$ that is anonymous
-    (c.f. \cite{lrs})
-    or he can encrypt $\vote$ so that Badru's choice of candidates can only be
-    decyphered in aggregate, once the connection to Badru's public signature has
-    been lost.
+    confidentiality, Badru must encrypt part or all of his ballot. It is
+    impossible to design a performant and Byzantine fault tolerant protocol
+    where both are kept secret. (I have discovered a truly marvelous proof of
+    this, which this margin is too narrow to contain \tocite). This leaves two
+    possibilities: Either Badru can encode his credentials in a $\sig$ that is
+    anonymous (c.f. \cite{lrs}) or he can encrypt $\vote$ so that Badru's choice
+    of candidates can only be decyphered in aggregate, once the connection to
+    Badru's public signature has been lost (as in Dissent).
+  }
 
-\end{itemize}
 
 \subsection{States}
 \begin{itemize}
   \item A \StructState~is a tuple $(\VarManifest, \round)$ defining the current
     cluster, where $\VarManifest$ is a \KwManifest, and $\round$ is a
-    monotonically increasing unique state identifier (i.e., a logical
+    monotonically increasing unique state identifier (e.g., a logical
     clock)\tocite.
 
   \item An \StructElection~encompasses the operation of the protocol between
-    when a Petition $\VarPetition$ is first proposed and the round
-    $\VarPetition$.\round~--- that is, the portion of the protocol where
-    members are aware that that $\VarPetition$ is being considered, but in which
-    no member knows the outcome of the election.
+    when a Petition $\VarPetition$ is first proposed and when the expiration
+    condition is met --- that is, the portion of the protocol where members are
+    aware that that $\VarPetition$ is being considered, but in which no member
+    knows the outcome of the election.
 
   \item The \StructElectionState~can be described by a tuple $(\State,
     \VarPetition, \SetVotes)$, where $\State$ is the current \StructState,
@@ -132,20 +123,21 @@ Within finite time and in a way that is fair, every \KwPeer~should be able
 to call each of the following functions:
 \begin{itemize}
   \item \NamePropose(\StructPetition~$\VarPetition$): broadcasts $\VarPetition$
-    to the cluster and initiates an \StructElection
+    to the cluster and initiates an \StructElection.
   \item \NameVote$_{\StructState~\State}$(\StructPetition~$\VarPetition$), which
     constructs a \StructBallot~$\Ballot$ and broadcasts it to the cluster in
     conjunction with $\VarPetition$
   \item \NameEvaluate$_{\StructState~\State}$(\StructPetition~$\VarPetition$,
-    \StructBallot~$\Ballot$) $\to (\{\AtomUnfinished, \AtomValid,
-    \AtomInvalid\}, \VarZKP$: Given an election state, every peer should be able
-    to determine whether the election has ended, and if it has, what the result
-    was. If it cannot, or if any part of the election state is invalid, it
-    should be able to provide a $\VarZKP$ of misbehavior.
+    \SetVotes) $\to (\{\AtomUnfinished, \AtomValid, \AtomInvalid\}, \Choice,
+    \VarZKP)$:
+    Given an election state, every peer should be able to determine whether the
+    election has ended, and if it has, what the result was. If it cannot, or if
+    any part of the election state is invalid, it should be able to provide a
+    $\VarZKP$ of misbehavior.
   \item \NameEvaluate$_{\StructState~\State}$(\StructPetition~$\VarPetition$,
     \StructBallot~$\Ballot$) $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should
     return (\AtomTrue, $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer~
     according to $\State$, and is a vote on $\VarPetition$. Otherwise,
-    \AtomTrue~and a proof of misbehavior should be produced.
+    \AtomFalse~and a proof of misbehavior should be produced.
 \end{itemize}
 
