@@ -12,9 +12,7 @@ We assume an anonymous communication layer that provides the following
 functionality:
 
 \subsection{Definitions}
-\begin{itemize}
-\item An instance of the anonymous communication layer consists of:
-
+An instance of the anonymous communication layer consists of:
 \begin{itemize}
 \item A fixed peer set
   $\SetPeers:=\peer_{1},\peer_{2},...,\peer_{\NumClients}.$
@@ -24,20 +22,27 @@ functionality:
   (possibly blank) message $\msg_{\turn}$ in the broadcast channel signed by
   pseudonym $\FunNym(\peer_{i})\in \SetNymDomain$.
 \item A \KwSchedule~function $\FunSched:\mathbb{N}\to \SetNymDomain$ mapping
-  rounds to pseudonyms, establishing whose turn it is.
-\end{itemize}
+  rounds to pseudonyms, establishing whose turn it is. Each client should have
+  their $i^{th}$ term before any client has its $i+1^{th}$ turn.
+\item A \HistoryOracle~, which all clients can query to learn the messages
+  transmitted in previous rounds.
 \end{itemize}
 
 \subsection{Interface}
 
-Peers have the following functions available to them:
+Peers have the following functions available to them in polynomial time:
 \begin{itemize}
-\item At any round $\turn$, Any peer $\peer_{i}$can pseudononymously broadcast
-a message $\msg_{\NumClients(\peer_{i})}$ to $\SetPeers$ at round $\turn+j$
-for some $j\le \NumClients$
-\item At the end of round $\turn$, all $\peer\in \SetPeers$ learn the contents
-  of $\msg_{\turn}$
+  \item \NameReceive($\turn, \peer$) $\to (\nym, \msg)$ allows $\peer$ to query
+    the \HistoryOracle~and returns the $\turn^{th}$ message along with its owner
+    $\nym$ (with $\FunSched(\turn) = \nym $)
+  \item \NameSend($\turn, \peer, \msg$) --- if called at turn $\turn$, the peer
+    $\peer$ broadcasts its message $\msg$ at the next turn where
+    $\FunSched(\turn+i) = p$, wiith $i \le \NumClients$. Equivalently, the
+    \HistoryOracle~is updated such that, after turn $\turn+i$, any peer calling
+    \NameReceive($\turn+i$) will retrieve $(\FunNym(\peer), \msg)$.
 \end{itemize}
+
+\subsection{Security Properties}
 
 \section{Anonymous Petition Protocol}
 \subsection{Data Structures}
@@ -66,9 +71,9 @@ for some $j\le \NumClients$
       % \item A proposed new \KwManifest,
       \item A proposal text $\msg$,
       \item A set of ballot choices $\SetChoices$, and
-      \item An expiration condition\todogrunt{express in terms of states?},
-        defining when the vote on the petition should end.
-    \end{itemize}
+      \item An expiration condition $\FunExpir : \cdot \to \{\AtomTrue,
+        \AtomFalse\}$ defining when the vote on the petition should end.
+   \end{itemize}
 
   A \StructBallot~encodes information about the eligibility of the voter,
     and information about the voter's preference.
@@ -98,46 +103,84 @@ for some $j\le \NumClients$
   }
 
 
-\subsection{States}
-\begin{itemize}
-  \item A \StructState~is a tuple $(\VarManifest, \round)$ defining the current
-    cluster, where $\VarManifest$ is a \KwManifest, and $\round$ is a
-    monotonically increasing unique state identifier (e.g., a logical
-    clock)\tocite.
-
-  \item An \StructElection~encompasses the operation of the protocol between
-    when a Petition $\VarPetition$ is first proposed and when the expiration
-    condition is met --- that is, the portion of the protocol where members are
-    aware that that $\VarPetition$ is being considered, but in which no member
-    knows the outcome of the election.
-
-  \item The \StructElectionState~can be described by a tuple $(\State,
-    \VarPetition, \SetVotes)$, where $\State$ is the current \StructState,
-    $\VarPetition$ is the Petition being voted on, and $\SetVotes$ is a
-    collection of \StructBallot s that have been cast thus far.
-
-\end{itemize}
-
-\subsection{Functions}
+% \subsection{States}
+% \begin{itemize}
+%   \item A \StructState~is a tuple $(\VarManifest, \round)$ defining the
+%   current cluster, where $\VarManifest$ is a \KwManifest, and $\round$ is a
+%   monotonically increasing unique state identifier (e.g., a logical
+%   clock)\tocite.
+%
+%   \item An \StructElection~encompasses the operation of the protocol between
+%   when a Petition $\VarPetition$ is first proposed and when the expiration
+%   condition is met --- that is, the portion of the protocol where members are
+%   aware that that $\VarPetition$ is being considered, but in which no member
+%   knows the outcome of the election.
+%
+%   \item The \StructElectionState~can be described by a tuple $(\State,
+%     \VarPetition, \SetVotes)$, where $\State$ is the current \StructState,
+%     $\VarPetition$ is the Petition being voted on, and $\SetVotes$ is a
+%     collection of \StructBallot s that have been cast thus far.
+%
+% \end{itemize}
+%
+\subsection{Interface}
 Within finite time and in a way that is fair, every \KwPeer~should be able
 to call each of the following functions:
 \begin{itemize}
-  \item \NamePropose(\StructPetition~$\VarPetition$): broadcasts $\VarPetition$
-    to the cluster and initiates an \StructElection.
-  \item \NameVote$_{\StructState~\State}$(\StructPetition~$\VarPetition$), which
-    constructs a \StructBallot~$\Ballot$ and broadcasts it to the cluster in
-    conjunction with $\VarPetition$
-  \item \NameEvaluate$_{\StructState~\State}$(\StructPetition~$\VarPetition$,
-    \SetVotes) $\to (\{\AtomUnfinished, \AtomValid, \AtomInvalid\}, \Choice,
-    \VarZKP)$:
-    Given an election state, every peer should be able to determine whether the
-    election has ended, and if it has, what the result was. If it cannot, or if
-    any part of the election state is invalid, it should be able to provide a
-    $\VarZKP$ of misbehavior.
-  \item \NameEvaluate$_{\StructState~\State}$(\StructPetition~$\VarPetition$,
-    \StructBallot~$\Ballot$) $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should
-    return (\AtomTrue, $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer~
-    according to $\State$, and is a vote on $\VarPetition$. Otherwise,
-    \AtomFalse~and a proof of misbehavior should be produced.
+  \item \NamePropose($\round, \peer, \VarPetition$):
+    whereby a \KwPeer $\peer$ constructs a \StructPetition~$\VarPetition$ and
+    \NameSend s it to the cluster for consideration
+  \item \NameVote($\round, \peer, \VarManifest, \VarPetition, \Ballot$): If
+    $\VarPetition.\FunExpir(\cdot) = \AtomFalse$, then a \KwPeer~\peer may
+    \NameVote on it by creating a \StructBallot~\Ballot indicating its preferred
+    outcome, and \NameSend ing this to the group.
+  \item \NameEvaluate($\round, \peer, \VarManifest, \VarPetition, \SetVotes) \to
+    (\{\AtomUnfinished, \AtomValid, \AtomInvalid\}, \Choice, \VarZKP)$: Given a
+    vote state, every peer should be able to determine whether the vote
+    has ended, and if it has, what the result was. If it cannot, or if any part
+    of the election state is invalid, it should be able to provide a $\VarZKP$
+    of misbehavior.
+  \item \NameEvaluate($\round, \peer, \VarManifest, \VarPetition, \SetVotes$)
+    $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should return (\AtomTrue,
+    $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer~according to
+    $\State$, and is a vote on $\VarPetition$. Otherwise, \AtomFalse~and a proof
+    of misbehavior should be produced.
 \end{itemize}
+
+\subsection{Security Properties}
+  \subsubsection{Verifiability}
+  \paragraph{Individual}
+  A group management protocol provides \emph{individual verifiability} if, in
+  any Election State $(\State, \VarPetition, \SetVotes)$, any member
+  $\VarMember$ either knows its own vote is correctly represented in $\SetVotes$
+  (that is, either $\VarMember$ voted and $\VarMember$'s signature for
+  $\VarPetition.\VarLinkScope$ \todo{TODO: more params; define lrs} is contained
+  in $\SetVotes$, or $\VarMember$ did not vote and $\VarMember$'s signature is
+  absent from $\SetVotes$), or can produce a zero-knowledge proof that the
+  Election State is invalid.\todo{TODO: define invalid}
+
+  \paragraph{Universal}
+  A group management protocol provides \emph{universal verifiability} if, in any
+  finished election state, $(\State, \VarPetition, \SetVotes)$ , anybody can
+  verify that $\SetVotes$ is a valid signing of $\VarPetition$ or else produce a
+  proof that it is not. Consequently, any auditor (member or otherwise) can
+  verify the canonical value of $\VarManifest.\FunEval(\ElectionState)$.
+
+  \paragraph{Eligibility}
+  A group management protocol provides \emph{eligibility verifiability} if, in
+  any finished election state, anybody can verify that all elements of
+  $\SetVotes$ were cast by \KwMember s of the current cluster.
+
+  \subsubsection{Anonymity}
+  \paragraph{For Instigators}
+  A group management protocol provides \emph{instigator anonymity} if, during
+  and after any election, no member and no outside observer can determine
+  which member proposed the ballot in question.
+
+  \paragraph{Of Ballots}
+  A group management protocol provides \emph{secret ballots} if, during and
+  after any election, either no outside observer can reconstruct which member
+  submitted which vote, or no outside observer can reconstruct how any
+  member voted. The same restrictions apply to knowledge gained by other
+  participants, except that each member can trivially reconstruct its own vote.
 

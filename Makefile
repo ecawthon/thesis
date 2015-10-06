@@ -2,7 +2,7 @@ all: main
 
 main: *.tex *.bib
 	pdflatex main
-	-bibtex main
+	bibtex main
 	pdflatex main
 	pdflatex main
 
