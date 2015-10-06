@@ -79,7 +79,7 @@ for some $j\le \NumClients$
   \item A \StructBallot~encodes information about the eligibility of the voter,
     and information about the voter's preference. To determine the results of
     the elction while providing the verifiability properties discussed in
-    Section~\ref{Subsection:verif}, there must be a public record of some
+    Section~\ref{Section:verif}, there must be a public record of some
     aggregate information about each: An auditor must be able to tell that every
     voter was eligible, and also what the outcome of the election was. To
     provide voter confidentiality, we must provide a way for each voter to
@@ -128,25 +128,24 @@ for some $j\le \NumClients$
 \end{itemize}
 
 \subsection{Functions}
-Each \KwPeer should implement the following functions:
-Within finite time and in a way that is fair, every \KwPeer should be able
+Within finite time and in a way that is fair, every \KwPeer~should be able
 to call each of the following functions:
 \begin{itemize}
-  \item \NamePropose(\StructPetition $\VarPetition$): broadcasts $\VarPetition$
+  \item \NamePropose(\StructPetition~$\VarPetition$): broadcasts $\VarPetition$
     to the cluster and initiates an \StructElection
-  \item \NameVote$_{\StructState \State}$(\StructPetition $\VarPetition$), which
-    constructs a \StructBallot $\Ballot$ and broadcasts it to the cluster in
+  \item \NameVote$_{\StructState~\State}$(\StructPetition~$\VarPetition$), which
+    constructs a \StructBallot~$\Ballot$ and broadcasts it to the cluster in
     conjunction with $\VarPetition$
-  \item \NameEvaluate$_{\StructState \State}$(\StructPetition $\VarPetition$,
-    \StructBallot $\Ballot$) $\to (\{\AtomUnfinished, \AtomValid,
+  \item \NameEvaluate$_{\StructState~\State}$(\StructPetition~$\VarPetition$,
+    \StructBallot~$\Ballot$) $\to (\{\AtomUnfinished, \AtomValid,
     \AtomInvalid\}, \VarZKP$: Given an election state, every peer should be able
     to determine whether the election has ended, and if it has, what the result
     was. If it cannot, or if any part of the election state is invalid, it
     should be able to provide a $\VarZKP$ of misbehavior.
-  \item \NameEvaluate$_{\StructState \State}$(\StructPetition $\VarPetition$,
-    \StructBallot $\Ballot$) $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should
-    return (\AtomTrue, $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer
-    according to $\State$, and is a vote on $\VarPetition$. Otherwise, \AtomTrue
-    and a proof of misbehavior should be produced.
+  \item \NameEvaluate$_{\StructState~\State}$(\StructPetition~$\VarPetition$,
+    \StructBallot~$\Ballot$) $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should
+    return (\AtomTrue, $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer~
+    according to $\State$, and is a vote on $\VarPetition$. Otherwise,
+    \AtomTrue~and a proof of misbehavior should be produced.
 \end{itemize}
 

@@ -38,7 +38,20 @@ management protocols aimed at dissidents must take this into account.
   voting, it is necessary for each signature within a scope to correspond to a
   specific member. An adversary with the power to coerce \texttt{Member}s into
   revealing their private keys after the fact may prove that a particular member
-  voted a particular way\cite{lrs}.
+  voted a particular way\cite{lrs}.lrs
+
+``An important and fundamental downside,
+however, is that linkable signatures do NOT offer forward-secure anonymity. If
+an anonymity set member's private key is later released, it is trivial to check
+whether or not that member produced a given signature. Also, anonymity set
+members who did NOT sign a message could (voluntarily or under coercion) prove
+that they did not sign it, e.g., simply by signing some other message in that
+linkage context and noting that the resulting linkage tag comes out different.
+Thus, linkable anonymous signatures are not appropriate to use in situations
+where there may be significant risk that members' private keys may later be
+compromised, or that members may be persuaded or coerced into revealing whether
+or not they produced a signature of interest.''
+\cite{golrs}
     \todogrunt{Need some kind of analysis of why this is still
     useful despite that}
   \paragraph{Forward Progress:} A protocol that guarantees forward progress
@@ -65,16 +78,3 @@ management protocols aimed at dissidents must take this into account.
   prevent users from connecting to Tor at all, or force Tor traffic to go
   through particular, potentially adversary-controlled, Tor nodes ---
   de-anonymizing the users.
-  % TODO: Move to non-goals; possibly add self-ID
-  % \paragraph{Active attacks:}
-  % Global traffic analysis attacks only require the adversary to be able to
-  % monitor global traffic. If the adversary can also modify or generate
-  % traffic, several other attacks are possible. The adversary can launch
-  % \emph{man-in-the-middle} (MITM) attacks in which it impersonates Alicia,
-  % Badru, or one or more Tor nodes. The adversary can launch \emph{Sybil}
-  % attacks, in which many different Tor clients controlled by the same
-  % adversary join the network as individual clients. Either of these can be
-  % used to create \emph{Denial-of-Service} (DoS) attacks, which might either
-  % prevent users from connecting to Tor at all, or force Tor traffic to go
-  % through particular, potentially adversary-controlled, Tor nodes ---
-  % de-anonymizing the users.

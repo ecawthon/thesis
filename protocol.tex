@@ -21,10 +21,9 @@ protocol providing the following properties:
     $\turn+1$.\end{theorem}\label{theorem:rounds}
   \begin{theorem}[Anonymity] When Hardened Dissent is executed and completes in
     a cluster of $\NumClients$ participants, of which $\NumHonest$ are honest,
-    none of the avenues of attack descibed in our thread models in
-    Section~\ref{Section:threats} provide non-negligable advantage over uniform
-    guessing in determining which of the $\NumHonest$ honest participants sent
-    any particular message.
+    none of the avenues of attack descibed in our threat models\ldots provide
+    non-negligable advantage over uniform guessing in determining which of the
+    $\NumHonest$ honest participants sent any particular message.
   \end{theorem}\label{theorem:anon}
   All properties are rigorously proven in \cite{sec}.
 
@@ -33,8 +32,8 @@ Our voting protocol is based on the concept of a linkable ring signature (LRS),
 introduced in \cite{lrs}. The documentation of the CryptoBook implementation in
 Go explains:
 \begin{quote}
- ``The caller supplies one or more public keys representing an anonymity set, and
- the private key corresponding to one of those public keys. The resulting
+ ``The caller supplies one or more public keys representing an anonymity set,
+ and the private key corresponding to one of those public keys. The resulting
  signature proves to a verifier that the owner of one of these public keys
  signed the message, without revealing which key-holder signed the message,
  offering anonymity among the members of this explicit anonymity set. The other
@@ -42,61 +41,20 @@ Go explains:
  aware that they have been included in an anonymity set: anyone having a
  suitable public key may be "conscripted" into a set.
 
-If the provided anonymity set contains only one public key (the signer's), then
-this function produces a traditional non-anonymous signature, equivalent in both
-size and performance to a standard ElGamal signature.
+ [\ldots]
 
-The caller may request either unlinkable or linkable anonymous signatures. If
-linkScope is nil, this function generates an unlinkable signature, which
-contains no information about which member signed the message. The anonymity
-provided by unlinkable signatures is forward-secure, in that a signature reveals
-nothing about which member generated it, even if all members' private keys are
-later released. For cryptographic background on unlinkable anonymity-set
-signatures - also known as ring signatures or ad-hoc group signatures - see
-\cite{rs}.
-
-If the caller passes a non-nil linkScope, the resulting anonymous signature will
-be linkable. This means that given two signatures produced using the same
-linkScope, a verifier will be able to tell whether the same or different
-anonymity set members produced those signatures. In particular, verifying a
-linkable signature yields a linkage tag. This linkage tag has a 1-to-1
-correspondence with the signer's public key within a given linkScope, but is
-cryptographically unlinkable to either the signer's public key or to linkage
-tags in other scopes. The provided linkScope may be an arbitrary byte-string;
-the only significance these scopes have is whether they are equal or unequal.
-For details on the linkable signature algorithm this function implements, see
-\cite{lrs}.
-
-Linkage tags may be used to protect against sock-puppetry or Sybil attacks in
-situations where a verifier needs to know how many distinct members of an
-anonymity set are present or signed messages in a given context. It is
-cryptographically hard for one anonymity set member to produce signatures with
-different linkage tags in the same scope. An important and fundamental downside,
-however, is that linkable signatures do NOT offer forward-secure anonymity. If
-an anonymity set member's private key is later released, it is trivial to check
-whether or not that member produced a given signature. Also, anonymity set
-members who did NOT sign a message could (voluntarily or under coercion) prove
-that they did not sign it, e.g., simply by signing some other message in that
-linkage context and noting that the resulting linkage tag comes out different.
-Thus, linkable anonymous signatures are not appropriate to use in situations
-where there may be significant risk that members' private keys may later be
-compromised, or that members may be persuaded or coerced into revealing whether
-or not they produced a signature of interest.''
+  [G]iven two signatures produced using the same linkScope, a verifier will be
+  able to tell whether the same or different anonymity set members produced
+  those signatures. In particular, verifying a linkable signature yields a
+  linkage tag.  This linkage tag has a 1-to-1 correspondence with the signer's
+  public key within a given linkScope, but is cryptographically unlinkable to
+  either the signer's public key or to linkage tags in other scopes. \ldots
+  Linkage tags may be used to protect against sock-puppetry or Sybil attacks in
+  situations where a verifier needs to know how many distinct members of an
+  anonymity set are present or signed messages in a given context.
 \end{quote}
 \cite{golrs}
-\toadd{TODO: explain in own words instead of having a page and a half long quote}
-\subsection{Dissent in Numbers}
-An instance of Dissent in Numbers consists of $\NumClients$ clients and
-$\NumServers$ servers.  Communication takes place in \emph{rounds}, wherein each
-client has an opportunity to broadcast a message to the entire client set.
-Assuming $\NumHonest$ of the $\NumClients$ clients are honest, each client is
-guaranteed that, at the protocol level, its message will be anonymous among the
-$\NumHonest$ honest clients unless all servers collude with each
-other.\toadd{Move the security properties to the goals section and only describe
-the functionality here} Since all clients receive each client's messages in a
-deterministic order, there is a well-defined sequence of rounds which we can
-associate with a monotonically increasing \emph{round ID}.
-
+\toadd{explain in own words instead of having a page and a half long quote}
 \section{Algorithms}
 \subsection{Initial formation}
 We assume the member set is well known, and that every member has a secure
@@ -113,13 +71,8 @@ for up to $\NumClients$ signatures so the client can sign whatever other proposa
 play.  We only allow any given client to have one proposal at any given time.
 
 \subsection{Peer-to-Peer Layer}
-Every \KwMember maintains a TCP connection to every other \KwMember,
-and uses this to execute Hardened Dissent. The primary limitation of this
-version is performance --- there is a detailed security analysis demonstrating
-the anonymity preserving properties of this layer, and so we use it as a
-fallback layer for reconfiguring if servers misbehave by dropping out, and for
-initial setup of the Dissent in Numbers (DIN) layer.
-
+Every \KwMember~maintains a TCP connection to every other \KwMember,
+and uses this to execute Hardened Dissent.
 For any instance of the DIN layer, there is a canonical \texttt{Manifest}
 maintained at the P2P layer describing its parameters. The \texttt{Manifest}
 consists of
@@ -145,34 +98,23 @@ client instances.
   start a Dissent instance. This is a solved problem, I just need to summarize
 it.}
 
-\subsection{Dissent-in-Numbers Layer}
-\todo[inline]{TODO: Describe uses of DIN}
-In its current form, Dissent in Numbers lacks the ability to handle server
-faults, and it depends on a pre-existing well-known set of servers. However, it
-also provides dramatically superior performance as compared with Hardened
-Dissent. Our protocol adds group management, fault tolerance, and some forms of
-censorship resistance to Dissent in Numbers, providing a framework for a more
-versatile system.
-
-\missingfigure{TODO: Draw the topology and a flow chart showing pseudonyms/public
-keys}
-
 \subsection{Voting with Linkable Ring Signatures}
 By associating a unique link scope with each petition, we allow \texttt{Member}s
 to vote by producing a signature with the current member set and the proposer's
 link scope. Each \KwMember~that wishes to vote for the petition broadcasts
-the petition along with its signature. Dissent provides acccountable, veriiable
+the petition along with its signature. Dissent provides acccountable, verifiable
 broadcasting of anonymous messages, and so given our reliability assumptions,
 every \KwMember~will eventually end up with a list of anonymous signatures
 associated with the petition. At the specified round, each member should verify
 all signatures received. If the function $\FunEval$ applied to the set of unique, valid
 signatures results in \AtomTrue, then the petition passes.
 
-\missingfigure{TODO: Illustrate the round message format, which will consist of,
-  for each of the $\NumClients$ clients: space for a \texttt{Ballot}, and space for up to
-$\NumClients$ signatures so the client can sign whatever other proposals are in play.  We
-only allow any given client to have one proposal at any given time.}
-Within a round, each \KwMember may \todosubst{Jamming by proposing
+\toadd{ Illustrate the round message format, which will consist of, for each of
+  the $\NumClients$ clients: space for a \texttt{Ballot}, and space for up to
+  $\NumClients$ signatures so the client can sign whatever other proposals are
+  in play.  We only allow any given client to have one proposal at any given
+time.  }
+Within a round, each \KwMember~may \todosubst{Jamming by proposing
 ballots??? Infinite timeouts???} transmit a \KwPetition. A
 \KwPetition~consists of:
 \begin{itemize}
@@ -184,17 +126,17 @@ ballots??? Infinite timeouts???} transmit a \KwPetition. A
 
 Once a \KwPetition~has been proposed, the other \KwMember s have the
 opportunity to \NameVote. A \KwMember~votes by transmitting the most
-recent version of the \SetVotes, but with the \texttt{Signatures} field
+recent version of \SetVotes, but with the \texttt{Signatures} field
 modified to include the proposed \KwManifest~signed with the voting
 \KwMember's private key for this link scope.\toadd{I think this is
 wrong}
 
 By the designated expiration round, all \KwMember s have enough
 information to determine whether or not the \KwPetition~\emph{passes}:
-Each \KwMember should verify all signatures on the most recent
+Each \KwMember~should verify all signatures on the most recent
 version\todosubst{What if there are conflicting versions?}
 and compare the total number of valid signatures to the threshold $\FunEval$. If the
-\KwPetition passes, the new server set should immediately set up the
+\KwPetition~passes, the new server set should immediately set up the
 next iteration of the DIN layer.\toadd{finish describing new setup}
 
 \section{Arguments for Correctness}
