@@ -8,6 +8,8 @@ The protocol involves two layers: An anonymous broadcast channel whereby
 participants can pass arbitrary messages, and the petition protocol which
 utilizes this to construct petitions.
 \section{Anonymous Broadcast Protocol}
+%IDEA: Don't spec pseudonyms here. A fully anonymous protocol could be
+%substituted.
 We assume an anonymous communication layer that provides the following
 functionality:
 
@@ -41,6 +43,8 @@ Peers have the following functions available to them in polynomial time:
     \HistoryOracle~is updated such that, after turn $\turn+i$, any peer calling
     \NameReceive($\turn+i$) will retrieve $(\FunNym(\peer), \msg)$.
 \end{itemize}
+
+\subsection{Completeness}
 
 \subsection{Security Properties}
 
@@ -77,31 +81,31 @@ Peers have the following functions available to them in polynomial time:
 
   A \StructBallot~encodes information about the eligibility of the voter,
     and information about the voter's preference.
-    \footnote{To determine the results of
-    the elction while providing the verifiability properties discussed in
-    Section~\ref{Section:verif}, there must be a public record of some
-    aggregate information about each: An auditor must be able to tell that every
-    voter was eligible, and also what the outcome of the election was. To
-    provide voter confidentiality, we must provide a way for each voter to
-    provide both bits of information without exposing the correlation between
-    the two. In other words, if Badru wants to vote for Alicia to be president,
-    Badru must convey that Badru (or someone with Badru's credentials) voted,
-    and that a vote has been cast for Alicia, without revealing that Badru cast
-    a vote for Alicia. We can represent the information Badru provides as a
-    \StructBallot~tuple $(\sig, \vote)$, where $\sig$ encodes Badru's
-    credentials and $\vote$ encodes his candidate choice.
-
-    To provide the necessary information while preserving his
-    confidentiality, Badru must encrypt part or all of his ballot. It is
-    impossible to design a performant and Byzantine fault tolerant protocol
-    where both are kept secret. (I have discovered a truly marvelous proof of
-    this, which this margin is too narrow to contain \tocite). This leaves two
-    possibilities: Either Badru can encode his credentials in a $\sig$ that is
-    anonymous (c.f. \cite{lrs}) or he can encrypt $\vote$ so that Badru's choice
-    of candidates can only be decyphered in aggregate, once the connection to
-    Badru's public signature has been lost (as in Dissent).
-  }
-
+  %   \footnote{To determine the results of
+  %   the elction while providing the verifiability properties discussed in
+  %   Section~\ref{Section:verif}, there must be a public record of some
+  %   aggregate information about each: An auditor must be able to tell that every
+  %   voter was eligible, and also what the outcome of the election was. To
+  %   provide voter confidentiality, we must provide a way for each voter to
+  %   provide both bits of information without exposing the correlation between
+  %   the two. In other words, if Badru wants to vote for Alicia to be president,
+  %   Badru must convey that Badru (or someone with Badru's credentials) voted,
+  %   and that a vote has been cast for Alicia, without revealing that Badru cast
+  %   a vote for Alicia. We can represent the information Badru provides as a
+  %   \StructBallot~tuple $(\sig, \vote)$, where $\sig$ encodes Badru's
+  %   credentials and $\vote$ encodes his candidate choice.
+  %
+  %   To provide the necessary information while preserving his
+  %   confidentiality, Badru must encrypt part or all of his ballot. It is
+  %   impossible to design a performant and Byzantine fault tolerant protocol
+  %   where both are kept secret. (I have discovered a truly marvelous proof of
+  %   this, which this margin is too narrow to contain \tocite). This leaves two
+  %   possibilities: Either Badru can encode his credentials in a $\sig$ that is
+  %   anonymous (c.f. \cite{lrs}) or he can encrypt $\vote$ so that Badru's choice
+  %   of candidates can only be decyphered in aggregate, once the connection to
+  %   Badru's public signature has been lost (as in Dissent).
+  % }
+  %
 
 % \subsection{States}
 % \begin{itemize}
@@ -127,20 +131,22 @@ Peers have the following functions available to them in polynomial time:
 Within finite time and in a way that is fair, every \KwPeer~should be able
 to call each of the following functions:
 \begin{itemize}
-  \item \NamePropose($\round, \peer, \VarPetition$):
+  \item \NamePropose($\round, \peer, \VarManifest, \VarPetition$):
     whereby a \KwPeer $\peer$ constructs a \StructPetition~$\VarPetition$ and
-    \NameSend s it to the cluster for consideration
+    invokes \NameSend($\round, \peer, \VarPetition$) to send it to the cluster
+    for consideration.
   \item \NameVote($\round, \peer, \VarManifest, \VarPetition, \Ballot$): If
     $\VarPetition.\FunExpir(\cdot) = \AtomFalse$, then a \KwPeer~\peer may
     \NameVote on it by creating a \StructBallot~\Ballot indicating its preferred
-    outcome, and \NameSend ing this to the group.
+    outcome, and invoking \NameSend($\round, \peer, \VarManifest, \VarPetition,
+    \Ballot$) to send it to the group.
   \item \NameEvaluate($\round, \peer, \VarManifest, \VarPetition, \SetVotes) \to
     (\{\AtomUnfinished, \AtomValid, \AtomInvalid\}, \Choice, \VarZKP)$: Given a
     vote state, every peer should be able to determine whether the vote
     has ended, and if it has, what the result was. If it cannot, or if any part
     of the election state is invalid, it should be able to provide a $\VarZKP$
     of misbehavior.
-  \item \NameEvaluate($\round, \peer, \VarManifest, \VarPetition, \SetVotes$)
+  \item \NameEvaluate($\round, \peer, \VarManifest, \VarPetition, \Ballot$)
     $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should return (\AtomTrue,
     $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer~according to
     $\State$, and is a vote on $\VarPetition$. Otherwise, \AtomFalse~and a proof
@@ -183,4 +189,11 @@ to call each of the following functions:
   submitted which vote, or no outside observer can reconstruct how any
   member voted. The same restrictions apply to knowledge gained by other
   participants, except that each member can trivially reconstruct its own vote.
+
+\section{Threat Model}
+\begin{itemize}
+\item \textbf{Honest but curious}: the adversary controls $n-k$ peers and
+can monitor all network communications but carries out the protocol
+faithfully (guaranteed by Dissent's accountability property)
+\end{itemize}
 

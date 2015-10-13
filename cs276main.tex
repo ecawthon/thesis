@@ -1,0 +1,69 @@
+\documentclass[twocolumn]{article}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\setcounter{tocdepth}{2}
+\usepackage{color}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=false,
+ breaklinks=true,pdfborder={0 0 1},backref=section,colorlinks=true]
+ {hyperref}
+\hypersetup{
+ pdftex,plainpages=false,pageanchor=true,bookmarkstype=toc,bookmarksopenlevel=2,bookmarksnumbered=true,linkcolor=black,urlcolor=magenta,citecolor=black}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+\usepackage[colorinlistoftodos, color=blue!20]{todonotes}
+% \usepackage[disable]{todonotes}
+\usepackage{setspace}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{adjustbox}
+\usepackage{amsfonts}
+\setlength{\marginparwidth}{2cm}
+
+\begin{document}
+
+\input macros.tex
+
+\input spec.tex
+
+\section{How to assemble --- pseudocode}
+\begin{itemize}
+\item \texttt{peer}\textsc{.Propose}(\texttt{Text $m$}, \texttt{Option}s
+$B$,\texttt{ Choice $b$, Expiration }$r$):
+
+\begin{itemize}
+\item \texttt{scope = self.random.generate\_scope()}
+\item \texttt{my\_vote = (self.}\texttt{\textsc{Sign}}($M.\texttt{Roster}.keys,\mathtt{scope},b$),
+$b$)
+\item \texttt{anon.}\textsc{Broadcast}(\texttt{Petition($m,B,\{\mathtt{my\_vote}\},r)$)}
+\end{itemize}
+\item \texttt{peer}\textsc{.Vote}$_{r}$(\texttt{Petition} $t$, \texttt{Choice
+$b$):}
+
+\begin{itemize}
+\item \texttt{my\_vote = (rings.}\texttt{\textsc{Sign}}($P,t.\mathtt{scope},b$),
+self.pubkey, $b$)
+\item \texttt{anon.}\textsc{Broadcast}(\texttt{Petition($t.m,t.B,t.\mathtt{Votes}+\{\mathtt{my\_vote}\},r)$)}
+\end{itemize}
+\item \textsc{Evaluate}$_{r}$(\texttt{Petition} $t$) ($\{\textsc{Unfinished},\textsc{Valid},\textsc{Invalid\}, \{\texttt{choice} \ensuremath{b}, \ensuremath{proof}\})}$:
+
+\begin{itemize}
+\item for vote $(sig,choice$) in $t.\mathtt{Votes}$:
+
+\begin{itemize}
+\item \texttt{rings}.\textsc{Verify}($choice,$$P$,$t.\mathtt{scope},$
+$sig$)
+\item if $sig$ invalid or repeated, return \textsc{(Invalid, }the round
+(and pseudonym) where something went wrong)
+\end{itemize}
+\item return (\textsc{Valid}$,d(t)$)\end{itemize}
+\end{itemize}
+
+\end{document}

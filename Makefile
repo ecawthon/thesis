@@ -6,6 +6,9 @@ main: *.tex *.bib
 	pdflatex main
 	pdflatex main
 
+cs276: *.tex
+	pdflatex cs276main.tex
+
 clean:
 	rm -f main.aux main.bbl main.blg main.log
 
