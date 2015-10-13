@@ -1,90 +1,177 @@
 \toadd{Especially if I do take out the related work, I should add a short
 intro to why Dissent is a good thing to use}
-Our protocol uses this to elect servers for an instance of Dissent in
-Numbers \cite{din}, which can then be used for latency-sensitive applications
-without sacrificing the superior security properties of Hardened Dissent.
+Anonymous communication significantly constrains the ability of oppressive
+regimes and vigilante groups alike to suppress dissent. Newly available
+information about global-scale surveillance in today's
+centralized internet infrastructure has rendered a swath of anonymity tools
+vulnerable.
 
-The primary limitation of this
-version is performance --- there is a detailed security analysis demonstrating
-the anonymity preserving properties of this layer, and so we use it as a
-fallback layer for reconfiguring if servers misbehave by dropping out, and for
-initial setup of the Dissent in Numbers (DIN) layer.
+A trustworthy anonymity tool in the post-Snowden era must be resilient to both
+surveillance and censorship: It should guarantee its users' anonymity even in
+the face of a global passive adversary, and it should be unrealistic for such an
+adversary to simply prevent users from accessing it. A useful anonymity tool
+must also perform with reasonably low latency - a property which often trades
+off with security and availability.
 
-    A map \texttt{Committees} mapping names of elected statuses to sets of
-      elements of the \KwRoster. For example, \texttt{Committees} might
-      consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$,
-      where $A, B,$ and $C$ are the participants listed in $R$ which have been
-      elected to act as \texttt{servers} in an instance of Dissent in
-      Numbers.\todosubst{Obsolete. Make generic.}
-
-  Dissent is an alternative to Tor that provides provable anonymity even if
-  only one server in the network is honest\cite{p2pd}.
-  \section{Protocol Explanation}
-  In its present form, a Dissent cluster consists of $m$ servers and $n$
-  connected clients\cite{din}. Provable anonymity is
-  achieved through a modified version of the Dining Cryptographers
-  problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
-  with each server $j$. Communication proceeds in rounds, within which each
-  client has a designated $k$-bit slot.  Before any messages are sent, a
-  secure shuffle\cite{neff} assigns each client to a slot so
-  that the owner of a slot is the only node in the system which knows who owns
-  that slot.  In any client $s$'s slot, every client and every server
-  generates $k$ bits of random noise seeded with each of its shared secrets
-  $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
-  that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
-  with its noise to create its ciphertext. The combination (via xor) of all
-  clients' and servers' ciphertext includes the noise stream associated with
-  each shared secret twice, and so all noise cancels out and client $s$'
-  message is revealed. However, since deciphering this requires the
-  participation of all nodes in the system, it is impossible to tell which
-  client transmitted a message in a given slot. Dissent also incorporates an
-  accountability mechanism, allowing any node that disrupts the protocol to be
-  detected and removed from the cluster
-  \cite{verdict}.
-
-  The original Dissent was fully peer-to-peer
-  \cite{p2pd}. The shift to a client-server model
-  allows for significantly improved performance, but it introduces several new
-  concerns, particularly relating to misbehaving servers, a new class of DoS
-  attacks, and group formation.
-
-  \section{Properties}
-  \begin{theorem} At the end of round $i$, \ldots \todo{semicomputability}\end{theorem}
-  \begin{theorem} For any round $i$, all participants know the results of round
-    $i$ before any know the results of round
-    $i+1$.\end{theorem}\label{theorem:rounds}
-  % todo: put this somewhere
-  % \paragraph{Accountability:} In the context of Dissent, accountability refers
-  % to the ability of a protocol to detect and exclude participants who disrupt
-  % the protocol \cite{sec}, while proving that the disruptor did
-  % indeed disrupt the protocol. Such a mechanism is necessary in peer-to-peer
-  % protocols like Dining Cryptographers in which a single disruptor can make
-  % the result of a round unusable. In Dissent, accountability checks occur
-  % without revealing the link between any message and its sender --- moreover,
-  % it is not possible to deliberately exclude a participant on the basis of
-  % valid messages the participant sends. That is, the Dissent accountability
-  % mechanism does not break anonymity.
-\subsection{Dissent in Numbers}
-An instance of Dissent in Numbers consists of $\NumClients$ clients and
-$\NumServers$ servers.  Communication takes place in \emph{rounds}, wherein each
-client has an opportunity to broadcast a message to the entire client set.
-Assuming $\NumHonest$ of the $\NumClients$ clients are honest, each client is
-guaranteed that, at the protocol level, its message will be anonymous among the
-$\NumHonest$ honest clients unless all servers collude with each
-other.\toadd{Move the security properties to the goals section and only describe
-the functionality here} Since all clients receive each client's messages in a
-deterministic order, there is a well-defined sequence of rounds which we can
-associate with a monotonically increasing \emph{round ID}.
-
-\subsection{Dissent-in-Numbers Layer}
-\todo[inline]{TODO: Describe uses of DIN}
+% TODO: integrate
 In its current form, Dissent in Numbers lacks the ability to handle server
 faults, and it depends on a pre-existing well-known set of servers. However, it
 also provides dramatically superior performance as compared with Hardened
-Dissent. Our protocol adds group management, fault tolerance, and some forms of
-censorship resistance to Dissent in Numbers, providing a framework for a more
-versatile system.
+Dissent.
+Our protocol can be used to elect servers for an instance of Dissent in
+Numbers \cite{din}, which can then be used for latency-sensitive applications
+without sacrificing the superior security properties of Hardened Dissent.
 
-\missingfigure{TODO: Draw the topology and a flow chart showing pseudonyms/public
-keys}
 
+\section{Background: Dissent in Numbers}
+  Peer-to-peer Dissent provides stronger anonymity guarantees than Tor, but at
+  the cost of significantly degraded performance. A new version of the
+  protocol called Dissent in Numbers \cite{din} aims to provide similarly
+  strong anonymity properties at scale. For a single sender to transmit a 128
+  kB message to a 16-member group under \cite{p2pd} requires more than a
+  minute; under \cite{din} this takes less than 5 seconds.
+
+  Dissent in Numbers achieves this performance by using a $\NumClients$
+  clients/$\NumServers$ server model.
+  Rather than requiring $ \NumClients^2$ shared secrets (one for each pair of
+  clients), Dissent in Numbers uses only one shared secret per server/client
+  pair, for a total of $\NumServers\NumClients$. Instead of communicating
+  directly with every other node, each client comunicates only with every
+  server in each round.
+
+  Dissent in Numbers provides anonymity among the honest clients so long as at
+  least one of the servers is honest. This means that in a system with
+  $\NumHonest$ clients out of $\NumClients$, peer to peer Dissent can be shown
+  to always preserve $\NumHonest$-anonymity among the honest clients, whereas
+  in Dissent in Numbers, only $\NumServers$ need be compromised, regardless of
+  the number of honest clients. Further, peer-to-peer Dissent is able to
+  respond to changes in the topology of the group, including the case where
+  one or more members is removed due to misbehavior. In Dissent in Numbers,
+  the servers are assumed to always be reliable, and while clients can detect
+  server misbehavior, there is no built-in mechanism to respond to this while
+  continuing to use the protocol.
+
+  % Relays
+  Even where a sufficient number of servers are honest and non-disruptive,
+  Dissent in Numbers introduces additional vulnerability to censorship.
+  One potential approach to making Dissent widely available would be to have
+  well-known, globally dispersed Dissent servers available for clients to
+  connect to, similar to the current state of Tor. Any such well-known server
+  list, however, is susceptible to blocking by internet service providers. It
+  would therefore be preferable to have servers be short-lived, or at least
+  not well known. Since Dissent takes place over regular TCP connections,
+  detecting that the protocol is being executed without knowledge of the
+  addresses of servers would be difficult to accomplish without a great number
+  of false positives \cite{houmansadr_parrot_2013}, so this may be enough to
+  realistically preclude most attempts to block access to the protocol
+  entirely.
+
+  We now show how the protocol presented in this paper can be used to
+  bootstrap Dissent in Numbers, so that in the usual case clients can achieve
+  its superior performance, but in error cases the cluster can recover from
+  these sorts of faults. Since our protocol is suitable for execution at the
+  level of a local cluster, it further extends the advantages of Dissent in
+  Numbers to environments where server identities must be ephermeral to avoid
+  censorship.
+
+\section{Anonymous Petitions for Group Management in Dissent}
+  % intro to ours
+  Our protocol enables clusters of Dissent clients to elect temporary
+  servers among themselves, allowing servers to either step down (e.g., by
+  going offline) or be impeached by some portion of the clients.
+
+  We assume a cluster of $\NumClients$ peers connected by TCP connections. To
+  launch an instance of Dissent in Numbers, they first launch an instance of our
+  protocol. The \KwManifest should contain a \KwServer s field, containing the
+  subset of \KwRoster members currently acting as servers. This field may
+  initially be blank, or it may be specified offline.
+
+  Once a server set is spefified, all participants have all information they
+  need to launch a Dissent in Numbers instance \cite{din}. Initially, and
+  whenever a vote to change the \KwManifest~passes at the Anonymous Petition
+  layer, the \KwMember s newly designated as servers begin running server
+  instances of Dissent in Numbers, and all \KwMember s (including the ones now
+  running servers) begin running client instances.
+
+  By using this protocol to handle group membership, server election, and fault
+  tolerance, we bring resiliance, fault tolerance, and some forms of censorship
+  resistance to Dissent in Numbers, providing a framework for a more versatile
+  system.
+
+% The primary limitation of this
+% version is performance --- there is a detailed security analysis demonstrating
+% the anonymity preserving properties of this layer, and so we use it as a
+% fallback layer for reconfiguring if servers misbehave by dropping out, and for
+% initial setup of the Dissent in Numbers (DIN) layer.
+%
+%     A map \texttt{Committees} mapping names of elected statuses to sets of
+%       elements of the \KwRoster. For example, \texttt{Committees} might
+%       consist of the key ``\texttt{servers}'', with the value $\{A, B, C\}$,
+%       where $A, B,$ and $C$ are the participants listed in $R$ which have been
+%       elected to act as \texttt{servers} in an instance of Dissent in
+%       Numbers.\todosubst{Obsolete. Make generic.}
+%
+%   Dissent is an alternative to Tor that provides provable anonymity even if
+%   only one server in the network is honest\cite{p2pd}.
+%   \section{Protocol Explanation}
+%   In its present form, a Dissent cluster consists of $m$ servers and $n$
+%   connected clients\cite{din}. Provable anonymity is
+%   achieved through a modified version of the Dining Cryptographers
+%   problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
+%   with each server $j$. Communication proceeds in rounds, within which each
+%   client has a designated $k$-bit slot.  Before any messages are sent, a
+%   secure shuffle\cite{neff} assigns each client to a slot so
+%   that the owner of a slot is the only node in the system which knows who owns
+%   that slot.  In any client $s$'s slot, every client and every server
+%   generates $k$ bits of random noise seeded with each of its shared secrets
+%   $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
+%   that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
+%   with its noise to create its ciphertext. The combination (via xor) of all
+%   clients' and servers' ciphertext includes the noise stream associated with
+%   each shared secret twice, and so all noise cancels out and client $s$'
+%   message is revealed. However, since deciphering this requires the
+%   participation of all nodes in the system, it is impossible to tell which
+%   client transmitted a message in a given slot. Dissent also incorporates an
+%   accountability mechanism, allowing any node that disrupts the protocol to be
+%   detected and removed from the cluster
+%   \cite{verdict}.
+%
+%   The original Dissent was fully peer-to-peer
+%   \cite{p2pd}. The shift to a client-server model
+%   allows for significantly improved performance, but it introduces several new
+%   concerns, particularly relating to misbehaving servers, a new class of DoS
+%   attacks, and group formation.
+%
+%   \section{Properties}
+%   \begin{theorem} At the end of round $i$, \ldots \todo{semicomputability}\end{theorem}
+%   \begin{theorem} For any round $i$, all participants know the results of round
+%     $i$ before any know the results of round
+%     $i+1$.\end{theorem}\label{theorem:rounds}
+%   % todo: put this somewhere
+%   % \paragraph{Accountability:} In the context of Dissent, accountability refers
+%   % to the ability of a protocol to detect and exclude participants who disrupt
+%   % the protocol \cite{sec}, while proving that the disruptor did
+%   % indeed disrupt the protocol. Such a mechanism is necessary in peer-to-peer
+%   % protocols like Dining Cryptographers in which a single disruptor can make
+%   % the result of a round unusable. In Dissent, accountability checks occur
+%   % without revealing the link between any message and its sender --- moreover,
+%   % it is not possible to deliberately exclude a participant on the basis of
+%   % valid messages the participant sends. That is, the Dissent accountability
+%   % mechanism does not break anonymity.
+% \subsection{Dissent in Numbers}
+% An instance of Dissent in Numbers consists of $\NumClients$ clients and
+% $\NumServers$ servers.  Communication takes place in \emph{rounds}, wherein each
+% client has an opportunity to broadcast a message to the entire client set.
+% Assuming $\NumHonest$ of the $\NumClients$ clients are honest, each client is
+% guaranteed that, at the protocol level, its message will be anonymous among the
+% $\NumHonest$ honest clients unless all servers collude with each
+% other.\toadd{Move the security properties to the goals section and only describe
+% the functionality here} Since all clients receive each client's messages in a
+% deterministic order, there is a well-defined sequence of rounds which we can
+% associate with a monotonically increasing \emph{round ID}.
+%
+% \subsection{Dissent-in-Numbers Layer}
+% \todo[inline]{TODO: Describe uses of DIN}
+% \missingfigure{TODO: Draw the topology and a flow chart showing pseudonyms/public
+% keys}
+%

@@ -147,58 +147,24 @@ Finally, we review existing work on anonymous group communication.
     necessary in order to remain anonymous from the N.S.A.
 
   \subsection{Strong Anonymity with Dissent}
-    Dissent is an alternative to Tor that provides provable anonymity even if
-    only one server in the network is honest\cite{p2pd}.
-    In its present form, a Dissent cluster consists of $m$ servers and $n$
-    connected clients\cite{din}. Provable anonymity is
-    achieved through a modified version of the Dining Cryptographers
-    problem\cite{chaum_dining_1988}: each client $i$ shares a secret $K_{ij}$
-    with each server $j$. Communication proceeds in rounds, within which each
-    client has a designated $k$-bit slot.  Before any messages are sent, a
-    secure shuffle\cite{neff} assigns each client to a slot so
-    that the owner of a slot is the only node in the system which knows who owns
-    that slot.  In any client $s$'s slot, every client and every server
-    generates $k$ bits of random noise seeded with each of its shared secrets
-    $K_{ij}$, and combines these with an exclusive or (xor) operation to produce
-    that node's ciphertext. Client $s$ also combines (via xor) a $k$-bit message
-    with its noise to create its ciphertext. The combination (via xor) of all
-    clients' and servers' ciphertext includes the noise stream associated with
-    each shared secret twice, and so all noise cancels out and client $s$'
-    message is revealed. However, since deciphering this requires the
-    participation of all nodes in the system, it is impossible to tell which
-    client transmitted a message in a given slot. Dissent also incorporates an
-    accountability mechanism, allowing any node that disrupts the protocol to be
-    detected and removed from the cluster
-    \cite{verdict}.
-
-    The original Dissent was fully peer-to-peer
-    \cite{p2pd}. The shift to a client-server model
-    allows for significantly improved performance, but it introduces several new
-    concerns, particularly relating to misbehaving servers, a new class of DoS
-    attacks, and group formation.
-
-  \subsection{The Trouble with Relays}
-  \label{Subsection:Relays}
-  \todoword{copy edit Tor vs. Dissent}
-    One potential approach to making Dissent widely available would be to have
-    well-known, globally dispersed Dissent servers available for clients to
-    connect to, similar to the current state of Tor. Any such well-known server
-    list, however, is susceptible to blocking by internet service providers. It
-    would therefore be preferable to have servers be short-lived, or at least
-    not well known. Since Dissent takes place over regular TCP connections,
-    detecting that the protocol is being executed without knowledge of the
-    addresses of servers would be difficult to accomplish without a great number
-    of false positives \cite{houmansadr_parrot_2013}, so this may be enough to
-    realistically preclude most attempts to block access to the protocol
-    entirely.  Additionally, while the current version of Dissent guarantees
-    that malicious servers cannot deanonymize a client without the cooperation
-    of all servers, and guarantees that disrupting servers can be exposed, it
-    provides no way to remove a disrupting or malicious server form the system.
-
-    One way to resolve these problems would be to have clusters of Dissent
-    clients elect temporary servers among themselves, allowing servers to either
-    step down (e.g., by going offline) or be impeached by some portion of the
-    clients.  Doing so in a truly decentralized and fair fashion is a
-    non-trivial problem.  We consider several other areas of research relevant
-    to solving it.
+    Dissent is an alternative to Tor that provides provable anonymity for $k$
+    honest users even if every other node in the network is dishonest
+    \cite{p2pd}.  Provable anonymity is achieved through a modified version of
+    the Dining Cryptographers problem\cite{chaum_dining_1988}: each node $i$
+    shares a secret $K_{ij}$ with each other node $j$. Communication proceeds in
+    rounds, within which each node has a designated $b$-bit slot.  Before any
+    messages are sent, a secure shuffle\cite{neff} assigns each node to a slot
+    so that the owner of a slot is the only node in the system which knows who
+    owns that slot.  In any node $s$'s slot, every node generates $b$ bits of
+    random noise seeded with each of its shared secrets $K_{ij}$, and combines
+    these with an exclusive or (xor) operation to produce that node's
+    ciphertext. Node $s$ also combines (via xor) a $b$-bit message with its
+    noise to create its ciphertext. The combination (via xor) of all nodes'
+    ciphertext includes the noise stream associated with each shared secret
+    twice, and so all noise cancels out and node $s$'s message is revealed.
+    However, since deciphering this requires the participation of all nodes in
+    the system, it is impossible to tell which client transmitted a message in a
+    given slot. Dissent also incorporates an accountability mechanism, allowing
+    any node that disrupts the protocol to be detected and removed from the
+    cluster \cite{verdict}.
 
