@@ -168,3 +168,44 @@ Finally, we review existing work on anonymous group communication.
     any node that disrupts the protocol to be detected and removed from the
     cluster \cite{verdict}.
 
+\section{New Threat Models}
+Newly available information about vulnerabilities and global-scale
+surveillance in today's centralized internet infrastructure has brought new
+security considerations and threat models to the foreground of networked
+system research. It has rendered a swath of anonymity and voting tools
+obsolete, and poses a significant threat to those that remain. Group
+management protocols aimed at dissidents must take this into account.
+
+To provide anonymity from an adversary like the N.S.A., a modern anonymity
+protocol must protect against several forms of attacks. Feigenbaum et.
+al.\cite{feigenbaum_seeking_2013} highlight several specific attacks to
+which onion routing is vulnerable:
+\paragraph{Global traffic analysis:}
+If the adversary can monitor most of the traffic on the internet globally,
+the adversary can with high probability see the link from Alicia to the Tor
+network and from the Tor exit relay to Badru. This means the adversary can
+observe that the messages Alicia sends correspond to messages Badru receives
+some short amount of time later. Even if the messages themselves are
+encrypted, the adversary can analyze the lengths and other metadata about
+the messages to correlate this traffic.
+\paragraph{Intersection attacks:}
+In general, it is possible to tell when users are using an anonymity service
+--- the anonymity comes from the difficulty of linking any particular user
+to particular messages produced by the service. Over time, however, the
+client set of an anonymity service is unlikely to remain fixed. A passive
+adversary monitoring the outputs of an anonymity service as well as the set
+of users connected can narrow the set of users who potentially, for example,
+updated a particular blog with a static pseudonym, by excluding users  not
+online during all updates to the blog.
+\paragraph{Active attacks:}
+Global traffic analysis attacks only require the adversary to be able to
+monitor global traffic. If the adversary can also modify or generate
+traffic, several other attacks are possible. The adversary can launch
+\emph{man-in-the-middle} (MITM) attacks in which it impersonates Alicia,
+Badru, or one or more Tor nodes. The adversary can launch \emph{Sybil}
+attacks, in which many different Tor clients controlled by the same
+adversary join the network as individual clients. Either of these can be
+used to create \emph{Denial-of-Service} (DoS) attacks, which might either
+prevent users from connecting to Tor at all, or force Tor traffic to go
+through particular, potentially adversary-controlled, Tor nodes ---
+de-anonymizing the users.
