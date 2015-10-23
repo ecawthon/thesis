@@ -8,6 +8,7 @@ The protocol involves two layers: An anonymous broadcast channel whereby
 participants can pass arbitrary messages, and the petition protocol which
 utilizes this to construct petitions.
 \section{Anonymous Broadcast Protocol}
+\label{Section:AnonBcastP}
 %IDEA: Don't spec pseudonyms here. A fully anonymous protocol could be
 %substituted.
 We assume an anonymous communication layer that provides the following
@@ -26,134 +27,149 @@ An instance of the anonymous communication layer consists of:
 \item A \KwSchedule~function $\FunSched:\mathbb{N}\to \SetNymDomain$ mapping
   rounds to pseudonyms, establishing whose turn it is. Each client should have
   their $i^{th}$ term before any client has its $i+1^{th}$ turn.
-\item A \HistoryOracle~, which all clients can query to learn the messages
+\item A \HistoryOracle, which all clients can query to learn the messages
   transmitted in previous rounds.
 \end{itemize}
 
 \subsection{Interface}
 
-Peers have the following functions available to them in polynomial time:
+Every \KwPeer~$\peer$ has the following functions available to it in
+polynomial time:
 \begin{itemize}
-  \item \NameReceive($\turn, \peer$) $\to (\nym, \msg)$ allows $\peer$ to query
+  \item $\SigRecv \to (\nym, \msg)$ allows $\peer$ to query
     the \HistoryOracle~and returns the $\turn^{th}$ message along with its owner
     $\nym$ (with $\FunSched(\turn) = \nym $)
-  \item \NameSend($\turn, \peer, \msg$) --- if called at turn $\turn$, the peer
-    $\peer$ broadcasts its message $\msg$ at the next turn where
-    $\FunSched(\turn+i) = p$, wiith $i \le \NumClients$. Equivalently, the
+  \item $\SigSend$ --- if called at \KwTurn~$\turn$, the \KwPeer~$\peer$
+    broadcasts its message $\msg$ at the next turn where
+    $\FunSched(\turn+i) = p$, with $i \le \NumClients$. Equivalently, the
     \HistoryOracle~is updated such that, after turn $\turn+i$, any peer calling
-    \NameReceive($\turn+i$) will retrieve $(\FunNym(\peer), \msg)$.
+    $\SigRecv[\turn+i]$ will retrieve $(\FunNym(\peer), \msg)$.
 \end{itemize}
 
-\subsection{Completeness}
-
-\subsection{Security Properties}
-
+% \subsection{Completeness}
+%
+% \subsection{Security Properties}
+%
 \section{Anonymous Petition Protocol}
-\subsection{Data Structures}
-  A \KwManifest~defines the group configuration and consists of
-  \begin{itemize}
-    \item A \KwRoster, representing the set of eligible voters
-    \item A function $\FunEval : \SetElectionStates \to (\SetResult, \SetZKPs)$
-      where $\SetElectionStates$ is the set of all \emph{Election State}s, and
-      $\SetZKPs$ is the set of all possible proofs of correctness of the result.
-      That is, if for some outcome $\ElectionState$, we
-      have$\FunEval(\ElectionState) = (\Choice, \VarZKP)$, then the ballot
-      choice $\Choice \in \ElectionState.\VarPetition.\SetChoices$ passes.  A
-      plausible example of such a $\FunEval$ is the function which specifies
-      what proportion of \KwPeer s must agree to a change in the composition of
-      the \KwRoster~in order for the change to take effect.
-    \item Any other group configuration information the group should be able to
-      vote on.
-  \end{itemize}
+  This protocol operates at the level of a \KwCluster~of
+    \KwPeer s.
+    \todogrunt{Consistency; this should maybe be moved}
+    A \KwMember~is a \KwPeer~that is participating in a
+    particular \KwCluster. It may be voted out of a cluster. New \KwPeer s
+    become \KwMember s if their joining is approved by the existing cluster.
 
-  A \StructPetition~is a proposal for the \KwCluster to vote on. It consists of
+\subsection{Data Structures}
+% \subsection{States}
+% \begin{itemize}
+  % \item
+  A \StructState~is a tuple $\State$ encoding the number of rounds
+  $\round$ of messages elapsed since the start of the protocol, and any
+  additional state information about the cluster.
+  % defining the current cluster, where $\VarManifest$ is a \KwManifest, and
+  % $\round$ is a monotonically increasing unique state identifier (e.g., a
+  % logical clock)\tocite.
+  %
+  % \item
+%
+% \end{itemize}
+
+  A \StructPetition~is a proposal for the \KwCluster~to vote on. It consists of
     \begin{itemize}
       \item An \StructInstigator, the \KwPeer~who proposed the
         Petition. This information is not publicly associated with
-        the Petition,
+        the \KwPetition,
       % \item A unique identifier $\VarLinkScope$, which is public
       % \item A proposed new \KwManifest,
       \item A proposal text $\msg$,
       \item A set of ballot choices $\SetChoices$, and
-      \item An expiration condition $\FunExpir : \cdot \to \{\AtomTrue,
-        \AtomFalse\}$ defining when the vote on the petition should end.
+      \item An expiration condition $\FunExpir : \SetElectionStates \to
+        \{\AtomTrue, \AtomFalse\}$ defining when the vote on the petition should
+        end.
    \end{itemize}
 
-  A \StructBallot~encodes information about the eligibility of the voter,
-    and information about the voter's preference.
-  %   \footnote{To determine the results of
-  %   the elction while providing the verifiability properties discussed in
-  %   Section~\ref{Section:verif}, there must be a public record of some
-  %   aggregate information about each: An auditor must be able to tell that every
-  %   voter was eligible, and also what the outcome of the election was. To
-  %   provide voter confidentiality, we must provide a way for each voter to
-  %   provide both bits of information without exposing the correlation between
-  %   the two. In other words, if Badru wants to vote for Alicia to be president,
-  %   Badru must convey that Badru (or someone with Badru's credentials) voted,
-  %   and that a vote has been cast for Alicia, without revealing that Badru cast
-  %   a vote for Alicia. We can represent the information Badru provides as a
-  %   \StructBallot~tuple $(\sig, \vote)$, where $\sig$ encodes Badru's
-  %   credentials and $\vote$ encodes his candidate choice.
-  %
-  %   To provide the necessary information while preserving his
-  %   confidentiality, Badru must encrypt part or all of his ballot. It is
-  %   impossible to design a performant and Byzantine fault tolerant protocol
-  %   where both are kept secret. (I have discovered a truly marvelous proof of
-  %   this, which this margin is too narrow to contain \tocite). This leaves two
-  %   possibilities: Either Badru can encode his credentials in a $\sig$ that is
-  %   anonymous (c.f. \cite{lrs}) or he can encrypt $\vote$ so that Badru's choice
-  %   of candidates can only be decyphered in aggregate, once the connection to
-  %   Badru's public signature has been lost (as in Dissent).
-  % }
-  %
+  A \StructBallot~encodes information about the eligibility of the voter (e.g.,
+  a signature $\sig$), and the voter's preference $\Choice \in
+  \StructPetition.\SetChoices$.
+    \footnote{To determine the results of
+    the elction while providing the verifiability properties discussed in
+    Section~\ref{Section:verif}, there must be a public record of some
+    aggregate information about each: An auditor must be able to tell that every
+    voter was eligible, and also what the outcome of the election was. To
+    provide voter confidentiality, we must provide a way for each voter to
+    provide both bits of information without exposing the correlation between
+    the two. In other words, if Badru wants to vote for Alicia to be president,
+    Badru must convey that Badru (or someone with Badru's credentials) voted,
+    and that a vote has been cast for Alicia, without revealing that Badru cast
+    a vote for Alicia. We can represent the information Badru provides as a
+    \StructBallot~tuple $(\sig, \vote)$, where $\sig$ encodes Badru's
+    credentials and $\vote$ encodes his candidate choice.
 
-% \subsection{States}
-% \begin{itemize}
-%   \item A \StructState~is a tuple $(\VarManifest, \round)$ defining the
-%   current cluster, where $\VarManifest$ is a \KwManifest, and $\round$ is a
-%   monotonically increasing unique state identifier (e.g., a logical
-%   clock)\tocite.
-%
-%   \item An \StructElection~encompasses the operation of the protocol between
-%   when a Petition $\VarPetition$ is first proposed and when the expiration
-%   condition is met --- that is, the portion of the protocol where members are
-%   aware that that $\VarPetition$ is being considered, but in which no member
-%   knows the outcome of the election.
-%
-%   \item The \StructElectionState~can be described by a tuple $(\State,
-%     \VarPetition, \SetVotes)$, where $\State$ is the current \StructState,
-%     $\VarPetition$ is the Petition being voted on, and $\SetVotes$ is a
-%     collection of \StructBallot s that have been cast thus far.
-%
-% \end{itemize}
-%
+    To provide the necessary information while preserving his
+    confidentiality, Badru must encrypt part or all of his ballot. It is
+    impossible to design a performant and Byzantine fault tolerant protocol
+    where both are kept secret. (I have discovered a truly marvelous proof of
+    this, which this margin is too narrow to contain \tocite). This leaves two
+    possibilities: Either Badru can encode his credentials in a $\sig$ that is
+    anonymous (c.f. \cite{lrs}) or he can encrypt $\vote$ so that Badru's choice
+    of candidates can only be decyphered in aggregate, once the connection to
+    Badru's public signature has been lost (as in Dissent).
+  }
+
+
+  An \StructElection~encompasses the operation of the protocol between
+  when a \KwPetition~$\VarPetition$ is first proposed and when the expiration
+  condition is met --- that is, the portion of the protocol where members are
+  aware that that $\VarPetition$ is being considered, but in which no member
+  knows the outcome of the election.
+
+  The \StructElectionState~can be described by a tuple $(\State,
+  \VarPetition, \SetVotes)$, where $\State$ is the current \StructState,
+  $\VarPetition$ is the Petition being voted on, and $\SetVotes$ is a
+  collection of \StructBallot s that have been cast thus far.
+
+  A \KwManifest~defines the group configuration and consists of
+  \begin{itemize}
+    \item A \KwRoster, representing the set of eligible voters
+    \item A function $\FunEval : \SetElectionStates \to (\SetResult, \SetZKPs)$
+      where $\SetElectionStates$ is the set of all \StructElectionState s, and
+      $\SetZKPs$ is the set of all possible proofs of correctness of the result.
+      That is, if for some outcome $\ElectionState$, we
+      have $\FunEval(\ElectionState) = ((\AtomValid, \Choice), \VarZKP)$, then
+      the ballot choice $\Choice \in \ElectionState.\VarPetition.\SetChoices$
+      passes.  A plausible example of such a $\FunEval$ is the function which
+      specifies what proportion of \KwPeer s must agree to a change in the
+      composition of the \KwRoster~in order for the change to take effect.
+    \item Any other group configuration information the group should be able to
+      vote on.
+  \end{itemize}
+
 \subsection{Interface}
-Within finite time and in a way that is fair, every \KwPeer~should be able
-to call each of the following functions:
+\label{Subsection:PetitionIface}
+Within finite time and in a way that is fair, every \KwPeer~$\peer$ should be
+able to execute each of the following functions:
 \begin{itemize}
-  \item \NamePropose($\round, \peer, \VarManifest, \VarPetition$):
-    whereby a \KwPeer $\peer$ constructs a \StructPetition~$\VarPetition$ and
-    invokes \NameSend($\round, \peer, \VarPetition$) to send it to the cluster
-    for consideration.
-  \item \NameVote($\round, \peer, \VarManifest, \VarPetition, \Ballot$): If
-    $\VarPetition.\FunExpir(\cdot) = \AtomFalse$, then a \KwPeer~\peer may
-    \NameVote on it by creating a \StructBallot~\Ballot indicating its preferred
-    outcome, and invoking \NameSend($\round, \peer, \VarManifest, \VarPetition,
-    \Ballot$) to send it to the group.
-  \item \NameEvaluate($\round, \peer, \VarManifest, \VarPetition, \SetVotes) \to
+  \item $\SigPropose$: %\NamePropose($\VarManifest, \VarPetition$): whereby
+    $\peer$ constructs a \StructPetition~$\VarPetition$ and invokes
+    $\SigSend[\VarPetition]$ to send it to the cluster for consideration.
+  \item $\SigVote$:
+    If $\VarPetition.\FunExpir(\cdot) = \AtomFalse$, then a $\peer$~may
+    \NameVote~on it by creating a \StructBallot~\Ballot indicating its preferred
+    outcome, and invoking $\SigSend[\VarPetition, \Ballot]$ to
+    send it to the group.
+  \item \NameEvaluate($\VarManifest, \VarPetition, \SetVotes) \to
     (\{\AtomUnfinished, \AtomValid, \AtomInvalid\}, \Choice, \VarZKP)$: Given a
     vote state, every peer should be able to determine whether the vote
     has ended, and if it has, what the result was. If it cannot, or if any part
     of the election state is invalid, it should be able to provide a $\VarZKP$
     of misbehavior.
-  \item \NameEvaluate($\round, \peer, \VarManifest, \VarPetition, \Ballot$)
+  \item \NameEvaluate($\VarManifest, \VarPetition, \Ballot$)
     $\to$ (\{\AtomTrue, \AtomFalse\}, $\VarZKP$) should return (\AtomTrue,
     $\VarZKP$) if $\Ballot$ was produced by a valid \KwPeer~according to
     $\State$, and is a vote on $\VarPetition$. Otherwise, \AtomFalse~and a proof
     of misbehavior should be produced.
 \end{itemize}
 
-\subsection{Security Properties}
+\section{Security Properties}
   \subsubsection{Verifiability}
   \paragraph{Individual}
   A group management protocol provides \emph{individual verifiability} if, in
@@ -190,10 +206,10 @@ to call each of the following functions:
   member voted. The same restrictions apply to knowledge gained by other
   participants, except that each member can trivially reconstruct its own vote.
 
-\section{Threat Model}
-\begin{itemize}
-\item \textbf{Honest but curious}: the adversary controls $n-k$ peers and
-can monitor all network communications but carries out the protocol
-faithfully (guaranteed by Dissent's accountability property)
-\end{itemize}
-
+% \section{Threat Model}
+% \begin{itemize}
+% \item \textbf{Honest but curious}: the adversary controls $n-k$ peers and
+% can monitor all network communications but carries out the protocol
+% faithfully (guaranteed by Dissent's accountability property)
+% \end{itemize}
+%

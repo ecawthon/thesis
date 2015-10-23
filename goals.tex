@@ -23,7 +23,18 @@ proposals.
 
 We now formalize these notions:
 \section{Distributed Computation}\label{Subsection:distr}
-\toadd{Some questionable notion of this that we meet}
+Our intention in defining a decentralization property is to approximate the
+human notion of decentralized power: We would like to ensure that initially, all
+nodes are situated equally, and that it is impossible for the system to enter a
+state in which any centralization or delegation of power is irrevokable. In
+practice, we take this to mean
+\begin{itemize}
+  \item We make no assumptions about any subset of nodes having particular
+    capabilities not available to all nodes,
+  \item $\NumHonest$ honest nodes can always recover from any attempt to disrupt
+    the protocol by $\NumClients - \NumHonest$ colluding malicious nodes.
+\end{itemize}
+
 \section{Verifiability}\label{Section:verif}
 A protocol is verifiable if its output can be inspected to confirm that the
 protocol was carried out correctly. A simple example of this is signing a

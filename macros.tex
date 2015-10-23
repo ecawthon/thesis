@@ -58,6 +58,7 @@
 \newcommand{\KwPetition}{\texttt{Petition}}
 \newcommand{\KwRoster}{\texttt{Roster}}
 \newcommand{\KwRound}{\texttt{Round ID}}
+\newcommand{\KwTurn}{\texttt{Turn}}
 \newcommand{\FunEval}{t}
 \newcommand{\FunExpir}{x}
 \newcommand{\NameEvaluate}{\textsc{Evaluate}}
@@ -68,14 +69,15 @@
 \newcommand{\NameVote}{\textsc{Vote}}
 \newcommand{\SetChoices}{C}
 \newcommand{\SetElectionStates}{E}
-\newcommand{\SetResult}{\{\AtomTrue, \AtomFalse, \AtomInvalid\}}
+\newcommand{\SetResult}{\{(\AtomValid, \Choice), \AtomInvalid\}}
 \newcommand{\SetZKPs}{F}
 \newcommand{\SetVotes}{V}
+
 \newcommand{\StructBallot}{\texttt{Ballot}}
 \newcommand{\StructState}{\texttt{State}}
 \newcommand{\StructElection}{\emph{Election}}
 \newcommand{\StructPetition}{\texttt{Petition}}
-\newcommand{\StructElectionState}{\texttt{Election State}}
+\newcommand{\StructElectionState}{\emph{Election State}}
 \newcommand{\StructInstigator}{\texttt{Instigator}}
 
 \newcommand{\Choice}{c}
@@ -90,8 +92,14 @@
 \newcommand{\sig}{sig}
 \newcommand{\vote}{vote}
 \newcommand{\Ballot}{(\sig, \vote)}
-\newcommand{\State}{(\VarManifest, \round)}
+% \newcommand{\State}{(\VarManifest, \round)}
+\newcommand{\State}{(\round, \cdot)}
 
+\newcommand{\SigSend}[1][\msg]{\NameSend({#1})}
+\newcommand{\SigRecv}[1][\turn]{\NameReceive({#1})}
+
+\newcommand{\SigPropose}[1][\VarManifest,\VarPetition]{\peer.\NamePropose(#1)}
+\newcommand{\SigVote}[1][\VarManifest,\VarPetition,\Ballot]{\peer.\NameVote(#1)}
 % Dissent in Numbers
 \newcommand{\KwClient}{\texttt{Client}}
 \newcommand{\KwServer}{\texttt{Server}}
