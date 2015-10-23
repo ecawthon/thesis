@@ -25,6 +25,11 @@ protocol providing the following properties:
   \end{theorem}\label{theorem:anon}
   All properties are rigorously proven in \cite{sec}.
 
+This satisfies the specification for an anonymous messaging protocol given in
+Section~\ref{Section:AnonBcastP}.
+% \todo{TODO: talk about accountability?}
+% Further, using this protocol justifies our
+
 \subsection{Linkable Ring Signatures}
 Our voting protocol is based on the concept of a linkable ring signature (LRS),
 introduced in \cite{lrs}. The documentation of the CryptoBook implementation in
@@ -52,51 +57,34 @@ Go explains:
   anonymity set are present or signed messages in a given context.
 \end{quote}
 \cite{golrs}
-\toadd{explain in own words instead of having a page and a half long quote}
+% \toadd{explain in own words instead of having a page and a half long quote}
 \section{Algorithms}
 \subsection{Initial formation}
-We assume the member set is well known, and that every member has a secure
-channel through which it can communicate with every other member, and that
-members remain connected. Initially, the
-members organize themselves into a Peer-to-Peer Dissent
-cluster \cite{p2pd} using some consensus protocol such
-as Byzantine Paxos, as discussed in \cite{sec}.
+We assume the member set is well known, that every member has a secure channel
+through which it can communicate with every other member, and that members
+remain connected. Initially, the members organize themselves into a Peer-to-Peer
+Dissent cluster \cite{p2pd} using some consensus protocol such as Byzantine
+Paxos, as discussed in \cite{sec}.
 
-The Dissent configuration file specifies the size and ordering of clients'
-message slots\todogrunt{Need to define client and slot somewhere}. which will
-consist of, for each of the $\NumClients$ clients: space for a \StructBallot, and space
-for up to $\NumClients$ signatures so the client can sign whatever other proposals are in
-play.  We only allow any given client to have one proposal at any given time.
-
-\subsection{Peer-to-Peer Layer}
-Every \KwMember~maintains a TCP connection to every other \KwMember,
-and uses this to execute Hardened Dissent.
-For any instance of the DIN layer, there is a canonical \texttt{Manifest}
-maintained at the P2P layer describing its parameters. The \texttt{Manifest}
-consists of
-
-  This protocol operates at the level of a \KwCluster~of
-    \KwNode s.  A \KwPeer~is a \KwNode~that is a member of a
-    particular \KwCluster. It may be voted out of a cluster. New nodes
-    become \KwPeer s if their joining is approved by the existing cluster.
-
-\begin{itemize}
-  \item A \KwRoster~$\VarRoster$, mapping public keys to IP addresses for all
-    \KwClient s,
-  \item A \KwServer~list $\SetServers$, which is a subset of $\VarRoster$,
-  \item A function $\FunEval : \SetElectionStates \to \{\AtomTrue, \AtomFalse\}$
-    mapping a set of signatures to an election result. So, if
-    $\FunEval(\ElectionState) = \AtomTrue$ for some outcome $\ElectionState$,
-    then the proposal corresponding to $\ElectionState$ should be adopted at the
-    specified expiration round. A plausible example is the function which
-    specifies what proportion of \KwMember s must agree to a change in the
-    composition of $\VarRoster$ or $\SetServers$ in order for the change to take
-    effect
-\end{itemize}
+% The Dissent configuration file specifies the size and ordering of clients'
+% message slots\todogrunt{Need to define client and slot somewhere}. which will
+% consist of, for each of the $\NumClients$ clients: space for a \StructBallot,
+% and space for up to $\NumClients$ signatures so the client can sign whatever
+% other proposals are in play.  We only allow any given client to have one
+% proposal at any given time.
+%
+% \subsection{Peer-to-Peer Layer}
+Initially, the \KwManifest~of the Petition protocol layer includes all \KwNode s
+in the Broadcast layer as \KwMember s of the \KwCluster.
 
 \subsection{Voting with Linkable Ring Signatures}
-By associating a unique link scope with each petition, we allow \texttt{Member}s
-to vote by producing a signature with the current member set and the proposer's
+We now sketch implementations of the functions from
+Section~\ref{Subsection:PetitionIface}.
+
+To \NamePropose a \StructPetition,
+
+By associating a unique link scope with each petition, we allow \KwMember s
+to vote by producing a signature with the current \KwRoster and the proposer's
 link scope. Each \KwMember~that wishes to vote for the petition broadcasts
 the petition along with its signature. Dissent provides acccountable, verifiable
 broadcasting of anonymous messages, and so given our reliability assumptions,
