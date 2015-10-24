@@ -79,19 +79,25 @@ in the Broadcast layer as \KwMember s of the \KwCluster.
 
 \subsection{Voting with Linkable Ring Signatures}
 We now sketch implementations of the functions from
-Section~\ref{Subsection:PetitionIface}.
+Section~\ref{Subsection:PetitionIface}, using this Hardened Dissent instance as
+the underlying anonymous broadcast layer.
 
-To \NamePropose a \StructPetition,
+To \NamePropose a \StructPetition, a \KwPeer generates a unique \KwLinkScope to
+associate with this petition, and specifies a Dissent \KwRound~$\round$~when the
+\StructPetition will expire. The instigating peer then broadcasts this petition
+to the group.
 
-By associating a unique link scope with each petition, we allow \KwMember s
-to vote by producing a signature with the current \KwRoster and the proposer's
-link scope. Each \KwMember~that wishes to vote for the petition broadcasts
-the petition along with its signature. Dissent provides acccountable, verifiable
-broadcasting of anonymous messages, and so given our reliability assumptions,
-every \KwMember~will eventually end up with a list of anonymous signatures
-associated with the petition. At the specified round, each member should verify
-all signatures received. If the function $\FunEval$ applied to the set of unique, valid
-signatures results in \AtomTrue, then the petition passes.
+By associating a unique link scope with each petition, we allow \KwMember s to
+vote by producing a signature with the current \KwRoster and the proposer's link
+scope. Each \KwMember~that wishes to vote for the petition broadcasts the
+petition along with its signature, on any turn before $\round$. Dissent provides
+the functionality required for the anonymous broadcast layer, and so given our
+reliability assumptions, every \KwMember~will eventually be able to \NameReceive
+the \StructElectionState~containing a list of anonymous signatures associated
+with the petition. At the specified round $\round$, each member should
+\NameEvaluate all signatures received. If the function $\FunEval$ applied to the
+set of unique, valid signatures results in \todo{TODO: updtae for ballot
+choices}\AtomTrue, then the petition passes.
 
 \toadd{ Illustrate the round message format, which will consist of, for each of
   the $\NumClients$ clients: space for a \texttt{Ballot}, and space for up to
