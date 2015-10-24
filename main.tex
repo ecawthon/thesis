@@ -7,8 +7,8 @@
 
 % \documentclass[draftcopy,short,nolof,nolot]{srpaper}
 \documentclass[finalcopy,nolof,nolot]{srpaper}
-\usepackage[colorinlistoftodos, color=blue!20]{todonotes}
-% \usepackage[disable]{todonotes}
+% \usepackage[colorinlistoftodos, color=blue!20]{todonotes}
+\usepackage[disable]{todonotes}
 \usepackage[pdftex,pdfusetitle]{hyperref}
 \usepackage{setspace}
 \usepackage{multirow}
@@ -28,21 +28,22 @@
 
 \title{Decentralized Group Management in Dissent}
 \author{Eleanor Cawthon}
-\date{\today, 2015}
+\date{Spring, 2015}
 \advisor{Professors Bryan Ford and Tzu-Yi Chen, advisors}
 \abstract{
 Among both humans and computers, decentralized approaches to group
 decision-making exhibit trade-offs between decentralization and scalability.
 
 We provide two contributions: First, we outline a general specification for
-election protocols providing instigator anonymity. Next, we sketch how this can
+petition protocols providing instigator anonymity. Next, we sketch how this can
 be applied to provide bootstrapping and group management for the Dissent
 anonymity protocol.
 
 % \todogrunt{finish rewriting}
 
 % TODO: Make this the intro for the protocol section.
-We go on to present a protocol for egalitarian
+We first present an overview of existing work on collective decisionmaking under
+various trust addumptions. We go on to present a protocol for egalitarian
 groups to determine their leadership in a fashion that is anonymous, verifiable,
 and fully decentralized.  By combining the Dissent protocol for anonymous
 communication with decentralized trust\cite{p2pd}, with a simple voting protocol
@@ -54,7 +55,13 @@ Dissent \cite{din}, so that the scalable protocol is used most of the time, but
 where the peer-to-peer consensus can always rescind the power it has delegated.
 
 }
-\acknowledgment{}
+\acknowledgment{Thank you to Alessandro Chiesa for help with improving the
+formalism, an endeavor that will be completed in future work. Additional thanks
+to Shelly DeVries for reading an early draft. Finally, thank you to the numerous
+low-wage workers involved in manufacturing the equipment I used, maintaining the
+spaces where I worked, and preparing the food I ate. In particular, thank you to
+the Pomona College dining hall workers, whose unionization campaign provided the
+inspiration for the motivating example in the introduction.}
 
 % hyperref setup, from template
 \hypersetup{
@@ -79,7 +86,7 @@ where the peer-to-peer consensus can always rescind the power it has delegated.
 \chapter{Related Work}\label{Chapter:Existing}
 \input litreview.tex
 
-\chapter{Security Properties}\label{Chapter:Goals}
+\chapter{Goals}\label{Chapter:Goals}
 \input goals.tex
 
 \chapter{Formal Specification}\label{Chapter:Spec}

@@ -1,11 +1,3 @@
-\toadd{In \GrassContext, \Org~was established as an equalizing
-  force: \Marginalized s and \Dominant s alike could share in governance, with
-  one vote per person. The \BadGuys, however, could see the transcripts of all
-  meetings of \Org. If a \Marginalized~made a proposal unpopular with \BadGuys,
-  the \Marginalized~would be \Disappeared; if a \Dominant~made the same
-proposal, \BadGuys~could do nothing.}
-Or,
-\toadd{
   In \HistContext, \Tyrant~legally became \Office. Over the next several years,
 \Congress~passed a series of electoral reforms that ultimately allowed for
 \Axis~ control of \Congress~and granted \Tyrant~complete, authoritarian control
@@ -15,7 +7,6 @@ He promised \Platform. As the saying goes, Mussolini made the trains run on
 time. But whether or not a majority of the people of \Domain~ever supported
 \Axis, by the time \Congress~had given them control, the people could not revoke
 his power without \War.
-}
 
 This is one example of a more general problem in group decision-making:
 % In very
@@ -30,6 +21,20 @@ In order to maintain the advantages of democracy and decentralized
 trust, while also allowing efficient governance at scale, it must be possible to
 delegate power to individuals or small groups, and it must be possible to revoke
 that power.
+
+Further, if the collective is to retain power to revoke what it has delegated,
+it must be able to do so as a collective instead of as individuals. Differential
+situation of groups within the collective can complicate this. For example, in
+a \GrassContext, a \Org~is often established as an equalizing force:
+\Marginalized s and \Dominant s alike can share in governance, with one vote per
+person. The \BadGuys, however, can monitor all meetings of this \Org. If a
+\Marginalized~made a proposal unpopular with \BadGuys, the \Marginalized~would
+be \Disappeared; if a \Dominant~made the same proposal, \BadGuys~could do
+nothing. This coercive power reduces the power of the collective to the power of
+its most disempowered subset. Introducing anonymity to such a context, however,
+would prevent \BadGuys~from targeting \Marginalized s without riskng targeting
+\Dominant s. Anonymity can thus be leveraged to instead augment the power of the
+collective to the power of its most empowered subset.
 
 Various computational approaches exist to providing secure and trustworthy
 democratic elections, where each individual's vote is anonymous and where the
@@ -67,12 +72,14 @@ with applications for scalable anonymous web browsing.
 
 We begin with an overview of existing tools dealing with various aspects of this
 problem (Chapter~\ref{Chapter:Existing}).  We then outline the properties
-provided by our protocol (Chapter~\ref{Chapter:Goals}), and specify the threat
-model against which it is secure (Chapter~\ref{Chapter:Threats}).  In
+provided by our protocol, and specify the threat
+model against which it is secure (Chapter~\ref{Chapter:Goals}).  In
 Chapter~\ref{Chapter:Spec}, we provide a detailed specification for a protocol
 providing the properties laid out in Chapter~\ref{Chapter:Goals}. In
 Chapter~\ref{Chapter:Protocol}, we outline one potential implementation of this
-specification\todo{TODO: proofs section?}. Finally, we conclude and discuss
-directions for future work (Chapter~\ref{Chapter:Conclusion}).\todoword{fewer
-``outline''}
+specification\todo{TODO: proofs section?}, and argue for its correctness.
+In Appendix~\ref{Appendix:Dissent}, we discuss how this protocol can be used to
+enhance the security and decentralization properties of the scalable Dissent in
+Numbers anonymity protocol. Finally, we conclude and discuss directions for
+future work (Chapter~\ref{Chapter:Conclusion}).\todoword{fewer ``outline''}
 
